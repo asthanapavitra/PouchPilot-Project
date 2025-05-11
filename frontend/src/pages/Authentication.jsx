@@ -21,19 +21,19 @@ const Authentication = () => {
   const [registerUsername, setRegisterUsername] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
-  const [loginRole, setLoginRole] = useState("");
+
   const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-  const {user,setUser} = useContext(UserDataContext);
-  const {admin,setAdmin}=useContext(AdminDataContext);
+  const {setUser} = useContext(UserDataContext);
+ 
 
   const [message, setMessage] = useState("");
   const [messageFromRegister,setMessageFromRegister]=useState(null);
   const[registrationDone,setRegistrationDone]=useState(false);
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 540);
+      setIsMobile(window.innerWidth <=540);
     };
 
     window.addEventListener("resize", handleResize);
@@ -157,7 +157,7 @@ const Authentication = () => {
         });
 
         tl.to(blueRef.current, {
-          translateX: "-60%",
+          translateX: window.innerWidth<800?"-55%":"-60%",
           duration: 0.4,
           borderRadius: "90px",
         });
@@ -239,7 +239,6 @@ const Authentication = () => {
 
       if (response.status === 200) {
         const data = response.data;
-        localStorage.setItem("token", data.token);
         setUser(data.user);
         setMessage("Registration successful,login now");
         setMessageFromRegister(true);
@@ -281,38 +280,23 @@ const Authentication = () => {
     };
 
     try {
-      let response;
-      if (loginRole == "user") {
-        response = await axios.post(
+      let response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/users/login`,
           userData
         );
-      } else if (loginRole == "admin") {
-        response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/admin/login`,
-          userData
-        );
-      } else {
-        setMessage("Select Role first");
-        setMessageFromRegister(false);
-        setTimeout(() => {
-          setMessage("");
-          setMessageFromRegister(null)
-      }, 15000);
-      }
-
-      if (loginRole != "" && response.status === 200) {
+      
+      if (response.status === 200) {
         const data = response.data;
         localStorage.setItem("token", data.token);
-        loginRole == "user" ? setUser(data.user) : setAdmin(data.admin);
+        setUser(data.user)
 
-        navigate('/');
+        navigate('/profile');
       }
     } catch (err) {
       // Check if error response exists
       if (err.response) {
         // Handle errors based on status codes
-        if (err.response.status === 400 || err.response.status === 401||err.response.status==500) {
+        if (err.response.status === 400 || err.response.status === 401||err.response.status==500||err.response.status==503) {
           const errorMessages = err.response.data.errors?.map((error) => error.message).join("\n");
           console.log(errorMessages)
           setMessage(errorMessages || "An error occurred.");
@@ -327,28 +311,29 @@ const Authentication = () => {
       }
     }
   };
-  // console.log(admin);
   return (
-    <div className="bg-[#D6DEF5] h-screen w-screen flex justify-center items-center overflow-hidden">
+    <div className="bg-white h-screen w-screen flex justify-center items-center overflow-hidden">
       <div
-        className={`bg-[#809FEF] w-[90%] sm:w-[70%] lg:w-[45%] ${
-          isMobile ? "h-[80%]" : "h-[50%]"
-        } rounded-lg overflow-hidden relative flex`}
+        className={` w-[90%] sm:w-[70%] lg:w-[45%] ${
+          isMobile ? "h-[90%]" : "h-[70%]"
+        } rounded-lg overflow-hidden relative flex items-center justify-center shadow-2xl `}
       >
         {/* White Container - Holds Register & Login Forms */}
         <div
-          className={`h-full bg-white w-full absolute gap-5 flex ${
-            isMobile ? "flex-col" : "flex-row"
+          className={`h-full bg-white w-full absolute gap-5  flex ${
+            isMobile ? "flex-col" : "flex-row "
           } justify-between items-center rounded-lg shadow-2xl`}
         >
           {/* Register Form - Visible */}
           <div
             ref={registerForm}
             className={`${
-              isMobile ? "h-[90%] w-full mt-4" : "w-[60%] h-full mt-15"
-            } relative flex flex-col items-center justify-start z-10`}
+              
+              isMobile ? "h-[90%] w-full mt-5" : "w-[60%]  h-full "
+             
+            } ${ window.innerWidth>=1024 ? "absolute top-[20%] ":""} relative flex flex-col self-center  items-center justify-start z-10`}
           >
-            <h1 className="font-semibold w-[90%] lg:w-[75%] text-2xl text-center mb-3">
+            <h1 className="font-semibold w-[90%] lg:w-[75%] text-3xl text-center mb-3">
               Registration
             </h1>
             {message && messageFromRegister==true && (
@@ -357,7 +342,7 @@ const Authentication = () => {
             {/* Error Message for Register */}
             <form
               onSubmit={handleRegisterForm}
-              className="flex flex-col gap-2 w-[90%] lg:w-[75%]"
+              className={`flex  flex-col  w-[90%] md:w-[70%] lg:w-[85%] ${ window.innerWidth>=1024 ? "mt-2 gap-2 ":"mt-5 gap-4"}`}
             >
               <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2">
                 <input
@@ -372,7 +357,7 @@ const Authentication = () => {
                 />
                 <i className="ri-user-3-fill text-xl"></i>
               </div>
-              <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2">
+              <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2 ">
                 <input
                   value={registerEmail}
                   required
@@ -398,9 +383,17 @@ const Authentication = () => {
                 />
                 <i className="ri-lock-password-fill text-xl"></i>
               </div>
+              <div className="flex gap-1 mt-1 items-center ml-1 ">
+                <input type="checkbox" name="" id="" required />
+                <p className="text-xs text-gray-400 tracking-tighter  mt-1  ">Subscribe to recieve StarPhenom email</p>
+              </div>
+              <div className="flex gap-1  items-center ml-1 ">
+                <input type="checkbox" name="" id="" required />
+                <p className="text-xs text-gray-400 tracking-tighter">I have read, understood and agree to the privacy policy</p>
+              </div>
               <button
                 type="submit"
-                className="w-full mt-1 text-white text-center font-bold bg-[#809FEF] py-1 rounded-md"
+                className="w-full mt-1 text-white text-center font-bold bg-black py-1 rounded-md"
               >
                 Register
               </button>
@@ -421,7 +414,7 @@ const Authentication = () => {
           {/* Blue Background Panel - Half Visible, Half Overflowing */}
           <div
             ref={blueRef}
-            className={`bg-[#809FEF] absolute ${
+            className={`bg-black absolute ${
               isMobile
                 ? "bottom-[-80%] w-full h-[110%] flex-col py-4"
                 : "right-[-70%] md:right-[-70%] lg:right-[-75%] w-[110%] h-full flex-row"
@@ -431,7 +424,7 @@ const Authentication = () => {
               } z-10`}
           >
             <div ref={registerText} className="text-center">
-              <h2 className="text-xl md:text-2xl font-bold mb-2">
+              <h2 className={`text-xl md:text-2xl font-bold mb-2 ${isMobile ?"mt-4":"" }` }>
                 Welcome Back!
               </h2>
               <p className="text-xs">Already have an account?</p>
@@ -472,7 +465,7 @@ const Authentication = () => {
             } 
               flex flex-col items-center justify-center bg-white`}
           >
-            <h1 className="font-semibold text-2xl text-center mb-2">Login</h1>
+            <h1 className="font-semibold text-3xl text-center mb-2">Login</h1>
             {message && messageFromRegister===false&& (
               <p className="bg-red-500 text-white px-2 py-1 mb-2 w-[80%] sm:w-[60%] rounded-sm  text-xs text-center">{message}</p>
             )}{" "}
@@ -481,24 +474,7 @@ const Authentication = () => {
               onSubmit={handleLoginForm}
               className="flex flex-col gap-2 w-[90%] lg:w-[75%]"
             >
-              <select
-                required
-                onChange={(e) => {
-                  setLoginRole(e.target.value);
-                }}
-                className="w-[90%] lg:w-[50%] p-1 self-center outline-0 border-[#809FEF] rounded-md border  text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#809FEF]"
-              >
-                <option value="Select Role" className="text-sm ">
-                  Select Role
-                </option>
-                <option value="user" className="text-sm ">
-                  User
-                </option>
-                <option value="admin" className="text-sm ">
-                  {" "}
-                  Admin
-                </option>
-              </select>
+            
               <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2">
                 {/* Role Selection */}
 
@@ -532,7 +508,7 @@ const Authentication = () => {
               </p>
               <button
                 type="submit"
-                className="w-full mt-2 text-white text-center font-bold bg-[#809FEF] py-1 rounded-md"
+                className="w-full mt-2 text-white text-center font-bold bg-black py-1 rounded-md"
               >
                 Login
               </button>

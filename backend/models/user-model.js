@@ -2,27 +2,26 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const defaultImagePath = "./images/default-profile-pic.png";
-const defaultImage = fs.readFileSync(defaultImagePath);
+
 const userSchema = new mongoose.Schema({
-  fullName:{
-    firstName:{
-        type:String,
-       
-        minLength:3,
-        trim:true
+  fullName: {
+    firstName: {
+      type: String,
+      default: "Unknown",
+      minLength: 3,
+      trim: true,
     },
-    lastName:{
-        type:String,
-        minLength:3,
-        trim:true
-    }
-},
-  userName:{
-    type:String,
-    unique:true,
-    trim:true,
-    required:true,
+    lastName: {
+      type: String,
+      minLength: 3,
+      trim: true,
+    },
+  },
+  userName: {
+    type: String,
+    unique: true,
+    trim: true,
+    required: true,
   },
   email: {
     type: String,
@@ -55,8 +54,8 @@ const userSchema = new mongoose.Schema({
     },
   ],
   picture: {
-    type: Buffer,
-    default: defaultImage,
+    data: Buffer,
+    contentType: String, // Store MIME type (image/png, image/jpeg)
   },
 
   contact: {
@@ -70,14 +69,20 @@ const userSchema = new mongoose.Schema({
       minLength: [10, "Contact number must be 10 digits long"],
       maxLength: [10, "Contact number must be 10 digits long"],
     },
-    countryFlag:{
-      type:Buffer
-    }
+    countryFlag: {
+      type: Buffer,
+    },
   },
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "product",
+    },
+  ],
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "review",
     },
   ],
 });

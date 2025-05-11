@@ -3,6 +3,7 @@ const router=express.Router();
 const {body}= require('express-validator')
 const userController=require('../controllers/user-controller');
 const isLoggedIn=require('../middlewares/isLoggedInUser').isLoggedIn;
+const upload=require('../config/multer-config')
 router.get('/',(req,res)=>{
     res.send("Hello from user router");
 })
@@ -26,5 +27,8 @@ router.post('/login',
 router.get('/get-profile',isLoggedIn,(req,res)=>{
     return res.status(201).json({user:req.user});
 })
+router.post('/update-profile',isLoggedIn,upload.single("picture"), userController.updateProfile)
+router.get('/add-to-cart/:id',isLoggedIn,userController.addToCart);
+router.get('/remove-from-cart/:id',isLoggedIn,userController.removeFromCart);
 router.get('/logout',isLoggedIn, userController.logoutUser);
 module.exports=router;

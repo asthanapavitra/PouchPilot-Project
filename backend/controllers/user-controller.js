@@ -68,6 +68,54 @@ module.exports.loginUser = async (req, res) => {
     }
 };
 
+
+module.exports.addToCart = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Fetch full user document
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ errors: [{ message: "User not found" }] });
+    }
+
+    if (user.cart.includes(id)) {
+      return res
+        .status(400)
+        .json({ errors: [{ message: "Item already in cart" }] });
+    }
+
+    user.cart.push(id);
+    await user.save();
+
+    return res.status(200).json({ message: "Item added to cart successfully" });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ message: err.message }] });
+  }
+};
+
+module.exports.removeFromCart=async(req,res)=>{
+  try{
+    const id=req.params.id;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ errors: [{ message: "User not found" }] });
+    }
+
+    const index=user.cart.indexOf(id);
+    if(index===-1){
+      return res.status(404).json({errors:[{message:"Item not found in cart"}]});
+    }
+    user.cart.splice(index,1);
+    await user.save();
+    return res.status(200).json({message:"Item removed from cart successfully"});
+  }
+  catch(err){
+    return res.status(500).json({errors:[{message:err.message}]});
+  }
+}
 module.exports.logoutUser=async (req,res)=>{
     try{
         const token=req.cookies.token||req.headers.authorization?.split(" ")[1];
@@ -81,3 +129,37 @@ module.exports.logoutUser=async (req,res)=>{
       return res.status(500).json({errors:[{message:err.message}]});
     }
 }
+
+
+
+module.exports.updateProfile= async (req, res) => {
+  try {
+    const userId = req.user._id; // assuming authenticateUser adds `req.user`
+    const user = await User.findById({_id:userId});
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update fields
+    const {fullName,address,contact}=req.body;
+    console.log(fullName,address,contact);
+    user.fullName=fullName;
+    user.address=address;
+    user.contact=contact;
+    
+
+    // Update contact
+   console.log(req.file);
+    // Update profile picture
+    if (req.file) {
+      user.picture.data = req.file.buffer;
+      user.picture.contentType = req.file.mimetype;
+    }
+
+    await user.save();
+    console.log(user)
+    res.status(200).json({ message: "Profile updated", user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -1,83 +1,100 @@
 const mongoose = require("mongoose");
+
 const productSchema = mongoose.Schema({
   images: [
     {
+      color: String,
+      gallery: [
+        {
+          data: Buffer,
+          contentType: String,
+        },
+      ],
+    },
+  ],
+
+  // ✅ New imageGallery field
+  imageGallery: [
+    {
       data: Buffer,
-      contentType: String, // Store MIME type (image/png, image/jpeg)
+      contentType: String,
     },
   ],
 
   name: {
     type: String,
-    required: true, // Product name is required
-    unique: true, // Product name must be unique
+    required: true,
+    unique: true,
+  },
+  shortDescription: {
+    type: String,
+    required: true,
   },
   price: {
     type: Number,
-    required: true, // Product price is required},
+    required: true,
     min: 0,
   },
   discount: {
     type: Number,
     default: 0,
   },
-  description: {
-    type: String,
+  stock: {
+    type: Number,
     required: true,
   },
   category: {
     type: String,
+    enum: ["bags", "sneakers", "watches", "perfumes", "gifts", "merchandise"],
     required: true,
   },
-  brand: {
+  subcategory: {
     type: String,
-    required: true,
   },
-  stock: {
-    type: Number,
-    required: true,
-  }, // Defines the number of available products of this type
-  rating: Number,
-  bgColor: {
-    type: String,
-    required: true,
-  },
+  tags: [String],
 
-  panelColor: {
-    type: String,
-    required: true,
-  },
-  textColor: {
-    type: String,
-    required: true,
+  // Frontend-specific fields
+  style: String,
+  origin: String,
+  productDetails: [String],
+  howMade: String,
+  deliveryAndReturns: String,
+
+  // Optional attributes based on category
+  availableColors: [String],
+  availableSizes: [String],
+  material: String,
+  fragranceNotes: String,
+  gender: String,
+  warranty: String,
+  isCustomizable: Boolean,
+
+  // Additional product metadata
+  rating: Number,
+  sustainability: String,
+  durability: String,
+  usage: String,
+  storageInstructions: String,
+  care: String,
+  isActive: {
+    type: Boolean,
+    default: true,
   },
   createdAt: {
     type: Date,
     default: Date.now,
-  }, // Timestamp for when the product was created
-  reviews: [
-    {
-      userId: mongoose.Schema.Types.ObjectId,
-      review: String,
-      rating: Number,
-      images: [{
-        type: Buffer,
-        contentType: String, // Store MIME type (image/png, image/jpeg)
-      }], // Array of images related to the review
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      }, // Timestamp for when the review was created
-    },
-  ],
+  },
   updatedAt: {
     type: Date,
     default: Date.now,
-  }, // Timestamp for when the product was last updated
-  isActive: {
-    type: Boolean,
-    default: true,
-  }, // Indicates if the product is active or discontinued
-  tags: [String], // Array of tags for better search and categorization (e.g., "sale", "new", "popular")
+  },
+
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "review",
+    },
+  ],
 });
+
 module.exports = mongoose.model("product", productSchema);

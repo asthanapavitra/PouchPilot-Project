@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const defaultImagePath = "./images/default-profile-pic.png";
-const defaultImage = fs.readFileSync(defaultImagePath);
+
 const adminSchema = mongoose.Schema({
   fullName: {
     firstName: {
@@ -47,7 +46,7 @@ const adminSchema = mongoose.Schema({
 
   picture: {
     type: Buffer,
-    default: defaultImage,
+   contentType:String
   },
 
   gstin: String,

@@ -1,7 +1,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-
 * {
-    font-family: "Poppins", sans-serif;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Swiper arrows styling */
+.swiper-button-prev,
+.swiper-button-next {
+  width: 35px !important;
+  height: 35px !important;
+  background-color: white !important;
+  color: black !important;
+  border-radius: 9999px !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  margin-right: 5px;
+  padding: 2px;
+}
+
+/* Shrink the internal SVG icon */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 10px !important;
+  transform: scale(2); /* actually makes it look smaller */
+}
+
+
+/* Position both arrows to bottom right */
+.swiper-button-next {
+  position: absolute !important;
+  bottom: 10px !important;
+  right: 10px !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+}
+
+.swiper-button-prev {
+  position: absolute !important;
+  bottom: 10px !important;
+  right: 65px !important; /* 45px width + 10px gap */
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+}
+
+
+/* Pagination bullets */
+.swiper-pagination-bullet {
+  background-color: white !important; /* Tailwind gray-300 */
+}
+
+.swiper-pagination-bullet-active {
+  background-color: white !important; /* Tailwind gray-500 */
 }
