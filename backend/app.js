@@ -7,6 +7,7 @@ const userRouter=require('./router/user-router');
 const productRouter=require('./router/product-router')
 const adminRouter=require('./router/admin-router');
 const cors=require('cors');
+const { createServer } = require('@vercel/node');
 
 const cookie=require('cookie-parser')
 app.use(cors(
