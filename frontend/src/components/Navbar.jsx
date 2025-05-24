@@ -4,14 +4,18 @@ import { Menu, X } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SearchPanel from "./SearchPanel";
+import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
+import { useContext } from "react";
 
 const Navbar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isMobile } = useContext(MobileResponsivenessContext);
   const [supportClicked, setSupportClicked] = useState(false);
   const [supportWasActive, setSupportWasActive] = useState(false);
   const [showSearchPanel, setShowSearchPanel] = useState(false);
+
   const searchPanelRef = useRef(null);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   useGSAP(() => {
     const timeline = gsap.timeline();
 
@@ -48,34 +52,35 @@ const Navbar = (props) => {
       });
     }
   }, [supportClicked]);
-// Search panel animation
-useGSAP(() => {
-  if (showSearchPanel) {
-    gsap.to(searchPanelRef.current, {
-      y: 0,
-      duration: 0.4,
-      ease: "power3.out",
-      onComplete: () => {
-        gsap.set(searchPanelRef.current, { display: "block" });
-      },
-    });
-    gsap.to(".home-page", {
-      opacity: 0,
-    });
-  } else {
-    gsap.to(searchPanelRef.current, {
-      y: "-100%",
-      duration: 0.5,
-      ease: "power3.in",
-      onComplete: () => {
-        gsap.set(searchPanelRef.current, { display: "none" });
-      },
-    });
-    gsap.to(".home-page", {
-      opacity: 1,
-    });
-  }
-}, [showSearchPanel]);
+  // Search panel animation
+  useGSAP(() => {
+    if (showSearchPanel) {
+      gsap.to(searchPanelRef.current, {
+        y: 0,
+        duration: 0.4,
+        ease: "power3.out",
+        onComplete: () => {
+          gsap.set(searchPanelRef.current, { display: "block" });
+        },
+      });
+      gsap.to(".home-page", {
+        opacity: 0,
+      });
+    } else {
+      gsap.to(searchPanelRef.current, {
+        y: "-100%",
+        duration: 0.5,
+        ease: "power3.in",
+        onComplete: () => {
+          gsap.set(searchPanelRef.current, { display: "none" });
+        },
+      });
+      gsap.to(".home-page", {
+        opacity: 1,
+      });
+    }
+  }, [showSearchPanel]);
+
   return (
     <div className="w-screen">
       <div
@@ -97,28 +102,40 @@ useGSAP(() => {
       </div>
       <nav className="h-[65px] fixed top-0 text-black w-full bg-white mb-4 shadow-lg z-990">
         <div className="max-w-7xl h-full mx-auto px-4 sm:px-6 lg:pl-8 lg:pr-2">
-          <div className="flex h-full justify-between items-center py-4 relative">
-            {props.username != null ? (
-              <h2 className="text-xl flex gap-1 items-center">
-                Hi, <span className="text-xl">{props.username}</span>
-              </h2>
+          <div className="flex h-full justify-between items-center py-4 mx-2 relative">
+            {isMobile ? (
+              
+                <button
+                  onClick={() => props.setShowSidebar(!props.showSidebar)}
+                  className="p-2 text-black rounded-md text-2xl"
+                >
+                  ☰
+                </button>
+             
             ) : (
               <div
-                className="flex items-center justify-between w-[5%]"
+                className={`flex items-center justify-between
+                  w-[3%]
+                `}
                 onClick={() => setShowSearchPanel(true)}
               >
-                <i className="ri-search-line mr-2 text-xl"> </i>Search
+                <i className="ri-search-line mr-2 text-xl"> </i>
               </div>
             )}
             {/* Logo */}
-            <Link to="/" className="text-2xl   w-[60%] text-center">
+            <Link
+              to="/"
+              className={`text-2xl   ${
+                props.isMobile ? "w-[57%]" : "w-[60%]"
+              } text-center`}
+            >
               <h2 className="text-2xl absolute left-[50%] -translate-x-1/2 top-[50%]  -translate-y-1/2 text-animation text-center">
                 {["S", "T", "A", "R"].map((char, index) => (
                   <span key={index} className={char === " " ? "mx-1" : ""}>
                     {char}
                   </span>
                 ))}
-                {["P", "H", "E", "N", "O", "M"].map((char, index) => (
+                {["P", "A", "S", "S", "I", "O", "N"].map((char, index) => (
                   <span
                     key={index}
                     className={`${char === " " ? "mx-1" : ""} font-extrabold`}
@@ -155,9 +172,12 @@ useGSAP(() => {
                 </Link>
               </li>
               <li>
-                <button onClick={()=>{
-                  navigate('/my-cart',{state:{cartPage:true}})
-                }} className="group hover:text-blue-400">
+                <button
+                  onClick={() => {
+                    navigate("/my-cart", { state: { cartPage: true } });
+                  }}
+                  className="group hover:text-blue-400"
+                >
                   <i className="ri-shopping-cart-line text-xl group-hover:hidden"></i>
                   <i className="ri-shopping-cart-fill text-xl hidden group-hover:inline"></i>
                 </button>
@@ -170,9 +190,53 @@ useGSAP(() => {
             </ul>
 
             {/* Mobile Menu Button */}
-            <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
+            {/* Mobile Profile Dropdown Menu */}
+            <div className="md:hidden relative mr-5">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-xl text-black"
+              >
+                <i className="ri-user-line"></i>
+              </button>
+
+              {isOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50 py-2 text-sm">
+                  <button
+                    className="block px-4 py-2 w-full text-left hover:bg-gray-100"
+                    onClick={() => {
+                      setIsOpen(false);
+                      setSupportClicked(true);
+                      setSupportWasActive(true);
+                    }}
+                  >
+                    Call Us
+                  </button>
+                  <Link
+                    to="/wishlist"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Wishlist
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate("/my-cart", { state: { cartPage: true } });
+                    }}
+                    className="block px-4 py-2 w-full text-left hover:bg-gray-100"
+                  >
+                    My Cart
+                  </button>
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    My Profile
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </nav>

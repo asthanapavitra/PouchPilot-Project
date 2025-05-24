@@ -314,7 +314,7 @@ const Authentication = () => {
   return (
     <div className="bg-white h-screen w-screen flex justify-center items-center overflow-hidden">
       <div
-        className={` w-[90%] sm:w-[70%] lg:w-[45%] ${
+        className={` w-[90%] sm:w-[70%] lg:w-[60%] ${
           isMobile ? "h-[90%]" : "h-[70%]"
         } rounded-lg overflow-hidden relative flex items-center justify-center shadow-2xl `}
       >
@@ -329,7 +329,7 @@ const Authentication = () => {
             ref={registerForm}
             className={`${
               
-              isMobile ? "h-[90%] w-full mt-5" : "w-[60%]  h-full "
+              isMobile ? "h-[90%] w-full mt-5" : "w-[60%] -mt-10  h-full "
              
             } ${ window.innerWidth>=1024 ? "absolute top-[20%] ":""} relative flex flex-col self-center  items-center justify-start z-10`}
           >
@@ -393,7 +393,7 @@ const Authentication = () => {
               </div>
               <button
                 type="submit"
-                className="w-full mt-1 text-white text-center font-bold bg-black py-1 rounded-md"
+                className="w-full mt-1 text-white text-center font-bold bg-black py-2 rounded-md"
               >
                 Register
               </button>
@@ -419,7 +419,7 @@ const Authentication = () => {
                 ? "bottom-[-80%] w-full h-[110%] flex-col py-4"
                 : "right-[-70%] md:right-[-70%] lg:right-[-75%] w-[110%] h-full flex-row"
             } 
-              flex pl-5 pr-3 justify-between items-center text-white ${
+              flex pl-15 pr-10 justify-between items-center text-white ${
                 isMobile ? "rounded-[60px]" : "rounded-[90px]"
               } z-10`}
           >
@@ -438,7 +438,7 @@ const Authentication = () => {
                 Login
               </button>
             </div>
-            <div ref={loginText} className="text-center opacity-0">
+            <div ref={loginText} className="text-center opacity-0 mb-5">
               <h2 className="text-lg sm:text-lg font-bold mb-2">
                 Hello Welcome Back!
               </h2>
@@ -465,6 +465,7 @@ const Authentication = () => {
             } 
               flex flex-col items-center justify-center bg-white`}
           >
+            {<i className={`absolute top-5 right-10 text-xl ri-admin-line`}></i>}
             <h1 className="font-semibold text-3xl text-center mb-2">Login</h1>
             {message && messageFromRegister===false&& (
               <p className="bg-red-500 text-white px-2 py-1 mb-2 w-[80%] sm:w-[60%] rounded-sm  text-xs text-center">{message}</p>

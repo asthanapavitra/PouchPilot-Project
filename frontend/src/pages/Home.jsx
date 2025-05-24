@@ -6,14 +6,17 @@ import HomeCategoriesSection from "../components/HomeCategoriesSection";
 import Footer from "../components/Footer";
 
 import CategoryDiv from "../components/CategoryDiv";
+import { useContext } from "react";
+import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
 
 const Home = () => {
+  const {isMobile}=useContext(MobileResponsivenessContext)
   const [logoPage, setLogoPage] = useState(() => {
     const hasVisited = sessionStorage.getItem("hasVisited");
     return !hasVisited;
   });
 
- 
+  
 
   // Splash animation (only runs if logoPage is true)
   useGSAP(() => {
@@ -123,7 +126,7 @@ const Home = () => {
                 {char}
               </span>
             ))}
-            {["P", "H", "E", "N", "O", "M"].map((char, index) => (
+            {["P", "A", "S", "S", "I", "O","N"].map((char, index) => (
               <span
                 key={index}
                 className={`${char === " " ? "mx-1" : ""} font-extrabold`}
@@ -144,21 +147,24 @@ const Home = () => {
           <Navbar
             logoPage={logoPage}
             isHomePage="true"
+            isMobile={isMobile}
             
           />
-          <div className="w-full pt-[65px]">
-            <div className="h-full w-full flex flex-col z-10 items-center justify-center gap-4 home-page">
+          <div className=" w-full pt-[65px]">
+            <div className=" h-full w-full flex flex-col z-10 items-center justify-center gap-4 home-page overflow-x-hidden">
               <HomeCategoriesSection categories={categories} />
               <CategoryDiv
                 category={"Bags"}
                 categories={categories}
                 isTwoDiv="true"
+                isMobile={isMobile}
                 index={0}
               />
               <CategoryDiv
                 category={"Watches"}
                 categories={categories}
                 isTwoDiv="false"
+                isMobile={isMobile}
                 index={1}
               />
               <Footer />

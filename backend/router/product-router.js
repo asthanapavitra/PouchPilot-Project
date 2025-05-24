@@ -8,124 +8,105 @@ router.get('/',productController.getAllProducts)
 
 router.post(
   '/create-product',
-  upload.fields([
-    { name: 'images'}, // Main images
-    { name: 'imageGallery' } // Additional gallery images
-  ]),
-  [
-    body('name')
-      .isLength({ min: 3 })
-      .withMessage('Product name must be at least 3 characters long'),
+  upload.fields([{ name: 'images' }]),
+   [body('name')
+    .isLength({ min: 3 })
+    .withMessage('Product name must be at least 3 characters long'),
 
-    body('shortDescription')
-      .isLength({ min: 10 })
-      .withMessage('Short description must be at least 10 characters long'),
+  body('shortDescription')
+    .isLength({ min: 10 })
+    .withMessage('Short description must be at least 10 characters long'),
 
-    body('price')
-      .isFloat({ min: 0 })
-      .withMessage('Price must be a positive number'),
+  body('price')
+    .isFloat({ min: 0 })
+    .withMessage('Price must be a positive number'),
 
-    body('discount')
-      .optional()
-      .isFloat({ min: 0, max: 100 })
-      .withMessage('Discount must be between 0 and 100'),
+  body('discount')
+    .optional()
+    .isFloat({ min: 0, max: 100 })
+    .withMessage('Discount must be between 0 and 100'),
 
-    body('stock')
-      .isInt({ min: 0 })
-      .withMessage('Stock must be a non-negative integer'),
+  body('stock')
+    .isInt({ min: 0 })
+    .withMessage('Stock must be a non-negative integer'),
 
-      body('category')
-      .custom(value => {
-        const validCategories = ['bags', 'sneakers', 'watches', 'perfumes', 'gifts', 'merchandise'];
-        if (!validCategories.includes(value.toLowerCase())) {
-          throw new Error('Invalid product category');
-        }
-        return true;
-      })
-,    
-    body('subcategory')
-      .optional()
-      .isString()
-      .withMessage('Subcategory must be a string'),
+  body('category')
+    .custom((value) => {
+      const valid = [
+        'bags', 'sneakers', 'watches', 'perfumes', 'gifts', 'merchandise'
+      ];
+      if (!valid.includes(value.toLowerCase())) {
+        throw new Error('Invalid product category');
+      }
+      return true;
+    }),
 
-   
+  body('subcategory')
+    .optional()
+    .isString()
+    .withMessage('Subcategory must be a string'),
 
-    body('color')
-      .optional()
-      .isString(),
+  body('availableSizes')
+    .optional()
+    .isArray()
+    .withMessage('availableSizes must be an array'),
 
-    body('style')
-      .optional()
-      .isString(),
+  body('tags')
+    .optional()
+    .isArray()
+    .withMessage('Tags must be an array'),
 
-    body('origin')
-      .optional()
-      .isString(),
+  body('productDetails')
+    .optional()
+    .isArray()
+    .withMessage('productDetails must be an array of bullet points'),
 
-    
+  body('emi')
+    .optional()
+    .isObject()
+    .withMessage('emi must be an object'),
 
-    body('howMade')
-      .optional()
-      .isString(),
+  body('emi.emiAvailable')
+    .optional()
+    .isBoolean()
+    .withMessage('emiAvailable must be a boolean'),
 
-    body('deliveryAndReturns')
-      .optional()
-      .isString(),
+  body('emi.noOfMonths')
+    .optional()
+    .isArray()
+    .withMessage('noOfMonths must be an array'),
 
-    body('availableColors')
-      .optional()
-      .isString(),
+  body('kids')
+    .optional()
+    .isObject()
+    .withMessage('kids must be an object'),
 
-    body('size')
-      .optional()
-      .isString(),
+  body('kids.forKids')
+    .optional()
+    .isBoolean()
+    .withMessage('forKids must be a boolean'),
 
-    body('material')
-      .optional()
-      .isString(),
+  body('kids.ageRange')
+    .optional()
+    .isString()
+    .withMessage('ageRange must be a string'),
 
-    body('fragranceNotes')
-      .optional()
-      .isString(),
-
-    body('gender')
-      .optional()
-      .isString(),
-
-    body('warranty')
-      .optional()
-      .isString(),
-
-    body('isCustomizable')
-      .optional()
-      .isBoolean()
-      .withMessage('isCustomizable must be a boolean'),
-
-    body('sustainability')
-      .optional()
-      .isString(),
-
-    body('durability')
-      .optional()
-      .isString(),
-
-    body('usage')
-      .optional()
-      .isString(),
-
-    body('storageInstructions')
-      .optional()
-      .isString(),
-
-    body('care')
-      .optional()
-      .isString(),
-
-    body('isActive')
-      .optional()
-      .isBoolean()
-      .withMessage('isActive must be a boolean'),
-  ],
+  body('material').optional().isString(),
+  body('fragranceNotes').optional().isString(),
+  body('gender').optional().isString(),
+  body('warranty').optional().isString(),
+  body('style').optional().isString(),
+  body('origin').optional().isString(),
+  body('howMade').optional().isString(),
+  body('deliveryAndReturns').optional().isString(),
+  body('sustainability').optional().isString(),
+  body('durability').optional().isString(),
+  body('usage').optional().isString(),
+  body('storageInstructions').optional().isString(),
+  body('care').optional().isString(),
+  body('isCustomizable').optional().isBoolean(),
+  body('isActive').optional().isBoolean(),
+],
   productController.createProduct
 );
 

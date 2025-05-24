@@ -8,7 +8,16 @@ module.exports.getAllProducts = async (req, res) => {
         // Convert buffer images to base64
         const formattedProducts = products.map(product => ({
             ...product._doc,
-            images: product.images.map(img => `data:${img.contentType};base64,${img.data.toString('base64')}`)
+            images: product.images.map(typecolor => 
+            (
+                {
+                  color:typecolor.color,
+                  gallery:typecolor.gallery.map(img=>`data:${img.contentType};base64,${img.data.toString('base64')}`)
+                }
+              )
+
+              
+            )
         }));
 
         return res.status(200).json({
@@ -139,7 +148,16 @@ module.exports.getProductsByCategory=async(req,res)=>{
 
         const formattedProducts = products.map(product => ({
             ...product._doc,
-            images: product.images.map(img => `data:${img.contentType};base64,${img.data.toString('base64')}`)
+            images: product.images.map(typecolor => 
+            (
+                {
+                  color:typecolor.color,
+                  gallery:typecolor.gallery.map(img=>`data:${img.contentType};base64,${img.data.toString('base64')}`)
+                }
+              )
+
+              
+            )
         }));
   
         return res.status(200).json({products:formattedProducts,message:"Products fetched successfully"});
@@ -161,7 +179,16 @@ module.exports.getProductsBySubCategory=async(req,res)=>{
 
         const formattedProducts = products.map(product => ({
             ...product._doc,
-            images: product.images.map(img => `data:${img.contentType};base64,${img.data.toString('base64')}`)
+            images: product.images.map(typecolor => 
+            (
+                {
+                  color:typecolor.color,
+                  gallery:typecolor.gallery.map(img=>`data:${img.contentType};base64,${img.data.toString('base64')}`)
+                }
+              )
+
+              
+            )
         }));
   
         return res.status(200).json({products:formattedProducts,message:"Products fetched successfully"});
@@ -180,7 +207,16 @@ module.exports.getProductById=async(req,res)=>{
         // Convert buffer images to base64
         const formattedProduct = {
             ...product._doc,
-            images: product.images.map(img => `data:${img.contentType};base64,${img.data.toString('base64')}`)
+            images: product.images.map(typecolor => 
+            (
+                {
+                  color:typecolor.color,
+                  gallery:typecolor.gallery.map(img=>`data:${img.contentType};base64,${img.data.toString('base64')}`)
+                }
+              )
+
+              
+            )
         };
         return res.status(200).json({product:formattedProduct,message:"Product fetched successfully"});
     }

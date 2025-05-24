@@ -3,8 +3,10 @@ import { UserDataContext } from "../context/UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
 const MyCart = () => {
   const { user, setUser } = useContext(UserDataContext);
+  const {isMobile}=useContext(MobileResponsivenessContext);
   const navigate = useNavigate();
   const location = useLocation();
   const cartPage = location.state?.cartPage;
@@ -37,19 +39,19 @@ const MyCart = () => {
     // navigate('/checkout', { state: { product } });
   };
   return (
-    <div className={`w-screen min-h-screen ${cartPage ? "bg-gray-100" : ""}`}>
+    <div className={`${cartPage ? "": "w-full max-w-4xl bg-white shadow-lg  rounded-2xl px-8 mt-10 py-4 md:-mt-1" }`}>
       {cartPage &&<Navbar />}
       <div
-        className={`bg-white shadow-lg rounded-2xl mt-10 pt-[70px] flex items-center flex-col justify-center ${
+        className={`pt-[60px] min-h-screen rounded-2xl mt-10  flex items-center flex-col  ${
           cartPage
-            ? "w-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32"
-            : "w-full max-w-4xl px-8 md:-mt-5"
+            ? "w-full px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 pt-[70px]"
+            : "w-full max-w-4xl px-8 md:-mt-5 "
         }`}
       >
         <h2 className="text-3xl font-bold mb-6 self-start">My Cart</h2>
 
         <div className="space-y-5">
-          {user.cart.map((product) => (
+          {user.cart.length==0?(<p className="text-md text-gray-400">No item is in the cart</p>):user.cart.map((product) => (
             <div
               key={product._id}
               className={`flex flex-col sm:flex-row items-start gap-6 border-b-2 border-gray-300 pb-6 ${

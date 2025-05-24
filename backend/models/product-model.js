@@ -12,15 +12,6 @@ const productSchema = mongoose.Schema({
       ],
     },
   ],
-
-  // ✅ New imageGallery field
-  imageGallery: [
-    {
-      data: Buffer,
-      contentType: String,
-    },
-  ],
-
   name: {
     type: String,
     required: true,
@@ -29,6 +20,18 @@ const productSchema = mongoose.Schema({
   shortDescription: {
     type: String,
     required: true,
+  },
+  emi: {
+    emiAvailable:{
+      type:Boolean,
+      default:false
+    }, 
+    noOfMonths: [
+      {
+        type: Number,
+        min: 3,
+      },
+    ],
   },
   price: {
     type: Number,
@@ -61,14 +64,16 @@ const productSchema = mongoose.Schema({
   deliveryAndReturns: String,
 
   // Optional attributes based on category
-  availableColors: [String],
   availableSizes: [String],
   material: String,
   fragranceNotes: String,
   gender: String,
   warranty: String,
   isCustomizable: Boolean,
-
+  kids: {
+    forKids: Boolean,
+    ageRange: String,
+  },
   // Additional product metadata
   rating: Number,
   sustainability: String,

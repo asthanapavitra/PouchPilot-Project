@@ -5,6 +5,7 @@ const UserContext = ({children}) => {
     const [user, setUser] = useState({
 
     })
+    
   return <div>
     <UserDataContext.Provider value={{user,setUser}}>
         {children}

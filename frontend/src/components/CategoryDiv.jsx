@@ -23,16 +23,17 @@ const CategoryDiv = (props) => {
                 console.log(err);
             }
         }
-        fetchProducts();
+        if(products.length==0)fetchProducts();
        
     },[products])
   return (
     
-        <div className="h-full w-full" key={props.index}>
+        <div className="h-full w-full " key={props.index}>
           <div className="w-full h-full">
             {/* Video Section */}
             <VideoContentCard align={props.index%2==0?"left":"right"}
               videoSrc={"/videoplayback.mp4"}
+              isMobile={props.isMobile}
               highlight={{
                 heading: "Discover the Latest Trends",
                 description:
@@ -40,7 +41,7 @@ const CategoryDiv = (props) => {
               }}
             />
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full px-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10">  
             {products.length>0 && products.map((product,index)=>{
               return ( <ProductsCard product={product} key={index} />)
               
@@ -50,7 +51,7 @@ const CategoryDiv = (props) => {
              
             </div>
           </div>
-          {props.isTwoDiv==="true"?<TwoVideoCard videoSrc={"/videoplayback.mp4"}/>:""}
+          {props.isTwoDiv==="true"?<TwoVideoCard isMobile={props.isMobile} videoSrc={"/videoplayback.mp4"}/>:""}
         </div>
       
   )

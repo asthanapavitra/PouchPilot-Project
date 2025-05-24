@@ -1,16 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useRef } from "react";
 import Navbar from "../components/Navbar";
 import { UserDataContext } from "../context/UserContext";
 import axios from "axios";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import { useNavigate } from "react-router-dom";
 import MyCart from "./MyCart";
+import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
 const UserProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const { user, setUser } = useContext(UserDataContext);
+  const {isMobile}=useContext(MobileResponsivenessContext);
+  const [showSidebar,setShowSidebar]=useState(false);
   const navigate = useNavigate();
+  
   const [editableUser, setEditableUser] = useState({
     fullName: { ...user.fullName },
     address: [...user.address],
@@ -18,6 +23,42 @@ const UserProfilePage = () => {
     picture: user.picture ? user.picture : null,
     pictureFile: null, // For storing the uploaded file
   });
+  // also add these
+
+const sidebarRef = useRef(null);
+
+useGSAP(
+  () => {
+     if (!isMobile) {
+      // Skip animation on large screens
+      gsap.set(sidebarRef.current, { x: "0%", display: "block" });
+      return;
+    }
+    if (showSidebar) {
+      gsap.fromTo(
+        sidebarRef.current,
+        { x: "-100%" },
+        {
+          x: "0%",
+          duration: 0.5,
+          ease: "power3.out",
+          display: "block",
+        }
+      );
+    } else {
+      gsap.to(sidebarRef.current, {
+        x: "-100%",
+        duration: 0.5,
+        ease: "power3.in",
+        onComplete: () => {
+          gsap.set(sidebarRef.current, { display: "none" });
+        },
+      });
+    }
+  },
+  { dependencies: [showSidebar] }
+);
+
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
@@ -86,42 +127,51 @@ const UserProfilePage = () => {
     }
   };
   return (
-    <div className="w-screen min-h-screen ">
+    <div className="w-screen min-h-screen overflow-x-hidden">
       <Navbar
+       setShowSidebar={setShowSidebar}
+       showSidebar={showSidebar}
         username={
           user.fullName.firstName != "Unknown"
             ? user.fullName.firstName
             : user.userName
         }
       />
-      <div className="min-h-screen flex bg-white text-black w-screen justify-between pt-[80px]  gap-10">
+      <div className={`min-h-screen relative flex bg-white text-black w-screen justify-between ${isMobile?"pt-[55px]":"pt-[80px] "} gap-10`}>
         {/* Sidebar */}
-        <div className="w-[30%] md:w-[15%] bg-white text-black p-6 flex h-screen flex-col items-center shadow-xl">
+        {<div  ref={sidebarRef} className={`min-h-screen ${isMobile? "absolute": "w-[20%]" } bg-white text-black p-6 flex flex-col justify-center items-center shadow-xl`}>
+          
           <img
           onClick={() => {
             setActiveTab("profile");
+            
           }}
             src={user.picture ? user.picture : "/default-profile-pic.png"}
             alt="Profile"
-            className="w-24 h-24 rounded-full object-cover mb-4"
+            className="w-24 h-24 rounded-full object-cover mb-4 ml-[50%] -translate-x-1/2 "
           />
           <h2
             onClick={() => {
               setActiveTab("profile");
+             
             }}
-            className="text-xl font-semibold mb-6 cursor-pointer"
+            className="text-xl font-semibold mb-6 cursor-pointer text-center"
           >
             {user.fullName.firstName}
           </h2>
           <nav className="flex flex-col gap-3 items-center w-full">
             <button
-              onClick={() => setActiveTab("orders")}
+              onClick={() => {setActiveTab("orders")
+              
+              }}
               className="text-left hover:text-gray-700 cursor-pointer"
             >
               My Orders
             </button>
             <button
-              onClick={() => setActiveTab("cart")}
+              onClick={() => {setActiveTab("cart")
+                
+              }}
               className="text-left hover:text-gray-700 cursor-pointer"
             >
               My Cart
@@ -133,10 +183,13 @@ const UserProfilePage = () => {
               Logout
             </button>
           </nav>
-        </div>
+        </div>}
 
         {/* Main Content */}
-        <div className="flex w-[85%] bg-white px-8">
+        <div className="flex w-[100%] min-h-screen bg-white md:px-8 px-2"
+        onClick={()=>{
+          showSidebar && setShowSidebar(false)
+        }}>
           {activeTab === "profile" && (
             <div className="w-full max-w-4xl bg-white shadow-lg  rounded-2xl px-8 mt-10 py-4 md:-mt-1">
               {/* Profile Header */}
@@ -230,7 +283,7 @@ const UserProfilePage = () => {
           )}
 
           {activeTab === "cart" && (
-            <MyCart/>
+            <MyCart cartPage="true"/>
           )}
 
           {activeTab === "update-profile" && (

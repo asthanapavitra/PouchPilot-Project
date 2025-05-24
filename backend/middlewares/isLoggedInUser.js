@@ -41,10 +41,16 @@ module.exports.isLoggedIn = async (req, res, next) => {
     if (user.cart && Array.isArray(user.cart)) {
       formattedUser.cart = user.cart.map((product) => ({
         ...product._doc,
-        images: product.images.map(
-          (img) =>
-            `data:${img.contentType};base64,${img.data.toString("base64")}`
-        ),
+         images: product.images.map(typecolor => 
+            (
+                {
+                  color:typecolor.color,
+                  gallery:typecolor.gallery.map(img=>`data:${img.contentType};base64,${img.data.toString('base64')}`)
+                }
+              )
+
+              
+            )
       }));
     }
 

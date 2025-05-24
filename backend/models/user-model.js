@@ -44,8 +44,14 @@ const userSchema = new mongoose.Schema({
   ],
   orders: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "product",
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "product",
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
     },
   ],
   address: [
