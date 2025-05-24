@@ -6,17 +6,89 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from 'axios'
 const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const location = useLocation();
   const product = location.state?.product;
-  
+  const navigate=useNavigate();
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupProgress, setPopupProgress] = useState(100);
+  const showPopupMessage = (message) => {
+  setPopupMessage(message);
+  setPopupProgress(100);
+  setShowPopup(true);
+
+  let width = 100;
+  const interval = setInterval(() => {
+    width -= 1;
+    setPopupProgress(width);
+    if (width <= 0) {
+      setShowPopup(false);
+      clearInterval(interval);
+    }
+  }, 25); // ~2.5 seconds
+};
+  const handleShopNow=async()=>{
+    try {
+      let response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/users/add-to-cart/${product._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        showPopupMessage("Item added to cart successfully! \n Click here to buy item" )
+      }
+    } catch (err) {
+      if (err.response) {
+        console.error("Error Response:", err.response.data); // Log full error response
+        console.error("Status:", err.response.status); // Log the status code
+
+        // Handle errors based on status codes
+        if(err.response.status===401){
+          console.error("Unauthorized access. Please log in.");
+          alert("Unauthorized access. Please log in.");
+          navigate("/authenticate"); // Redirect to login page
+          return;
+        }
+        if (err.response.status === 400) {
+          const errorMessages = err.response.data.errors
+            ?.map((error) => error.message)
+            .join("\n");
+          console.log(errorMessages);
+          alert(errorMessages); // Show error messages to the user
+        }
+      } else {
+        console.error("Error:", err.message); // Log network or other errors
+      }
+    }
+  }
 
   return (
-    <div className="w-full min-h-screen bg-white text-black overflow-hidden">
+    <div className="w-full min-h-screen bg-white text-black overflow-hidden relative">
       <Navbar />
+      {showPopup && (
+        
+        <div className="asbolute top-[75px] right-[5%] w-full  flex justify-center mt-2 z-50" onClick={()=>{
+          if(popupMessage.includes("Click here to buy item")) {
+            navigate("/my-cart")// Redirect to cart page
+          }
+        }}>
+           
+          <div className="fixed top-[70px] z-999 bg-blue-100 text-black-900 px-6 py-4 rounded shadow-md text-center w-[90%] max-w-xl">
+            <div
+              className=" left-0 h-1 bg-blue-500 rounded-t"
+              style={{ width: `${popupProgress}%` }}
+            />
+            <span className="block font-medium">{popupMessage}</span>
+          </div>
+        </div>
+      )}
       <div className="w-full h-full pt-[65px]">
         <div className="relative h-full max-w-8xl mx-auto py-10 px-6 md:px-10 flex flex-col md:flex-row items-center md:items-start gap-12 backdrop-blur-md">
           <div className="w-full md:w-1/2 block sticky top-[65px] z-10">
@@ -65,7 +137,7 @@ const ProductDetails = () => {
             )}
 
             <div className="flex gap-4 pt-4">
-              <button className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition">
+              <button className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition" onClick={handleShopNow}>
                 Shop Now
               </button>
               <button className="border border-black text-black px-6 py-2 rounded-lg hover:bg-black hover:text-white transition">

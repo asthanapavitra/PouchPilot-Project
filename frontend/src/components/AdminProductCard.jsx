@@ -16,7 +16,7 @@ const handleDeleteProduct=async()=>{
     `${import.meta.env.VITE_BASE_URL}/products/delete-product/${product._id}`,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
     }
   );

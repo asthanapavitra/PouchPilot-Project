@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import axios from "axios";
 import { UserDataContext } from "../context/UserContext";
-import { AdminDataContext } from "../context/AdminContext";
+
 
 const Authentication = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+
   const blueRef = useRef(null);
   const loginRef = useRef(null);
   const registerForm = useRef(null);
@@ -25,15 +26,14 @@ const Authentication = () => {
   const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-  const {setUser} = useContext(UserDataContext);
- 
+  const { setUser } = useContext(UserDataContext);
 
   const [message, setMessage] = useState("");
-  const [messageFromRegister,setMessageFromRegister]=useState(null);
-  const[registrationDone,setRegistrationDone]=useState(false);
+  const [messageFromRegister, setMessageFromRegister] = useState(null);
+  const [registrationDone, setRegistrationDone] = useState(false);
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <=540);
+      setIsMobile(window.innerWidth <= 540);
     };
 
     window.addEventListener("resize", handleResize);
@@ -157,7 +157,7 @@ const Authentication = () => {
         });
 
         tl.to(blueRef.current, {
-          translateX: window.innerWidth<800?"-55%":"-60%",
+          translateX: window.innerWidth < 800 ? "-55%" : "-60%",
           duration: 0.4,
           borderRadius: "90px",
         });
@@ -229,8 +229,6 @@ const Authentication = () => {
       password: registerPassword,
     };
 
-    
-
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/users/register`,
@@ -245,9 +243,9 @@ const Authentication = () => {
         setRegistrationDone(true);
         setTimeout(() => {
           setMessage("");
-          setMessageFromRegister(null)
+          setMessageFromRegister(null);
           setRegistrationDone(false);
-      }, 15000);
+        }, 15000);
       }
     } catch (err) {
       // Check if error response exists
@@ -257,14 +255,16 @@ const Authentication = () => {
 
         // Handle errors based on status codes
         if (err.response.status === 400 || err.response.status === 401) {
-          const errorMessages = err.response.data.errors?.map((error) => error.message).join("\n");
-          console.log(errorMessages)
+          const errorMessages = err.response.data.errors
+            ?.map((error) => error.message)
+            .join("\n");
+          console.log(errorMessages);
           setMessage(errorMessages || "An error occurred.");
           setMessageFromRegister(true);
           setTimeout(() => {
             setMessage("");
-            setMessageFromRegister(null)
-        }, 15000);
+            setMessageFromRegister(null);
+          }, 15000);
         }
       } else {
         console.error("Error:", err.message); // Log network or other errors
@@ -281,30 +281,37 @@ const Authentication = () => {
 
     try {
       let response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/users/login`,
-          userData
-        );
-      
+        `${import.meta.env.VITE_BASE_URL}/users/login`,
+        userData
+      );
+
       if (response.status === 200) {
         const data = response.data;
         localStorage.setItem("token", data.token);
-        setUser(data.user)
-
-        navigate('/profile');
+        setUser(data.user);
+       window.history.back();
+        
       }
     } catch (err) {
       // Check if error response exists
       if (err.response) {
         // Handle errors based on status codes
-        if (err.response.status === 400 || err.response.status === 401||err.response.status==500||err.response.status==503) {
-          const errorMessages = err.response.data.errors?.map((error) => error.message).join("\n");
-          console.log(errorMessages)
+        if (
+          err.response.status === 400 ||
+          err.response.status === 401 ||
+          err.response.status == 500 ||
+          err.response.status == 503
+        ) {
+          const errorMessages = err.response.data.errors
+            ?.map((error) => error.message)
+            .join("\n");
+          console.log(errorMessages);
           setMessage(errorMessages || "An error occurred.");
           setMessageFromRegister(false);
           setTimeout(() => {
             setMessage("");
-            setMessageFromRegister(null)
-        }, 15000);
+            setMessageFromRegister(null);
+          }, 15000);
         }
       } else {
         console.error("Error:", err.message); // Log network or other errors
@@ -328,21 +335,29 @@ const Authentication = () => {
           <div
             ref={registerForm}
             className={`${
-              
               isMobile ? "h-[90%] w-full mt-5" : "w-[60%] -mt-10  h-full "
-             
-            } ${ window.innerWidth>=1024 ? "absolute top-[20%] ":""} relative flex flex-col self-center  items-center justify-start z-10`}
+            } ${
+              window.innerWidth >= 1024 ? "absolute top-[20%] " : ""
+            } relative flex flex-col self-center  items-center justify-start z-10`}
           >
             <h1 className="font-semibold w-[90%] lg:w-[75%] text-3xl text-center mb-3">
               Registration
             </h1>
-            {message && messageFromRegister==true && (
-              <p className={`${registrationDone===true?"bg-blue-500":"bg-red-500"} text-white px-2 py-1 mb-2 w-[80%] sm:w-[60%] rounded-sm  text-xs text-center`}>{message}</p>
+            {message && messageFromRegister == true && (
+              <p
+                className={`${
+                  registrationDone === true ? "bg-blue-500" : "bg-red-500"
+                } text-white px-2 py-1 mb-2 w-[80%] sm:w-[60%] rounded-sm  text-xs text-center`}
+              >
+                {message}
+              </p>
             )}{" "}
             {/* Error Message for Register */}
             <form
               onSubmit={handleRegisterForm}
-              className={`flex  flex-col  w-[90%] md:w-[70%] lg:w-[85%] ${ window.innerWidth>=1024 ? "mt-2 gap-2 ":"mt-5 gap-4"}`}
+              className={`flex  flex-col  w-[90%] md:w-[70%] lg:w-[85%] ${
+                window.innerWidth >= 1024 ? "mt-2 gap-2 " : "mt-5 gap-4"
+              }`}
             >
               <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2">
                 <input
@@ -385,11 +400,15 @@ const Authentication = () => {
               </div>
               <div className="flex gap-1 mt-1 items-center ml-1 ">
                 <input type="checkbox" name="" id="" required />
-                <p className="text-xs text-gray-400 tracking-tighter  mt-1  ">Subscribe to recieve StarPhenom email</p>
+                <p className="text-xs text-gray-400 tracking-tighter  mt-1  ">
+                  Subscribe to recieve StarPhenom email
+                </p>
               </div>
               <div className="flex gap-1  items-center ml-1 ">
                 <input type="checkbox" name="" id="" required />
-                <p className="text-xs text-gray-400 tracking-tighter">I have read, understood and agree to the privacy policy</p>
+                <p className="text-xs text-gray-400 tracking-tighter">
+                  I have read, understood and agree to the privacy policy
+                </p>
               </div>
               <button
                 type="submit"
@@ -424,7 +443,11 @@ const Authentication = () => {
               } z-10`}
           >
             <div ref={registerText} className="text-center">
-              <h2 className={`text-xl md:text-2xl font-bold mb-2 ${isMobile ?"mt-4":"" }` }>
+              <h2
+                className={`text-xl md:text-2xl font-bold mb-2 ${
+                  isMobile ? "mt-4" : ""
+                }`}
+              >
                 Welcome Back!
               </h2>
               <p className="text-xs">Already have an account?</p>
@@ -465,17 +488,22 @@ const Authentication = () => {
             } 
               flex flex-col items-center justify-center bg-white`}
           >
-            {<i className={`absolute top-5 right-10 text-xl ri-admin-line`}></i>}
+            {
+              <i
+                className={`absolute top-5 right-10 text-xl ri-admin-line`}
+              ></i>
+            }
             <h1 className="font-semibold text-3xl text-center mb-2">Login</h1>
-            {message && messageFromRegister===false&& (
-              <p className="bg-red-500 text-white px-2 py-1 mb-2 w-[80%] sm:w-[60%] rounded-sm  text-xs text-center">{message}</p>
+            {message && messageFromRegister === false && (
+              <p className="bg-red-500 text-white px-2 py-1 mb-2 w-[80%] sm:w-[60%] rounded-sm  text-xs text-center">
+                {message}
+              </p>
             )}{" "}
             {/* Error Message for Login */}
             <form
               onSubmit={handleLoginForm}
               className="flex flex-col gap-2 w-[90%] lg:w-[75%]"
             >
-            
               <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2">
                 {/* Role Selection */}
 

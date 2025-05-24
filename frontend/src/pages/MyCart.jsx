@@ -35,8 +35,9 @@ const MyCart = () => {
   };
 
   const handleBuyNow = (product) => {
-    // Replace with your real logic (e.g., go to payment page with product)
-    // navigate('/checkout', { state: { product } });
+    navigate(`/purchase`,{
+      state: { product}
+    })
   };
   return (
     <div className={`${cartPage ? "": "w-full max-w-4xl bg-white shadow-lg  rounded-2xl px-8 mt-10 py-4 md:-mt-1" }`}>

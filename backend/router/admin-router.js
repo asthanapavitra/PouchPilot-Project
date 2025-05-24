@@ -18,8 +18,7 @@ router.post('/register',
     adminController.registerAdmin
 )
 router.post('/login',
-    body('identifier')
-            .notEmpty().withMessage("Please enter email or username"),
+    body('email').isEmail().withMessage("Please enter email or username"),
     body('password').isLength({min:6}),
     adminController.loginAdmin
 )

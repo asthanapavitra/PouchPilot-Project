@@ -3,7 +3,7 @@ const router = express.Router();
 const productController = require("../controllers/product-controller");
 const { body } = require("express-validator");
 const upload = require("../config/multer-config");
-
+const isAdminLoggedIn=require("../middlewares/isLoggedInAdmin").isLoggedIn
 function parseJsonFields(req, res, next) {
   const jsonFields = [
     "tags",
@@ -134,6 +134,7 @@ router.post(
     body("isCustomizable").optional().isBoolean(),
     body("isActive").optional().isBoolean(),
   ],
+  isAdminLoggedIn,
   productController.createProduct
 );
 
@@ -234,13 +235,14 @@ router.put("/update-product/:id",upload.fields([{ name: "images" }]),
     body("care").optional().isString(),
     body("isCustomizable").optional().isBoolean(),
     body("isActive").optional().isBoolean(),
-  ],productController.updateProduct)
+  ],isAdminLoggedIn,productController.updateProduct)
 router.get(
   "/get-products-by-category/:category",
   productController.getProductsByCategory
 );
 router.delete(
   "/delete-product/:id",
+  isAdminLoggedIn,
   productController.deleteProduct
 );
 router.get(

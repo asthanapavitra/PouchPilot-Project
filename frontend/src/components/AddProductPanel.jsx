@@ -259,8 +259,11 @@ const handleProductDetailsChange = (e) => {
 }
 
   try {
+    
     const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/products/create-product`, form, {
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: { 
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        "Content-Type": "multipart/form-data" },
     });
     if(res.status==201)
       console.log("Product submitted", res.data);

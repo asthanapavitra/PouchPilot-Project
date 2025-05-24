@@ -1,7 +1,7 @@
 import AdminDashboard from "../components/AdminDashboard";
 import AdminOrdersPage from "../components/AdminOrdersPage";
 import AdminProductsPanel from "../components/AdminProductsPanel";
-
+import axios from 'axios'
 import React, { useContext, useRef, useState } from "react";
 import {
   LayoutDashboard,
@@ -23,6 +23,7 @@ import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
 import AddProductPanel from "../components/AddProductPanel";
 import UpdateProductPanel from "../components/UpdateProductPanel";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   {
@@ -106,6 +107,7 @@ const Admin = () => {
   const sidebarRef = useRef();
   const [product, setProduct] = useState(null);
   const backdropRef = useRef();
+  const navigate=useNavigate();
   useGSAP(() => {
     if (sidebarOpen) {
       gsap.to(sidebarRef.current, { x: 0, duration: 0.3, ease: "power2.out" });
@@ -127,7 +129,24 @@ const Admin = () => {
       });
     }
   }, [sidebarOpen]);
-
+  const handleLogout=async()=>{
+    try{
+      const res=await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/logout`,{
+        headers:{
+           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        }
+      })
+      if(res.status===200){
+        localStorage.removeItem("adminToken"
+        );
+        navigate("/admin-login");
+        alert("Logged out successfully");
+      }
+    }catch(err){
+      console.log(err);
+      alert("An error occured while logging out, Please try again later ");
+    }
+  }
   const renderMainPanel = () => {
     if (activeView === "dashboard") return <AdminDashboard />;
     if (activeView === "orders") return <AdminOrdersPage />;
@@ -255,7 +274,7 @@ const Admin = () => {
 
           <button
             onClick={() => {
-              // logout logic
+              handleLogout();
             }}
             className="flex items-center w-full px-3 py-2 mt-4  rounded text-red-600 hover:bg-red-100"
           >

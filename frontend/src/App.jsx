@@ -11,7 +11,10 @@ import AdminPanel from './pages/AdminPanel'
 import MyCart from './pages/MyCart'
 import Admin from './pages/Admin'
 import PaymentPage from './pages/PaymentPage'
-import UpdateProductPanel from './components/UpdateProductPanel'
+
+import AdminLogin from './pages/AdminLogin'
+import AdminProtectedWrapper from './pages/AdminProtectedWrapper'
+
 const App = () => {
   return (
    <Routes>
@@ -20,13 +23,13 @@ const App = () => {
       <Route path='/product-details/:productId' element={<ProductDetails/>}/>
       <Route path='/product-subcategory/:subCategory' element={<SubCategoryProducts/>}/>
       <Route path='/profile' element={<UserProtectedWrapper><UserProfile/></UserProtectedWrapper>}/>
-      <Route path='/add-product' element={<AdminPanel/>}/>
+      
       <Route path='/my-cart' element={
         <UserProtectedWrapper><MyCart/></UserProtectedWrapper>
       }/>
       <Route path='/purchase' element={<PaymentPage/>}/>
-      <Route path='/admin' element={<Admin/>}/>
-     
+      <Route path='/admin' element={<AdminProtectedWrapper><Admin/></AdminProtectedWrapper> }/>
+     <Route path='/admin-login' element={<AdminLogin/>}/>
    </Routes>
   )
 }

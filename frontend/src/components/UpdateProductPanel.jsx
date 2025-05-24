@@ -286,7 +286,9 @@ const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
         }`,
         form,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { 
+             Authorization: `Bearer ${localStorage.getItem("adminToken")}`
+            ,"Content-Type": "multipart/form-data" },
         }
       );
       if (res.status === 201) {

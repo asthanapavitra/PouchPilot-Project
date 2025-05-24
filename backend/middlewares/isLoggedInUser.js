@@ -4,7 +4,7 @@ const User = require("../models/user-model");
 module.exports.isLoggedIn = async (req, res, next) => {
   try {
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
-    if (!token) {
+    if (token==="null" || token==undefined) {
       return res.status(401).json({ error: "Unauthorized, please login" });
     }
 
@@ -57,6 +57,7 @@ module.exports.isLoggedIn = async (req, res, next) => {
     req.user = formattedUser;
     next();
   } catch (err) {
+   
     return res
       .status(500)
       .json({ error: "Internal server error", message: err.message });
