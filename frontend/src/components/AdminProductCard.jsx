@@ -1,11 +1,40 @@
 import React, { useState } from "react";
-
-const AdminProductCard = ({ product }) => {
+import axios from "axios"
+import { Link } from "react-router-dom";
+const AdminProductCard = ({ product ,setProduct,setProducts,setActiveView}) => {
   const [colorIndex, setColorIndex] = useState(0);
   const [imgIndex, setImgIndex] = useState(0);
 
   const currentGallery = product.images?.[colorIndex]?.gallery || [];
+const handleDeleteProduct=async()=>{
+  try {
+  const confirmDelete = window.confirm("Are you sure you want to delete this product? This action cannot be undone.");
+  
+  if (!confirmDelete) return; // User clicked 'Cancel', so exit the function.
 
+  const response = await axios.delete(
+    `${import.meta.env.VITE_BASE_URL}/products/delete-product/${product._id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+
+  if (response.status === 201) {
+    setProducts((prev) => {
+      const updatedProducts = prev.filter((p) => p._id !== product._id);
+      return updatedProducts;
+    });
+    alert("Product deleted successfully");
+  }
+
+
+  }catch(err){
+    console.error("Error deleting product:", err);
+  alert("Failed to delete product. Please try again later.");
+  }
+}
   const nextImage = () => {
     if (imgIndex === currentGallery.length - 1) {
       setImgIndex(0);
@@ -62,7 +91,7 @@ const AdminProductCard = ({ product }) => {
 
       {/* Product Info */}
       <h3 className="font-semibold text-lg">{product.name}</h3>
-      <p className="text-sm text-gray-600 mb-2">{product.shortDescription}</p>
+      
       <div className="text-md font-medium mb-2">
         ₹{product.price}{" "}
         {product.discount > 0 && (
@@ -74,10 +103,15 @@ const AdminProductCard = ({ product }) => {
 
       {/* Actions */}
       <div className="flex gap-2 mt-3">
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm">
+       
+        <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm" onClick={()=>{setActiveView("update-product");
+          setProduct(product)
+        }}>
           Update Product
         </button>
-        <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm">
+        
+        <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+        onClick={handleDeleteProduct}>
           Delete Product
         </button>
       </div>

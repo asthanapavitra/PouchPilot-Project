@@ -11,6 +11,7 @@ import AdminPanel from './pages/AdminPanel'
 import MyCart from './pages/MyCart'
 import Admin from './pages/Admin'
 import PaymentPage from './pages/PaymentPage'
+import UpdateProductPanel from './components/UpdateProductPanel'
 const App = () => {
   return (
    <Routes>
@@ -25,6 +26,7 @@ const App = () => {
       }/>
       <Route path='/purchase' element={<PaymentPage/>}/>
       <Route path='/admin' element={<Admin/>}/>
+     
    </Routes>
   )
 }

@@ -1,116 +1,251 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const productController = require('../controllers/product-controller');
-const { body } = require('express-validator');
-const upload = require('../config/multer-config');
+const productController = require("../controllers/product-controller");
+const { body } = require("express-validator");
+const upload = require("../config/multer-config");
 
-router.get('/',productController.getAllProducts)
+function parseJsonFields(req, res, next) {
+  const jsonFields = [
+    "tags",
+    "productDetails",
+    "emi",
+    "kids",
+    "availableSizes",
+  ];
+
+  jsonFields.forEach((field) => {
+    if (
+      req.body[field] &&
+      typeof req.body[field] === "string" &&
+      req.body[field].trim() !== ""
+    ) {
+      try {
+        req.body[field] = JSON.parse(req.body[field]);
+      } catch (err) {
+        // optionally log or ignore
+        console.error(`Error parsing JSON for field ${field}:`, err.message);
+      }
+    }
+  });
+
+  next();
+}
+
+router.get("/", productController.getAllProducts);
 
 router.post(
-  '/create-product',
-  upload.fields([{ name: 'images' }]),
-   [body('name')
-    .isLength({ min: 3 })
-    .withMessage('Product name must be at least 3 characters long'),
+  "/create-product",
 
-  body('shortDescription')
-    .isLength({ min: 10 })
-    .withMessage('Short description must be at least 10 characters long'),
+  upload.fields([{ name: "images" }]),
+  parseJsonFields,
+  [
+    body("name")
+      .isLength({ min: 3 })
+      .withMessage("Product name must be at least 3 characters long"),
 
-  body('price')
-    .isFloat({ min: 0 })
-    .withMessage('Price must be a positive number'),
+    body("shortDescription")
+      .isLength({ min: 10 })
+      .withMessage("Short description must be at least 10 characters long"),
 
-  body('discount')
-    .optional()
-    .isFloat({ min: 0, max: 100 })
-    .withMessage('Discount must be between 0 and 100'),
+    body("price")
+      .isFloat({ min: 0 })
+      .withMessage("Price must be a positive number"),
 
-  body('stock')
-    .isInt({ min: 0 })
-    .withMessage('Stock must be a non-negative integer'),
+    body("discount")
+      .optional()
+      .isFloat({ min: 0, max: 100 })
+      .withMessage("Discount must be between 0 and 100"),
 
-  body('category')
-    .custom((value) => {
-      const valid = [
-        'bags', 'sneakers', 'watches', 'perfumes', 'gifts', 'merchandise'
-      ];
-      if (!valid.includes(value.toLowerCase())) {
-        throw new Error('Invalid product category');
-      }
-      return true;
-    }),
+    body("stock")
+      .isInt({ min: 0 })
+      .withMessage("Stock must be a non-negative integer"),
 
-  body('subcategory')
-    .optional()
-    .isString()
-    .withMessage('Subcategory must be a string'),
+    body("category")
+      .trim()
+      .toLowerCase()
+      .custom((value) => {
+        const valid = [
+          "bags",
+          "sneakers",
+          "watches",
+          "perfumes",
+          "gifts",
+          "merchandise",
+        ];
+        if (!valid.includes(value)) {
+          throw new Error("Invalid product category");
+        }
+        return true;
+      }),
+    body("subcategory")
+      .optional()
+      .isString()
+      .withMessage("Subcategory must be a string"),
 
-  body('availableSizes')
-    .optional()
-    .isArray()
-    .withMessage('availableSizes must be an array'),
+    body("availableSizes")
+      .optional()
+      .isArray()
+      .withMessage("availableSizes must be an array"),
 
-  body('tags')
-    .optional()
-    .isArray()
-    .withMessage('Tags must be an array'),
+    body("tags").optional().isArray().withMessage("Tags must be an array"),
 
-  body('productDetails')
-    .optional()
-    .isArray()
-    .withMessage('productDetails must be an array of bullet points'),
+    body("productDetails")
+      .optional()
+      .isArray()
+      .withMessage("productDetails must be an array of bullet points"),
 
-  body('emi')
-    .optional()
-    .isObject()
-    .withMessage('emi must be an object'),
+    body("emi").optional().isObject().withMessage("emi must be an object"),
 
-  body('emi.emiAvailable')
-    .optional()
-    .isBoolean()
-    .withMessage('emiAvailable must be a boolean'),
+    body("emi.emiAvailable")
+      .optional()
+      .isBoolean()
+      .withMessage("emiAvailable must be a boolean"),
 
-  body('emi.noOfMonths')
-    .optional()
-    .isArray()
-    .withMessage('noOfMonths must be an array'),
+    body("emi.noOfMonths")
+      .optional()
+      .isArray()
+      .withMessage("noOfMonths must be an array"),
 
-  body('kids')
-    .optional()
-    .isObject()
-    .withMessage('kids must be an object'),
+    body("kids").optional().isObject().withMessage("kids must be an object"),
 
-  body('kids.forKids')
-    .optional()
-    .isBoolean()
-    .withMessage('forKids must be a boolean'),
+    body("kids.forKids")
+      .optional()
+      .isBoolean()
+      .withMessage("forKids must be a boolean"),
 
-  body('kids.ageRange')
-    .optional()
-    .isString()
-    .withMessage('ageRange must be a string'),
+    body("kids.ageRange")
+      .optional()
+      .isString()
+      .withMessage("ageRange must be a string"),
 
-  body('material').optional().isString(),
-  body('fragranceNotes').optional().isString(),
-  body('gender').optional().isString(),
-  body('warranty').optional().isString(),
-  body('style').optional().isString(),
-  body('origin').optional().isString(),
-  body('howMade').optional().isString(),
-  body('deliveryAndReturns').optional().isString(),
-  body('sustainability').optional().isString(),
-  body('durability').optional().isString(),
-  body('usage').optional().isString(),
-  body('storageInstructions').optional().isString(),
-  body('care').optional().isString(),
-  body('isCustomizable').optional().isBoolean(),
-  body('isActive').optional().isBoolean(),
-],
+    body("material").optional().isString(),
+    body("fragranceNotes").optional().isString(),
+    body("gender").optional().isString(),
+    body("warranty").optional().isString(),
+    body("style").optional().isString(),
+    body("origin").optional().isString(),
+    body("howMade").optional().isString(),
+    body("deliveryAndReturns").optional().isString(),
+    body("sustainability").optional().isString(),
+    body("durability").optional().isString(),
+    body("usage").optional().isString(),
+    body("storageInstructions").optional().isString(),
+    body("care").optional().isString(),
+    body("isCustomizable").optional().isBoolean(),
+    body("isActive").optional().isBoolean(),
+  ],
   productController.createProduct
 );
 
-router.get('/get-products-by-category/:category',productController.getProductsByCategory);
-router.get('/get-products-by-subcategory/:subCategory',productController.getProductsBySubCategory);
-router.get('/get-product-by-id/:id', productController.getProductById);
+router.put("/update-product/:id",upload.fields([{ name: "images" }]),
+  parseJsonFields,
+  [
+    body("name")
+      .isLength({ min: 3 })
+      .withMessage("Product name must be at least 3 characters long"),
+
+    body("shortDescription")
+      .isLength({ min: 10 })
+      .withMessage("Short description must be at least 10 characters long"),
+
+    body("price")
+      .isFloat({ min: 0 })
+      .withMessage("Price must be a positive number"),
+
+    body("discount")
+      .optional()
+      .isFloat({ min: 0, max: 100 })
+      .withMessage("Discount must be between 0 and 100"),
+
+    body("stock")
+      .isInt({ min: 0 })
+      .withMessage("Stock must be a non-negative integer"),
+
+    body("category")
+      .trim()
+      .toLowerCase()
+      .custom((value) => {
+        const valid = [
+          "bags",
+          "sneakers",
+          "watches",
+          "perfumes",
+          "gifts",
+          "merchandise",
+        ];
+        if (!valid.includes(value)) {
+          throw new Error("Invalid product category");
+        }
+        return true;
+      }),
+    body("subcategory")
+      .optional()
+      .isString()
+      .withMessage("Subcategory must be a string"),
+
+    body("availableSizes")
+      .optional()
+      .isArray()
+      .withMessage("availableSizes must be an array"),
+
+    body("tags").optional().isArray().withMessage("Tags must be an array"),
+
+    body("productDetails")
+      .optional()
+      .isArray()
+      .withMessage("productDetails must be an array of bullet points"),
+
+    body("emi").optional().isObject().withMessage("emi must be an object"),
+
+    body("emi.emiAvailable")
+      .optional()
+      .isBoolean()
+      .withMessage("emiAvailable must be a boolean"),
+
+    body("emi.noOfMonths")
+      .optional()
+      .isArray()
+      .withMessage("noOfMonths must be an array"),
+
+    body("kids").optional().isObject().withMessage("kids must be an object"),
+
+    body("kids.forKids")
+      .optional()
+      .isBoolean()
+      .withMessage("forKids must be a boolean"),
+
+    body("kids.ageRange")
+      .optional()
+      .isString()
+      .withMessage("ageRange must be a string"),
+
+    body("material").optional().isString(),
+    body("fragranceNotes").optional().isString(),
+    body("gender").optional().isString(),
+    body("warranty").optional().isString(),
+    body("style").optional().isString(),
+    body("origin").optional().isString(),
+    body("howMade").optional().isString(),
+    body("deliveryAndReturns").optional().isString(),
+    body("sustainability").optional().isString(),
+    body("durability").optional().isString(),
+    body("usage").optional().isString(),
+    body("storageInstructions").optional().isString(),
+    body("care").optional().isString(),
+    body("isCustomizable").optional().isBoolean(),
+    body("isActive").optional().isBoolean(),
+  ],productController.updateProduct)
+router.get(
+  "/get-products-by-category/:category",
+  productController.getProductsByCategory
+);
+router.delete(
+  "/delete-product/:id",
+  productController.deleteProduct
+);
+router.get(
+  "/get-products-by-subcategory/:subCategory",
+  productController.getProductsBySubCategory
+);
+router.get("/get-product-by-id/:id", productController.getProductById);
 module.exports = router;

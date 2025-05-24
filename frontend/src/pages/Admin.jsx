@@ -21,6 +21,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
 import AddProductPanel from "../components/AddProductPanel";
+import UpdateProductPanel from "../components/UpdateProductPanel";
+import { useEffect } from "react";
 
 const categories = [
   {
@@ -91,12 +93,18 @@ const categories = [
 
 const Admin = () => {
   const { isMobile } = useContext(MobileResponsivenessContext);
-  const [activeView, setActiveView] = useState("dashboard");
+
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth>1024?true:false);
+  const [activeView, setActiveView] = useState(
+    selectedSubcategory ? "subCategoryProducts" : "dashboard"
+  );
+  const [sidebarOpen, setSidebarOpen] = useState(
+    window.innerWidth >= 1024 ? true : false
+  );
   const [selectedCategory, setSelectedCategory] = useState(null);
   const sidebarRef = useRef();
+  const [product, setProduct] = useState(null);
   const backdropRef = useRef();
   useGSAP(() => {
     if (sidebarOpen) {
@@ -124,13 +132,24 @@ const Admin = () => {
     if (activeView === "dashboard") return <AdminDashboard />;
     if (activeView === "orders") return <AdminOrdersPage />;
     if (activeView === "add-product")
-      return <AddProductPanel selectedSubCategory={selectedSubcategory} selectedCategory={selectedCategory} />;
-    if (selectedSubcategory) {
+      return (
+        <AddProductPanel
+          selectedSubCategory={selectedSubcategory}
+          selectedCategory={selectedCategory}
+          setActiveView={setActiveView}
+        />
+      );
+    if (activeView === "update-product") {
+      return <UpdateProductPanel product={product} setProduct={setProduct}setActiveView={setActiveView} />;
+    }
+    if (activeView == "subCategoryProducts" && selectedSubcategory) {
       return (
         <AdminProductsPanel
           setActiveView={setActiveView}
           selectedSubcategory={selectedSubcategory}
           setExpandedCategory={setExpandedCategory}
+          product={product}
+          setProduct={setProduct}
         />
       );
     }
@@ -183,7 +202,7 @@ const Admin = () => {
               setActiveView("orders");
               setExpandedCategory(null);
               setSelectedSubcategory(null);
-              setSidebarOpen(false);
+               window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)
             }}
             className={`flex items-center w-full px-3 py-2 rounded hover:bg-gray-200 ${
               activeView === "orders" ? "bg-gray-200" : ""
@@ -200,6 +219,7 @@ const Admin = () => {
                   setExpandedCategory(
                     expandedCategory === cat.name ? null : cat.name
                   );
+
                 }}
                 className="flex items-center w-full px-3 py-2 rounded hover:bg-gray-100"
               >
@@ -219,8 +239,8 @@ const Admin = () => {
                       key={sub}
                       onClick={() => {
                         setSelectedSubcategory(sub);
-                        setActiveView(null);
-                        isMobile && setSidebarOpen(false);
+                        setActiveView("subCategoryProducts");
+                         window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)
                         setExpandedCategory(null);
                       }}
                       className="block text-left w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
@@ -247,7 +267,9 @@ const Admin = () => {
       {/* Main panel */}
       <main
         className="flex-1 overflow-y-auto pt-7  w-screen min-h-screen bg-gray-50 shadow-inner"
-        onClick={() => window.innerWidth<=1024 && sidebarOpen && setSidebarOpen(false)} // click outside to close
+        onClick={() =>
+          window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)
+        } // click outside to close
       >
         {renderMainPanel()}
       </main>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import axios from 'axios'
 const categoryFieldMap = {
   Sneakers: [
     "material",
@@ -94,8 +94,9 @@ const categoryFieldMap = {
 };
 
 
-const AddProductPanel = ({ selectedCategory, selectedSubCategory }) => {
-  
+const AddProductPanel = ({ selectedCategory, selectedSubCategory,setActiveView }) => {
+  const [removedImages, setRemovedImages] = useState([]);
+    const [newColor, setNewColor] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     shortDescription: "",
@@ -132,7 +133,7 @@ const AddProductPanel = ({ selectedCategory, selectedSubCategory }) => {
     storageInstructions: "",
     care: "",
     isActive: true,
-    images: [{ color: "", gallery: [] }],
+    images: [],
   });
 
   useEffect(() => {
@@ -151,6 +152,50 @@ const AddProductPanel = ({ selectedCategory, selectedSubCategory }) => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+  };
+
+  const handleRemoveImage = (color, index) => {
+    setFormData((prev) => {
+      const updatedImages = prev.images.map((img) => {
+        if (img.color === color) {
+          const updatedGallery = [...img.gallery];
+          const removed = updatedGallery.splice(index, 1)[0];
+          if (removed && removed._id) {
+            setRemovedImages((prevRemoved) => [...prevRemoved, removed._id]);
+          }
+          return { ...img, gallery: updatedGallery };
+        }
+        return img;
+      });
+      return { ...prev, images: updatedImages };
+    });
+  };
+
+  const handleAddColor = () => {
+    if (!newColor.trim()) return;
+    setFormData((prev) => {
+      const exists = prev.images.some((img) => img.color === newColor.trim());
+      if (exists) return prev;
+      return {
+        ...prev,
+        images: [...prev.images, { color: newColor.trim(), gallery: [] }],
+      };
+    });
+    setNewColor("");
+  };
+  const handleRemoveColorGroup = (color) => {
+    setFormData((prev) => {
+      // Filter out the color group with the given color
+      const updatedImages = prev.images.filter((img) => img.color !== color);
+      return { ...prev, images: updatedImages };
+    });
+  };
+const handleProductDetailsChange = (e) => {
+    const details = e.target.value.split(",").map((detail) => detail.trim());
+    setFormData((prev) => ({
+      ...prev,
+      productDetails: details,
+    }));
   };
 
   const handleImageUpload = (color, file) => {
@@ -177,18 +222,56 @@ const AddProductPanel = ({ selectedCategory, selectedSubCategory }) => {
     });
   };
 
-  const handleProductDetailsChange = (e) => {
-    setFormData({
-      ...formData,
-      productDetails: e.target.value.split(",").map((d) => d.trim()),
-    });
-  };
+ 
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitting Product", formData);
-    
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const form = new FormData();
+
+  // Append non-image fields
+  for (let key in formData) {
+    if (key === "images") continue; // skip for now
+    const value = formData[key];
+    form.append(key, typeof value === "object" ? JSON.stringify(value) : value);
+  }
+
+  // Prepare images and imageMeta
+  const imageMeta = [];
+  let imageIndex = 0;
+
+  formData.images.forEach((imgGroup) => {
+    const color = imgGroup.color;
+    imgGroup.gallery.forEach((file) => {
+      form.append("images", file);
+      imageMeta.push({
+        color,
+        index: imageIndex++, // Keep track of order for backend
+      });
+    });
+  });
+  
+
+  // Append imageMeta as JSON
+  form.append("imagesMeta", JSON.stringify(imageMeta));
+  for (let pair of form.entries()) {
+  console.log(pair[0], pair[1]);
+}
+
+  try {
+    const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/products/create-product`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    if(res.status==201)
+      console.log("Product submitted", res.data);
+
+     alert("Product added successfully")
+     setActiveView("subCategoryProducts")
+  } catch (err) {
+   
+    console.error("Submission error", err);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-4 max-w-4xl mx-auto">
@@ -401,50 +484,75 @@ const AddProductPanel = ({ selectedCategory, selectedSubCategory }) => {
 
       <div>
         <h3 className="text-lg font-semibold mb-2">Images by Color</h3>
-        {formData.images.map((img, index) => (
-          <div key={index} className="flex gap-2 items-center mb-2">
-            {/* Color input */}
-            <input
-              type="text"
-              placeholder="Color"
-              value={img.color}
-              onChange={(e) => {
-                const newImages = [...formData.images];
-                newImages[index].color = e.target.value;
-                newImages[index].gallery = img.gallery;
-                setFormData({ ...formData, images: newImages });
-              }}
-              className="border p-2 rounded w-[120px]"
-            />
+        {formData.images.map((imgGroup, idx) => (
+          <div key={idx} className="border p-4  rounded mb-4 relative ">
+            <div className="flex items-center gap-4 mb-2 ">
+              <span className="font-semibold">Color: {imgGroup.color}</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    handleImageUpload(imgGroup.color, e.target.files[0])
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveColorGroup(imgGroup.color)}
+                  className="absolute right-2  text-red-600 font-bold px-2 py-1 hover:bg-red-100 rounded"
+                  aria-label={`Remove color ${imgGroup.color}`}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
 
-            {/* File input (multiple) */}
-            <input
-              type="file"
-              onChange={(e) => handleImageUpload(img.color, e.target.files[0])}
-              className="border p-2 rounded"
-            />
+            <div className={`flex flex-wrap gap-2`}>
+              {imgGroup.gallery.map((img, i) => (
+                <div key={i} className="relative border p-2 rounded">
+                  <img
+                    src={
+                      img.data
+                        ? `data:${img.contentType};base64,${img.data}`
+                        : URL.createObjectURL(img)
+                    }
+                    alt={`preview-${i}`}
+                    className="w-24 h-24 object-cover rounded"
+                  />
 
-            {/* Image count display */}
-            <span className="text-sm text-gray-600">
-              {img.gallery?.length || 0} image
-              {img.gallery?.length === 1 ? "" : "s"}
-            </span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(imgGroup.color, i)}
+                    className="absolute top-0 right-0 bg-red-500 text-white px-2 rounded-bl"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
-
-        {/* Add another color block */}
-        <button
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 flex items-center gap-2 mt-2"
-          type="button"
-          onClick={() =>
-            setFormData({
-              ...formData,
-              images: [...formData.images, { color: "", gallery: [] }],
-            })
+        
+        <div className="flex  gap-4 items-center mb-4">
+          <input
+            type="text"
+            placeholder="Add new color"
+            value={newColor}
+            onChange={(e) => setNewColor(e.target.value)}
+            className="border px-3 py-1 rounded"
+          />
+          <button
+            type="button"
+            value={newColor}
+            onClick={handleAddColor
           }
-        >
-          <i className="ri-add-line text-lg"></i> Add Another Color
-        </button>
+            className="bg-black text-white px-3 py-1 rounded"
+          >
+            Add Color
+          </button>
+        </div>
+        {/* Add another color block */}
+        
       </div>
 
       <button

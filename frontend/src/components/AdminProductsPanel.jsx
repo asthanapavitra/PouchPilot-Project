@@ -2,28 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from  "axios"
 
 import AdminProductCard from "./AdminProductCard";
-const AdminProductsPanel = ({ selectedSubcategory, setExpandedCategory ,setActiveView}) => {
+const AdminProductsPanel = ({ selectedSubcategory, setExpandedCategory ,setActiveView,setProduct}) => {
   const [products, setProducts] = useState([]);
-const dummyProduct = {
-  name: "AirRunner Sneakers",
-  shortDescription: "Comfortable and stylish sneakers for everyday wear.",
-  price: 3499,
-  discount: 20,
-  images: [
-    {
-      color: "Black",
-      gallery: [
-        "/backpack.jpeg","/barrel bag gucci.jpeg"
-      ],
-    },
-    {
-      color: "White",
-      gallery: [
-        "/cap.jpeg","/hoodie.jpeg"
-      ],
-    },
-  ],
-};
 
   useEffect(() => {
     async function fetchProducts() {
@@ -68,10 +48,10 @@ const dummyProduct = {
       </div>
       <div className="text-gray-500 w-full">
         {products.length==0?<p>No products available in this category</p>:
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {products.map((product,index)=>
                     {return (
-                         <AdminProductCard product={dummyProduct} key={index} />
+                         <AdminProductCard product={product} setProducts={setProducts} setProduct={setProduct} setActiveView={setActiveView} key={index} />
                     )}
                 )}
             </div>
