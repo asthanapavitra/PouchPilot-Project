@@ -8,7 +8,14 @@ const productRouter=require('./router/product-router')
 const adminRouter=require('./router/admin-router');
 const cors=require('cors');
 const cookie=require('cookie-parser')
-app.use(cors());
+app.use(cors(
+    {
+        origin: process.env.FRONTEND_URL,
+        credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+        allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
+    }
+));
 app.use(cookie());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
