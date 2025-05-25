@@ -15,7 +15,9 @@ app.use(cors(
 app.use(cookie());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-
+app.get('/',(req,res)=>{
+    res.send('Welcome to the E-commerce API');
+})
 app.use('/users',userRouter);
 app.use('/products',productRouter);
 app.use('/admin',adminRouter);
