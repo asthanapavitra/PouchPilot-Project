@@ -489,9 +489,12 @@ const Authentication = () => {
               flex flex-col items-center justify-center bg-white`}
           >
             {
-              <i
+            <Link to={"/admin"}>
+             <i
+
                 className={`absolute top-5 right-10 text-xl ri-admin-line`}
-              ></i>
+              ></i></Link>
+             
             }
             <h1 className="font-semibold text-3xl text-center mb-2">Login</h1>
             {message && messageFromRegister === false && (
