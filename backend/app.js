@@ -11,12 +11,6 @@ const { createServer } = require('@vercel/node');
 
 const cookie=require('cookie-parser')
 app.use(cors(
-    {
-        origin: process.env.FRONTEND_URL,
-        credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
-        allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
-    }
 ));
 app.use(cookie());
 app.use(express.json());
