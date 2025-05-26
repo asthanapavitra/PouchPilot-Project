@@ -150,8 +150,8 @@ const Home = () => {
             isMobile={isMobile}
             
           />
-          <div className=" w-full pt-[65px]">
-            <div className=" h-full w-full flex flex-col z-10 items-center justify-center gap-4 home-page overflow-x-hidden">
+          <div className="  w-screen pt-[65px]">
+            <div className=" relative h-full w-full flex flex-col items-center justify-center gap-4 home-page">
               <HomeCategoriesSection categories={categories} />
               <CategoryDiv
                 category={"Bags"}

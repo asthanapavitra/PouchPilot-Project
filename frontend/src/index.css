@@ -54,14 +54,6 @@
   background-color: white !important; /* Tailwind gray-300 */
 }
 
-.swiper-pagination-bullet-active {
+swiper-pagination-bullet-active {
   background-color: white !important; /* Tailwind gray-500 */
-}
-/* Add this to your index.css or globals.css */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari and Opera */
 }

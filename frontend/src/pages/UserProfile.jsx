@@ -129,13 +129,10 @@ useGSAP(
   return (
     <div className="w-screen min-h-screen overflow-x-hidden">
       <Navbar
+      isProfilePage={true}
        setShowSidebar={setShowSidebar}
        showSidebar={showSidebar}
-        username={
-          user.fullName.firstName != "Unknown"
-            ? user.fullName.firstName
-            : user.userName
-        }
+       
       />
       <div className={`min-h-screen relative flex bg-white text-black w-screen justify-between ${isMobile?"pt-[55px]":"pt-[80px] "} gap-10`}>
         {/* Sidebar */}

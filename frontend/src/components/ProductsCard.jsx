@@ -40,7 +40,7 @@ const ProductsCard = ({ product }) => {
   };
 
   return (
-    <div className="lg:w-[100%]  mx-auto px-2 py-2 sm:w-[50%] w-[100%] flex flex-col items-center justify-between bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 translate-y-4 ">
+    <div className="   mx-auto px-2 py-2  w-[100%] flex flex-col items-center justify-between bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 translate-y-4 ">
       {/* Product Image */}
       <div 
         onClick={handleProductClick}

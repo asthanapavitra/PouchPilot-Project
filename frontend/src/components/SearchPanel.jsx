@@ -39,7 +39,7 @@ const[allProducts,setAllProducts]=useState([]);
 
   return (
     <div className="min-h-screen text-black px-6 w-full ">
-      <h2 className="text-3xl font-bold mb-4">Search Products</h2>
+      
 
       {/* Search Input */}
       <input

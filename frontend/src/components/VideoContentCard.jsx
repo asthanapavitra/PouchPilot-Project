@@ -6,7 +6,7 @@ const VideoContentCard = (props) => {
   return (
     <div className={`flex flex-col md:flex-row ${props.align=="right"?"md:flex-row-reverse":""} ${!props.isMobile? "mx-10":"mx-2"} items-center gap-6 justify-evenly  py-2 pt-2  px-2 pb-4 bg-white shadow-lg rounded-2xl w-[95%]  my-2`}>
       {/* Left: Video */}
-      <div className="w-[85%] md:w-[60%] ">
+      <div className="w-[90%] md:w-[60%] ">
       <VideoCard videoSrc={props.videoSrc}/>
       </div>
      

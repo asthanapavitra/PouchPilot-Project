@@ -82,7 +82,7 @@ const Navbar = (props) => {
   }, [showSearchPanel]);
 
   return (
-    <div className="w-screen">
+    <div className="w-[85%] ">
       <div
         ref={searchPanelRef}
         className="fixed top-[70px] left-0 w-full h-[calc(100vh-70px)] overflow-y-auto bg-white text-black z-[999] hidden"
@@ -100,10 +100,10 @@ const Navbar = (props) => {
           <SearchPanel />
         </div>
       </div>
-      <nav className="h-[65px] fixed top-0 text-black w-full bg-white mb-4 shadow-lg z-990">
-        <div className="max-w-7xl h-full mx-auto px-4 sm:px-6 lg:pl-8 lg:pr-2">
-          <div className="flex h-full justify-between items-center py-4 mx-2 relative">
-            {isMobile ? (
+      <nav className={`h-[65px] fixed top-0 text-black w-screen bg-white mb-4 shadow-lg z-990`}>
+        <div className="w-[95%] h-full  px-4 sm:px-6 lg:pl-8 lg:pr-2">
+          <div className="flex h-full w-full justify-between items-center py-4 mx-2 relative">
+            {isMobile && props.isProfilePage ? (
               
                 <button
                   onClick={() => props.setShowSidebar(!props.showSidebar)}
