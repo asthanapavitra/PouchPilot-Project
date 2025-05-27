@@ -73,7 +73,7 @@ const HomeCategoriesSection = ({ categories }) => {
             ref={(el) => (buttonRefs.current[category.name] = el)}
             onClick={() => handleCategoryClick(category.name)}
             onMouseEnter={() => handleCategoryClick(category.name)}
-            onMouseLeave={() => setOpenCategory(null)}
+          
             className="shadow-lg ring-1 font-medium px-5 py-2 rounded-4xl bg-white "
           >
             {category.name}
