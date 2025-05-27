@@ -74,7 +74,7 @@ const[allProducts,setAllProducts]=useState([]);
           ))
         ) : (
           <p className="text-gray-500 col-span-full text-center">
-            Loading prooducts...
+            Loading products...
           </p>
         )}
       </div>
