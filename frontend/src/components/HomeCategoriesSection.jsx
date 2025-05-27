@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Dropdown = ({ items, position, onClose, onItemClick }) => {
   return createPortal(
     <div
-      className="absolute bg-white shadow-md rounded-md z-50 py-2"
+      className="absolute bg-white shadow-md rounded-md z-50 py-2 w-48"
       style={{ top: position.top, left: position.left }}
     >
       {items.map((sub, idx) => (
@@ -66,12 +66,14 @@ const HomeCategoriesSection = ({ categories }) => {
   }, []);
 
   return (
-    <div className="w-full px-4 py-2 flex  gap-4 items-center mt-6 overflow-x-auto">
+    <div className={`w-full px-4 py-2 flex ${window.innerWidth>=768 && "justify-center "}  gap-4 items-center mt-6 overflow-x-auto`}>
       {categories.map((category) => (
         <div key={category.name} className="relative">
           <button
             ref={(el) => (buttonRefs.current[category.name] = el)}
             onClick={() => handleCategoryClick(category.name)}
+            onMouseEnter={() => handleCategoryClick(category.name)}
+            onMouseLeave={() => setOpenCategory(null)}
             className="shadow-lg ring-1 font-medium px-5 py-2 rounded-4xl bg-white "
           >
             {category.name}
@@ -87,6 +89,7 @@ const HomeCategoriesSection = ({ categories }) => {
           position={dropdownPosition}
           onClose={() => setOpenCategory(null)}
           onItemClick={handleSubCatgoryClick}
+          
         />
       )}
     </div>
