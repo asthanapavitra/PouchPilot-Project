@@ -66,13 +66,13 @@ const HomeCategoriesSection = ({ categories }) => {
   }, []);
 
   return (
-    <div className="w-full px-4 py-2 flex justify-center gap-4 items-center mt-6 overflow-x-auto">
+    <div className="w-full px-4 py-2 flex  gap-4 items-center mt-6 overflow-x-auto">
       {categories.map((category) => (
         <div key={category.name} className="relative">
           <button
             ref={(el) => (buttonRefs.current[category.name] = el)}
             onClick={() => handleCategoryClick(category.name)}
-            className="shadow-lg ring-1 font-medium px-5 py-2 rounded-4xl bg-white whitespace-nowrap"
+            className="shadow-lg ring-1 font-medium px-5 py-2 rounded-4xl bg-white "
           >
             {category.name}
           </button>
