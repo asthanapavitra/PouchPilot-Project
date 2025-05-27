@@ -507,7 +507,7 @@ const Authentication = () => {
               onSubmit={handleLoginForm}
               className="flex flex-col gap-2 w-[90%] lg:w-[75%]"
             >
-              <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2">
+              <div className="w-full bg-[#EFEFEF] flex justify-between pr-5 items-center px-2">
                 {/* Role Selection */}
 
                 <input
@@ -522,7 +522,7 @@ const Authentication = () => {
                 />
                 <i className="ri-mail-fill text-xl"></i>
               </div>
-              <div className="w-full bg-[#EFEFEF] flex justify-between items-center px-2">
+              <div className="w-full bg-[#EFEFEF] flex justify-between items-center pr-5 px-2">
                 <input
                   value={loginPassword}
                   required
