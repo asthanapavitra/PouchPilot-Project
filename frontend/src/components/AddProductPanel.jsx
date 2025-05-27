@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'
+import axios from "axios";
 const categoryFieldMap = {
   Sneakers: [
     "material",
@@ -16,7 +16,7 @@ const categoryFieldMap = {
     "storageInstructions",
     "care",
     "category",
-    "subcategory"
+    "subcategory",
   ],
   Perfumes: [
     "fragranceNotes",
@@ -27,7 +27,7 @@ const categoryFieldMap = {
     "howMade",
     "deliveryAndReturns",
     "category",
-    "subcategory"
+    "subcategory",
   ],
   Bags: [
     "material",
@@ -43,7 +43,7 @@ const categoryFieldMap = {
     "storageInstructions",
     "care",
     "category",
-    "subcategory"
+    "subcategory",
   ],
   Watches: [
     "material",
@@ -54,7 +54,7 @@ const categoryFieldMap = {
     "howMade",
     "deliveryAndReturns",
     "category",
-    "subcategory"
+    "subcategory",
   ],
   Caps: [
     "material",
@@ -69,7 +69,7 @@ const categoryFieldMap = {
     "usage",
     "care",
     "category",
-    "subcategory"
+    "subcategory",
   ],
   Gifts: [
     "style",
@@ -89,17 +89,20 @@ const categoryFieldMap = {
     "usage",
     "care",
     "category",
-    "subcategory"
+    "subcategory",
   ],
 };
 
-
-const AddProductPanel = ({ selectedCategory, selectedSubCategory,setActiveView }) => {
+const AddProductPanel = ({
+  selectedCategory,
+  selectedSubCategory,
+  setActiveView,
+}) => {
   const [removedImages, setRemovedImages] = useState([]);
-    const [newColor, setNewColor] = useState("");
+  const [newColor, setNewColor] = useState("");
   const [formData, setFormData] = useState({
     name: "",
-    shortDescription: "",
+    specifications: [],
     price: "Price",
     discount: "Discount",
     stock: "Stock",
@@ -115,7 +118,7 @@ const AddProductPanel = ({ selectedCategory, selectedSubCategory,setActiveView }
     productDetails: [""],
     howMade: "",
     deliveryAndReturns: "",
-   
+
     availableSizes: [],
     material: "",
     fragranceNotes: "",
@@ -135,6 +138,31 @@ const AddProductPanel = ({ selectedCategory, selectedSubCategory,setActiveView }
     isActive: true,
     images: [],
   });
+
+  const [specifications, setSpecifications] = useState([
+    { subHeading: "", value: "" },
+  ]);
+  const [productDescription, setProductDescription] = useState([""]);
+
+  const handleSpecChange = (index, field, value) => {
+    const updated = [...specifications];
+    updated[index][field] = value;
+    setSpecifications(updated);
+  };
+console.log(specifications)
+  const addSpecRow = () => {
+    setSpecifications([...specifications, { subHeading: "", value: "" }]);
+  };
+
+  const handleDescriptionChange = (index, value) => {
+    const updated = [...productDescription];
+    updated[index] = value;
+    setProductDescription(updated);
+  };
+
+  const addDescriptionRow = () => {
+    setProductDescription([...productDescription, ""]);
+  };
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -190,14 +218,7 @@ const AddProductPanel = ({ selectedCategory, selectedSubCategory,setActiveView }
       return { ...prev, images: updatedImages };
     });
   };
-const handleProductDetailsChange = (e) => {
-    const details = e.target.value.split(",").map((detail) => detail.trim());
-    setFormData((prev) => ({
-      ...prev,
-      productDetails: details,
-    }));
-  };
-
+ 
   const handleImageUpload = (color, file) => {
     console.log("Inside Image Upload");
 
@@ -222,59 +243,61 @@ const handleProductDetailsChange = (e) => {
     });
   };
 
- 
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const form = new FormData();
+    const form = new FormData();
+    console.log(formData.specifications)
+    // Append non-image fields
+    for (let key in formData) {
+      if (key === "images") continue; // skip for now
+      const value = formData[key];
+      form.append(
+        key,
+        typeof value === "object" ? JSON.stringify(value) : value
+      );
+    }
 
-  // Append non-image fields
-  for (let key in formData) {
-    if (key === "images") continue; // skip for now
-    const value = formData[key];
-    form.append(key, typeof value === "object" ? JSON.stringify(value) : value);
-  }
+    // Prepare images and imageMeta
+    const imageMeta = [];
+    let imageIndex = 0;
 
-  // Prepare images and imageMeta
-  const imageMeta = [];
-  let imageIndex = 0;
-
-  formData.images.forEach((imgGroup) => {
-    const color = imgGroup.color;
-    imgGroup.gallery.forEach((file) => {
-      form.append("images", file);
-      imageMeta.push({
-        color,
-        index: imageIndex++, // Keep track of order for backend
+    formData.images.forEach((imgGroup) => {
+      const color = imgGroup.color;
+      imgGroup.gallery.forEach((file) => {
+        form.append("images", file);
+        imageMeta.push({
+          color,
+          index: imageIndex++, // Keep track of order for backend
+        });
       });
     });
-  });
-  
 
-  // Append imageMeta as JSON
-  form.append("imagesMeta", JSON.stringify(imageMeta));
-  for (let pair of form.entries()) {
-  console.log(pair[0], pair[1]);
-}
+    // Append imageMeta as JSON
+    form.append("imagesMeta", JSON.stringify(imageMeta));
+    for (let pair of form.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
-  try {
-    
-    const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/products/create-product`, form, {
-      headers: { 
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        "Content-Type": "multipart/form-data" },
-    });
-    if(res.status==201)
-      console.log("Product submitted", res.data);
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/products/create-product`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (res.status == 201) console.log("Product submitted", res.data);
 
-     alert("Product added successfully")
-     setActiveView("subCategoryProducts")
-  } catch (err) {
-   
-    console.error("Submission error", err);
-  }
-};
+      alert("Product added successfully");
+      setActiveView("subCategoryProducts");
+    } catch (err) {
+      console.error("Submission error", err);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-4 max-w-4xl mx-auto">
@@ -290,15 +313,7 @@ const handleProductDetailsChange = (e) => {
           className="border p-2 rounded"
           required
         />
-        <input
-          type="text"
-          name="shortDescription"
-          value={formData.shortDescription}
-          onChange={handleChange}
-          placeholder="Short Description"
-          className="border p-2 rounded"
-          required
-        />
+
         <input
           type="number"
           name="price"
@@ -326,12 +341,57 @@ const handleProductDetailsChange = (e) => {
           className="border p-2 rounded"
         />
       </div>
+      <div>
+        <h2 className="text-lg font-semibold mb-2">Specifications</h2>
+        {specifications.map((spec, index) => (
+          <div key={index} className="flex gap-2 mb-2">
+            <input
+              type="text"
+              className="flex-1 p-2 border rounded"
+              placeholder="Subheading"
+              value={spec.subHeading}
+              onChange={(e) =>
+                handleSpecChange(index, "subHeading", e.target.value)
+              }
+            />
+            <input
+              type="text"
+              className="flex-1 p-2 border rounded"
+              placeholder="Value"
+              value={spec.value}
+              onChange={(e) => handleSpecChange(index, "value", e.target.value)}
+            />
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addSpecRow}
+          className="text-blue-600 underline"
+        >
+          + Add More
+        </button>
+      </div>
 
-      <textarea
-        placeholder="Product Details (comma separated)"
-        onChange={handleProductDetailsChange}
-        className="border p-2 rounded w-full"
-      ></textarea>
+      <div>
+        <h2 className="text-lg font-semibold mb-2">Product Description</h2>
+        {productDescription.map((desc, index) => (
+          <input
+            key={index}
+            type="text"
+            className="block w-full mb-2 p-2 border rounded"
+            value={desc}
+            onChange={(e) => handleDescriptionChange(index, e.target.value)}
+            placeholder={`Detail ${index + 1}`}
+          />
+        ))}
+        <button
+          type="button"
+          onClick={addDescriptionRow}
+          className="text-blue-600 underline"
+        >
+          + Add More
+        </button>
+      </div>
 
       {visibleFields.includes("material") && (
         <input
@@ -383,7 +443,7 @@ const handleProductDetailsChange = (e) => {
         "storageInstructions",
         "care",
         "warranty",
-        "tags"
+        "tags",
       ].map((field) =>
         visibleFields.includes(field) ? (
           <input
@@ -535,7 +595,7 @@ const handleProductDetailsChange = (e) => {
             </div>
           </div>
         ))}
-        
+
         <div className="flex  gap-4 items-center mb-4">
           <input
             type="text"
@@ -547,15 +607,13 @@ const handleProductDetailsChange = (e) => {
           <button
             type="button"
             value={newColor}
-            onClick={handleAddColor
-          }
+            onClick={handleAddColor}
             className="bg-black text-white px-3 py-1 rounded"
           >
             Add Color
           </button>
         </div>
         {/* Add another color block */}
-        
       </div>
 
       <button

@@ -17,10 +17,12 @@ const productSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
-  shortDescription: {
-    type: String,
-    required: true,
-  },
+  specifications:[
+    {
+      subHeading:String,
+      value:String
+    }
+  ],
   emi: {
     emiAvailable:{
       type:Boolean,

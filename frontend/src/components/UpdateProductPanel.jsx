@@ -106,7 +106,8 @@ const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
   }
   const [formData, setFormData] = useState({
     name: product?.name || "",
-    shortDescription: product?.shortDescription || "",
+    specifications: product?.specifications || "",
+
     price: product?.price || 0,
     discount: product?.discount || 0,
     stock: product?.stock || 0,
@@ -176,6 +177,22 @@ const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
     const updatedDetails = [...formData.productDetails];
     updatedDetails[index] = value;
     setFormData({ ...formData, productDetails: updatedDetails });
+  };
+const handleSpecificationChange = (index,field, value) => {
+    const updatedSpecifications = [...formData.specifications];
+    updatedSpecifications [index][field] = value;
+    setFormData({ ...formData, specifications:updatedSpecifications  });
+  };
+  const addSpecification = () => {
+    setFormData({
+      ...formData,
+      specifications: [...formData.specifications, { subHeading: "", value: "" }],
+    });
+  };
+const removeSpecification = (index) => {
+    const updatedSpecifications  = [...formData.specifications];
+    updatedSpecifications.splice(index, 1);
+    setFormData({ ...formData, specifications: updatedSpecifications});
   };
 
   const addProductDetail = () => {
@@ -483,6 +500,54 @@ const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
                   className="mt-2 text-blue-600 underline"
                 >
                   Add Detail
+                </button>
+              </div>
+            );
+          }
+          if (key === "specifications") {
+            return (
+              <div key={key}>
+                <div className="flex flex-col md:flex-row md:justify-between  md:items-center w-full">
+                  <label className="block capitalize font-medium mb-1">
+                    Specifications                  
+                  </label>
+                  <ul className="space-y-2 w-[60%]">
+                    {formData.specifications.map((specification, i) => (
+                      <li key={i} className="flex gap-2 items-center  ">
+                        <input
+                          type="text"
+                          value={specification.subHeading}
+                          onChange={(e) =>
+                            handleSpecificationChange(i, "subHeading",e.target.value, )
+                          }
+                          className="border px-3 py-1 rounded w-full"
+                        />
+                        <input
+                          type="text"
+                          value={specification.value}
+                          onChange={(e) =>
+                            handleSpecificationChange(i,"value", e.target.value)
+                          }
+                          className="border px-3 py-1 rounded w-full"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeSpecification(i)}
+                          className="text-red-600"
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={addSpecification}
+                  className="mt-2 text-blue-600 underline"
+                >
+                  Add More
                 </button>
               </div>
             );

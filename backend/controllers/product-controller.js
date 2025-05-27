@@ -35,7 +35,7 @@ module.exports.createProduct = async (req, res) => {
 
     const {
       name,
-      shortDescription,
+      specifications,
       emi,
       price,
       discount,
@@ -63,16 +63,7 @@ module.exports.createProduct = async (req, res) => {
       isActive,
     } = req.body;
 
-    if (
-      !name ||
-      !shortDescription ||
-      !price ||
-      !stock ||
-      !category ||
-      !subcategory ||
-      
-      !gender
-    ) {
+    if (!name || !price || !stock || !category || !subcategory || !gender) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -98,14 +89,14 @@ module.exports.createProduct = async (req, res) => {
 
     const product = await productModel.create({
       name,
-      shortDescription,
+      specifications: specifications ? specifications : [],
       price: Number(price),
       discount: discount ? Number(discount) : 0,
       stock: Number(stock),
       category,
       subcategory,
       tags: tags ? tags : [],
-    
+
       style,
       origin,
       productDetails: productDetails ? productDetails : [],
@@ -136,7 +127,6 @@ module.exports.createProduct = async (req, res) => {
   }
 };
 
-
 module.exports.getProductsByCategory = async (req, res) => {
   try {
     const category = req.params.category;
@@ -160,12 +150,10 @@ module.exports.getProductsByCategory = async (req, res) => {
       })),
     }));
 
-    return res
-      .status(200)
-      .json({
-        products: formattedProducts,
-        message: "Products fetched successfully",
-      });
+    return res.status(200).json({
+      products: formattedProducts,
+      message: "Products fetched successfully",
+    });
   } catch (err) {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
@@ -194,12 +182,10 @@ module.exports.getProductsBySubCategory = async (req, res) => {
       })),
     }));
 
-    return res
-      .status(200)
-      .json({
-        products: formattedProducts,
-        message: "Products fetched successfully",
-      });
+    return res.status(200).json({
+      products: formattedProducts,
+      message: "Products fetched successfully",
+    });
   } catch (err) {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
@@ -224,26 +210,24 @@ module.exports.getProductById = async (req, res) => {
         ),
       })),
     };
-    return res
-      .status(200)
-      .json({
-        product: formattedProduct,
-        message: "Product fetched successfully",
-      });
+    return res.status(200).json({
+      product: formattedProduct,
+      message: "Product fetched successfully",
+    });
   } catch (err) {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
 };
-module.exports.updateProduct=async(req,res)=>{
-  try{
+module.exports.updateProduct = async (req, res) => {
+  try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(401).json({ errors: errors.array() });
     }
-    const {id}=req.params;
+    const { id } = req.params;
     const {
       name,
-      shortDescription,
+      specifications,
       emi,
       price,
       discount,
@@ -273,12 +257,11 @@ module.exports.updateProduct=async(req,res)=>{
 
     if (
       !name ||
-      !shortDescription ||
+      
       !price ||
       !stock ||
       !category ||
       !subcategory ||
-      
       !gender
     ) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -303,16 +286,16 @@ module.exports.updateProduct=async(req,res)=>{
         contentType: file.mimetype,
       });
     });
-    const product=await productModel.findByIdAndUpdate(id,{
-       name,
-      shortDescription,
+    const product = await productModel.findByIdAndUpdate(id, {
+      name,
+      specifications:specifications?specifications:[],
       price: Number(price),
       discount: discount ? Number(discount) : 0,
       stock: Number(stock),
       category,
       subcategory,
       tags: tags ? tags : [],
-    
+
       style,
       origin,
       productDetails: productDetails ? productDetails : [],
@@ -333,25 +316,27 @@ module.exports.updateProduct=async(req,res)=>{
       isActive: isActive === "true" || isActive === true,
       images, // ✅ Correct structured image data
       emi: emi ? emi : { emiAvailable: false, noOfMonths: [] },
-    })
+    });
     await product.save();
     console.log(product);
-    return res.status(201).json({ message: "Product updated successfully", product });
-  }
-  catch(err){
+    return res
+      .status(201)
+      .json({ message: "Product updated successfully", product });
+  } catch (err) {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
-}
-module.exports.deleteProduct=async(req,res)=>{
-  try{
-    const {id}=req.params;
-    const product=await productModel.findByIdAndDelete(id);
-    if(!product){
-      return res.status(404).json({errors:[{message:"Product not found"}]});
+};
+module.exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await productModel.findByIdAndDelete(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Product not found" }] });
     }
-    return res.status(201).json({message:"Product deleted successfully"});
-    
-  }catch(err){
-    return res.status(500).json({errors: [{ message: err.message }] });
+    return res.status(201).json({ message: "Product deleted successfully" });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ message: err.message }] });
   }
-}
+};
