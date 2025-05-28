@@ -131,8 +131,7 @@ module.exports.getProductsByCategory = async (req, res) => {
   try {
     const category = req.params.category;
 
-    const products = await productModel.find({ category: category.trim().toLowerCase() });
-
+    const products = await productModel.find({ category: category.trim().toLowerCase() })
     if (products.length === 0) {
       return res
         .status(404)
