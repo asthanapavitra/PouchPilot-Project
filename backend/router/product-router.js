@@ -14,10 +14,7 @@ function parseJsonFields(req, res, next) {
     "specifications",
   ];
 
-  jsonFields.forEach((field) => {
-   
-   
- 
+  for (const field of jsonFields) {
     if (
       req.body[field] &&
       typeof req.body[field] === "string" &&
@@ -26,13 +23,14 @@ function parseJsonFields(req, res, next) {
       
       try {
         req.body[field] = JSON.parse(req.body[field]);
-    
       } catch (err) {
-        // optionally log or ignore
-        console.error(`Error parsing JSON for field ${field}:`, err.message);
+        return res.status(400).json({
+          error: `Invalid JSON in field "${field}": ${err.message}`,
+        });
       }
+     
     }
-  });
+  }
 
   next();
 }
@@ -148,7 +146,7 @@ router.post(
 
 router.put(
   "/update-product/:id",
-  upload.fields([{ name: "images" }]),
+  upload.fields([{ name: "newImages" }]),
   parseJsonFields,
   [
     body("name")

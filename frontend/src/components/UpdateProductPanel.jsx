@@ -234,26 +234,6 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
     updatedDetails.splice(index, 1);
     setFormData({ ...formData, productDetails: updatedDetails });
   };
-
-  const handleImageUpload = (color, file) => {
-    setFormData((prev) => {
-      const updatedImages = prev.images.map((img) => {
-        if (img.color === color) {
-          return {
-            ...img,
-            gallery: [...img.gallery, file],
-          };
-        }
-        return img;
-      });
-      const colorExists = prev.images.some((img) => img.color === color);
-      if (!colorExists) {
-        updatedImages.push({ color, gallery: [file] });
-      }
-      return { ...prev, images: updatedImages };
-    });
-  };
-
   const handleRemoveImage = (color, index) => {
     setFormData((prev) => {
       const updatedImages = prev.images.map((img) => {
@@ -291,59 +271,83 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = new FormData();
-    showPopupMessage("Updating product");
-    for (let key in formData) {
-      if (key === "images") continue;
-      const value = formData[key];
-      form.append(
-        key,
-        typeof value === "object" ? JSON.stringify(value) : value
-      );
-    }
-
-    const imageMeta = [];
-    let imageIndex = 0;
-    formData.images.forEach((imgGroup) => {
-      const color = imgGroup.color;
-      imgGroup.gallery.forEach((file) => {
-        if (file instanceof File) {
-          form.append("images", file);
-          imageMeta.push({ color, index: imageIndex++ });
+  const handleImageUpload = (color, files) => {
+    setFormData((prev) => {
+      const updatedImages = prev.images.map((img) => {
+        if (img.color === color) {
+          return {
+            ...img,
+            gallery: [...img.gallery, ...files], // Add all selected files
+          };
         }
+        return img;
       });
-    });
 
-    form.append("imagesMeta", JSON.stringify(imageMeta));
-    if (removedImages.length > 0) {
-      form.append("removedImages", JSON.stringify(removedImages));
-    }
-    // for (let pair of form.entries()) {
-    //   console.log(pair[0] + ", " + pair[1]);
-    // }
-    try {
-      const res = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/products/update-product/${
-          product._id
-        }`,
-        form,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      if (res.status === 201) {
-        setProduct(res.data.product);
-        showPopupMessage("Product updated successfully");
+      const colorExists = prev.images.some((img) => img.color === color);
+      if (!colorExists) {
+        updatedImages.push({ color, gallery: [...files] });
       }
-    } catch (err) {
-      console.error("Update error", err);
-    }
+
+      return { ...prev, images: updatedImages };
+    });
   };
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const form = new FormData();
+  showPopupMessage("Updating product");
+
+  // Append all form fields except images
+  for (let key in formData) {
+    if (key === "images") continue;
+    const value = formData[key];
+    form.append(
+      key,
+      typeof value === "object" ? JSON.stringify(value) : value
+    );
+  }
+
+  const imageMeta = [];
+  let fileIndex = 0;
+
+  formData.images.forEach((imgGroup) => {
+    const color = imgGroup.color;
+    imgGroup.gallery.forEach((file) => {
+      if (file instanceof File) {
+        form.append("newImages", file);
+        imageMeta.push({ color, index: fileIndex++, isNew: true });
+      } else {
+        
+        imageMeta.push({ color, index: fileIndex++, isNew: false });
+      }
+    });
+  });
+
+  form.append("imagesMeta", JSON.stringify(imageMeta));
+  if (removedImages.length > 0) {
+    form.append("removedImages", JSON.stringify(removedImages));
+  }
+
+  try {
+    const res = await axios.put(
+      `${import.meta.env.VITE_BASE_URL}/products/update-product/${product._id}`,
+      form,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (res.status === 201) {
+      setProduct(res.data.product);
+      showPopupMessage("Product updated successfully");
+    }
+  } catch (err) {
+    console.error("Update error", err);
+  }
+};
 
   return (
     <>
@@ -400,8 +404,12 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={(e) =>
-                    handleImageUpload(imgGroup.color, e.target.files[0])
+                    handleImageUpload(
+                      imgGroup.color,
+                      Array.from(e.target.files)
+                    )
                   }
                 />
                 <button
@@ -797,7 +805,7 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
             Save Changes
           </button>
           <button
-            type="submit"
+            type="button"
             onClick={handleDone}
             className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
           >

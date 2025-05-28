@@ -47,7 +47,8 @@ module.exports.createProduct = async (req, res) => {
       origin,
       productDetails,
       howMade,
-      delivery,returns,
+      delivery,
+      returns,
       availableSizes,
       material,
       fragranceNotes,
@@ -101,7 +102,8 @@ module.exports.createProduct = async (req, res) => {
       origin,
       productDetails: productDetails ? productDetails : [],
       howMade,
-      delivery,returns,
+      delivery,
+      returns,
       availableSizes: availableSizes ? availableSizes : [],
       material,
       fragranceNotes,
@@ -131,7 +133,9 @@ module.exports.getProductsByCategory = async (req, res) => {
   try {
     const category = req.params.category;
 
-    const products = await productModel.find({ category: category.trim().toLowerCase() })
+    const products = await productModel.find({
+      category: category.trim().toLowerCase(),
+    });
     if (products.length === 0) {
       return res
         .status(404)
@@ -149,7 +153,6 @@ module.exports.getProductsByCategory = async (req, res) => {
         ),
       })),
     }));
-  
 
     return res.status(200).json({
       products: formattedProducts,
@@ -225,7 +228,10 @@ module.exports.updateProduct = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(401).json({ errors: errors.array() });
     }
+
     const { id } = req.params;
+
+    // Extract form fields
     const {
       name,
       specifications,
@@ -257,77 +263,98 @@ module.exports.updateProduct = async (req, res) => {
       isActive,
     } = req.body;
 
-    if (
-      !name ||
-      
-      !price ||
-      !stock ||
-      !category ||
-      !subcategory ||
-      !gender
-    ) {
+    if (!name || !price || !stock || !category || !subcategory || !gender) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Parse and group image files
     const imagesMeta = JSON.parse(req.body.imagesMeta || "[]");
-    const files = req.files.images || [];
+ 
+    const files = req.files?.newImages || [];
 
-    const images = [];
+    const existingProduct = await productModel.findById(id);
+    if (!existingProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
 
-    imagesMeta.forEach(({ color, index }) => {
+    const mergedImagesMap = new Map();
+
+    // Step 1: Start with existing images
+    existingProduct.images.forEach(({ color, gallery }) => {
+      mergedImagesMap.set(color, [...gallery]);
+    });
+
+    // Step 2: Add new images from form (if any)
+    imagesMeta.forEach(({ color, index, isNew }) => {
       const file = files[index];
-      if (!file) return;
-      let entry = images.find((img) => img.color === color);
-      if (!entry) {
-        entry = { color, gallery: [] };
-        images.push(entry);
+      if (isNew && file) {
+        const newImage = {
+          data: file.buffer,
+          contentType: file.mimetype,
+        };
+        if (mergedImagesMap.has(color)) {
+          mergedImagesMap.get(color).push(newImage);
+        } else {
+          mergedImagesMap.set(color, [newImage]);
+        }
       }
-      entry.gallery.push({
-        data: file.buffer,
-        contentType: file.mimetype,
-      });
     });
-    const product = await productModel.findByIdAndUpdate(id, {
-      name,
-      specifications:specifications?specifications:[],
-      price: Number(price),
-      discount: discount ? Number(discount) : 0,
-      stock: Number(stock),
-      category,
-      subcategory,
-      tags: tags ? tags : [],
 
-      style,
-      origin,
-      productDetails: productDetails ? productDetails : [],
-      howMade,
-      delivery,returns,
-      availableSizes: availableSizes ? availableSizes : [],
-      material,
-      fragranceNotes,
-      gender,
-      warranty,
-      isCustomizable: isCustomizable === "true" || isCustomizable === true,
-      kids: kids ? kids : {},
-      sustainability,
-      durability,
-      usage,
-      storageInstructions,
-      care,
-      isActive: isActive === "true" || isActive === true,
-      images, // ✅ Correct structured image data
-      emi: emi ? emi : { emiAvailable: false, noOfMonths: [] },
+    // Step 3: Construct the `images` array for DB
+    const updatedImages = Array.from(mergedImagesMap.entries()).map(
+      ([color, gallery]) => ({
+        color,
+        gallery,
+      })
+    );
+
+    // Update fields and save
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      {
+        name,
+        specifications: specifications ? specifications : [],
+        price: Number(price),
+        discount: discount ? Number(discount) : 0,
+        stock: Number(stock),
+        category,
+        subcategory,
+        tags: tags ? tags : [],
+        style,
+        origin,
+        productDetails: productDetails ? productDetails: [],
+        howMade,
+        delivery,
+        returns,
+        availableSizes: availableSizes ? availableSizes : [],
+        material,
+        fragranceNotes,
+        gender,
+        warranty,
+        isCustomizable: isCustomizable === "true" || isCustomizable === true,
+        kids: kids ? kids : {},
+        sustainability,
+        durability,
+        usage,
+        storageInstructions,
+        care,
+        isActive: isActive === "true" || isActive === true,
+        images:updatedImages,
+        emi: emi ? emi : { emiAvailable: false, noOfMonths: [] },
+      },
+      { new: true }
+    );
+
+    await updatedProduct.save();
+
+    return res.status(201).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
     });
-    await product.save();
-    console.log(product);
-    return res
-      .status(201)
-      .json({ message: "Product updated successfully", product });
   } catch (err) {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
 };
+
 module.exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
