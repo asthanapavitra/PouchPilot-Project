@@ -3,7 +3,7 @@ import axios from 'axios';
 import ProductsCard from "./ProductsCard";
 const trendingSuggestions = ["Hoodie", "Sneakers", "Cap", "Watch"];
 
-const SearchPanel = () => {
+const SearchPanel = (props) => {
   const [query, setQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
 const[allProducts,setAllProducts]=useState([]);
@@ -70,13 +70,13 @@ const[allProducts,setAllProducts]=useState([]);
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full ">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product, index) => (
-            <ProductsCard key={index} product={product}/>
+            <ProductsCard key={index} product={product} setShowSearchPanel={props.setShowSearchPanel}/>
           ))
         ) : (
           <p className="text-gray-500 col-span-full text-center">
             Loading products...
           </p>
-        )}
+        )} 
       </div>
     </div>
   );

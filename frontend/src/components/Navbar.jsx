@@ -97,7 +97,7 @@ const Navbar = (props) => {
           </button>
         </div>
         <div className="px-4">
-          <SearchPanel />
+          <SearchPanel setShowSearchPanel={setShowSearchPanel} />
         </div>
       </div>
       <nav className={`h-[65px] fixed top-0 text-black w-screen bg-white mb-4 shadow-lg z-990`}>

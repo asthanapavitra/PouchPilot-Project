@@ -131,7 +131,8 @@ module.exports.getProductsByCategory = async (req, res) => {
   try {
     const category = req.params.category;
 
-    const products = await productModel.find({ category: category });
+    const products = await productModel.find({ category: category.trim().toLowerCase() });
+
     if (products.length === 0) {
       return res
         .status(404)
@@ -149,6 +150,7 @@ module.exports.getProductsByCategory = async (req, res) => {
         ),
       })),
     }));
+  
 
     return res.status(200).json({
       products: formattedProducts,

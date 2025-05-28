@@ -22,7 +22,7 @@ const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState(
     product.images?.[0]?.color || ""
   );
-
+  
   const showPopupMessage = (message) => {
     setPopupMessage(message);
     setPopupProgress(100);
@@ -116,7 +116,7 @@ const ProductDetails = () => {
               {gallery.map((img, idx) => (
                 <SwiperSlide key={idx}>
                   <img
-                    src={`data:${img.contentType};base64,${img.data}`}
+                    src={img}
                     alt={`Product ${idx}`}
                     className="rounded-xl object-cover w-full h-[300px] sm:h-[400px] md:h-[500px]"
                   />
@@ -203,11 +203,14 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              {product.deliveryAndReturns && (
+              {product.delivery && (
                 <div>
                   <h3 className="text-lg font-semibold">Delivery & Returns</h3>
                   <p className="mt-2 text-sm text-gray-700 whitespace-pre-line">
-                    {product.deliveryAndReturns}
+                    {product.delivery}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-700 whitespace-pre-line">
+                    {product.returns}
                   </p>
                 </div>
               )}

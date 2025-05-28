@@ -18,7 +18,9 @@ const CategoryDiv = (props) => {
           {}
         );
         if (response.status === 200) {
-          setProducts(response.data.products.slice(0, 4));
+          if(products.length>4)
+            setProducts(response.data.products.slice(0, 4));
+          else setProducts(response.data.products)
         }
       } catch (err) {
         console.log(err);

@@ -15,14 +15,18 @@ function parseJsonFields(req, res, next) {
   ];
 
   jsonFields.forEach((field) => {
+   
+   
+ 
     if (
       req.body[field] &&
       typeof req.body[field] === "string" &&
       req.body[field].trim() !== ""
     ) {
+      
       try {
         req.body[field] = JSON.parse(req.body[field]);
-        if (field == "specifications") console.log(req.body[field]);
+    
       } catch (err) {
         // optionally log or ignore
         console.error(`Error parsing JSON for field ${field}:`, err.message);
@@ -85,20 +89,7 @@ router.post(
       .isObject()
       .withMessage("availableSizes must be an object"),
 
-    body("availableSizes.format")
-      .optional()
-      .isIn(["standard", "dimensions"])
-      .withMessage(
-        "availableSizes.format must be either 'standard' or 'dimensions'"
-      ),
-
-    body("availableSizes.sizes")
-      .optional()
-      .isArray()
-      .withMessage("availableSizes.sizes must be an array")
-      .custom((arr) => arr.every((s) => typeof s === "string"))
-      .withMessage("Each size must be a string"),
-
+   
     body("tags").optional().isArray().withMessage("Tags must be an array"),
 
     body("productDetails")
@@ -209,12 +200,7 @@ router.put(
       .isObject()
       .withMessage("availableSizes must be an object"),
 
-    body("availableSizes.format")
-      .optional()
-      .isIn(["standard", "dimensions"])
-      .withMessage(
-        "availableSizes.format must be either 'standard' or 'dimensions'"
-      ),
+   
 
     body("availableSizes.sizes")
       .optional()
