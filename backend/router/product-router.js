@@ -82,8 +82,22 @@ router.post(
 
     body("availableSizes")
       .optional()
+      .isObject()
+      .withMessage("availableSizes must be an object"),
+
+    body("availableSizes.format")
+      .optional()
+      .isIn(["standard", "dimensions"])
+      .withMessage(
+        "availableSizes.format must be either 'standard' or 'dimensions'"
+      ),
+
+    body("availableSizes.sizes")
+      .optional()
       .isArray()
-      .withMessage("availableSizes must be an array"),
+      .withMessage("availableSizes.sizes must be an array")
+      .custom((arr) => arr.every((s) => typeof s === "string"))
+      .withMessage("Each size must be a string"),
 
     body("tags").optional().isArray().withMessage("Tags must be an array"),
 
@@ -127,7 +141,8 @@ router.post(
     body("style").optional().isString(),
     body("origin").optional().isString(),
     body("howMade").optional().isString(),
-    body("deliveryAndReturns").optional().isString(),
+    body("delivery").optional().isString(),
+    body("returns").optional().isString(),
     body("sustainability").optional().isString(),
     body("durability").optional().isString(),
     body("usage").optional().isString(),
@@ -191,8 +206,22 @@ router.put(
 
     body("availableSizes")
       .optional()
+      .isObject()
+      .withMessage("availableSizes must be an object"),
+
+    body("availableSizes.format")
+      .optional()
+      .isIn(["standard", "dimensions"])
+      .withMessage(
+        "availableSizes.format must be either 'standard' or 'dimensions'"
+      ),
+
+    body("availableSizes.sizes")
+      .optional()
       .isArray()
-      .withMessage("availableSizes must be an array"),
+      .withMessage("availableSizes.sizes must be an array")
+      .custom((arr) => arr.every((s) => typeof s === "string"))
+      .withMessage("Each size must be a string"),
 
     body("tags").optional().isArray().withMessage("Tags must be an array"),
 
@@ -232,7 +261,8 @@ router.put(
     body("style").optional().isString(),
     body("origin").optional().isString(),
     body("howMade").optional().isString(),
-    body("deliveryAndReturns").optional().isString(),
+    body("delivery").optional().isString(),
+    body("returns").optional().isString(),
     body("sustainability").optional().isString(),
     body("durability").optional().isString(),
     body("usage").optional().isString(),

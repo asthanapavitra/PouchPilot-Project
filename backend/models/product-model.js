@@ -63,10 +63,22 @@ const productSchema = mongoose.Schema({
   origin: String,
   productDetails: [String],
   howMade: String,
-  deliveryAndReturns: String,
+  delivery: String
+  ,returns:String,
 
   // Optional attributes based on category
-  availableSizes: [String],
+  availableSizes: {
+  format: {
+    type: String,
+    enum: ['standard', 'dimensions'],
+    required: true
+  },
+  sizes: {
+    type: [String],
+    required: true
+  }
+}
+,
   material: String,
   fragranceNotes: String,
   gender: String,

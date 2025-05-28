@@ -9,7 +9,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "durability",
     "usage",
@@ -25,7 +26,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "category",
     "subcategory",
   ],
@@ -36,7 +38,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "durability",
     "usage",
@@ -52,7 +55,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "category",
     "subcategory",
   ],
@@ -63,7 +67,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "durability",
     "usage",
@@ -75,7 +80,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "forOccasion",
     "giftMessageAvailable",
   ],
@@ -84,7 +90,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "usage",
     "care",
@@ -100,6 +107,13 @@ const AddProductPanel = ({
 }) => {
   const [removedImages, setRemovedImages] = useState([]);
   const [newColor, setNewColor] = useState("");
+  const [sizeFormat, setSizeFormat] = useState("standard");
+  const [dimensionInput, setDimensionInput] = useState({
+    length: "",
+    breadth: "",
+    height: "",
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     specifications: [],
@@ -117,9 +131,12 @@ const AddProductPanel = ({
     origin: "",
     productDetails: [""],
     howMade: "",
-    deliveryAndReturns: "",
-
-    availableSizes: [],
+    delivery: "",
+    returns: "",
+    availableSizes: {
+      format: "standard",
+      sizes: [],
+    },
     material: "",
     fragranceNotes: "",
     gender: "",
@@ -143,13 +160,31 @@ const AddProductPanel = ({
     { subHeading: "", value: "" },
   ]);
   const [productDescription, setProductDescription] = useState([""]);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupProgress, setPopupProgress] = useState(100);
+  const showPopupMessage = (message) => {
+    setPopupMessage(message);
+    setPopupProgress(100);
+    setShowPopup(true);
+
+    let width = 100;
+    const interval = setInterval(() => {
+      width -= 1;
+      setPopupProgress(width);
+      if (width <= 0) {
+        setShowPopup(false);
+        clearInterval(interval);
+      }
+    }, 1);
+  };
 
   const handleSpecChange = (index, field, value) => {
     const updated = [...specifications];
     updated[index][field] = value;
     setSpecifications(updated);
   };
-console.log(specifications)
+
   const addSpecRow = () => {
     setSpecifications([...specifications, { subHeading: "", value: "" }]);
   };
@@ -218,16 +253,14 @@ console.log(specifications)
       return { ...prev, images: updatedImages };
     });
   };
- 
-  const handleImageUpload = (color, file) => {
-    console.log("Inside Image Upload");
 
+  const handleImageUpload = (color, files) => {
     setFormData((prev) => {
       const updatedImages = prev.images.map((img) => {
         if (img.color === color) {
           return {
             ...img,
-            gallery: [...img.gallery, file], // Create new gallery array
+            gallery: [...img.gallery, ...files], // Add all selected files
           };
         }
         return img;
@@ -235,19 +268,18 @@ console.log(specifications)
 
       const colorExists = prev.images.some((img) => img.color === color);
       if (!colorExists) {
-        updatedImages.push({ color, gallery: [file] });
+        updatedImages.push({ color, gallery: [...files] });
       }
 
-      console.log(updatedImages);
       return { ...prev, images: updatedImages };
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    showPopupMessage("Adding product,please wait for few seconds 😏");
     const form = new FormData();
-    console.log(formData.specifications)
+
     // Append non-image fields
     for (let key in formData) {
       if (key === "images") continue; // skip for now
@@ -275,9 +307,9 @@ console.log(specifications)
 
     // Append imageMeta as JSON
     form.append("imagesMeta", JSON.stringify(imageMeta));
-    for (let pair of form.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // for (let pair of form.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
 
     try {
       const res = await axios.post(
@@ -292,7 +324,7 @@ console.log(specifications)
       );
       if (res.status == 201) console.log("Product submitted", res.data);
 
-      alert("Product added successfully");
+      showPopupMessage("Product added Successfully, Mr Bandar😏");
       setActiveView("subCategoryProducts");
     } catch (err) {
       console.error("Submission error", err);
@@ -302,7 +334,26 @@ console.log(specifications)
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-4 max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Add New Product</h2>
-
+      {showPopup && (
+        <div
+          className="absolute top-[75px] right-[5%] w-full flex justify-center mt-2 z-50"
+          onClick={() => {
+            if (popupMessage.includes("Click here to buy item")) {
+              navigate("/my-cart");
+            }
+          }}
+        >
+          <div className="fixed top-[70px] z-999 bg-blue-100 text-black-900 px-6 py-4 rounded shadow-md text-center w-[90%] max-w-xl">
+            <div
+              className="left-0 h-1 bg-blue-500 rounded-t"
+              style={{ width: `${popupProgress}%` }}
+            />
+            <span className="block font-medium whitespace-pre-line">
+              {popupMessage}
+            </span>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <input
           type="text"
@@ -341,13 +392,16 @@ console.log(specifications)
           className="border p-2 rounded"
         />
       </div>
-      <div>
+      <div className="w-full">
         <h2 className="text-lg font-semibold mb-2">Specifications</h2>
         {specifications.map((spec, index) => (
-          <div key={index} className="flex gap-2 mb-2">
+          <div
+            key={index}
+            className="w-full flex items-center justify-between gap-2 mb-2"
+          >
             <input
               type="text"
-              className="flex-1 p-2 border rounded"
+              className="flex w-[45%]  p-2 border rounded"
               placeholder="Subheading"
               value={spec.subHeading}
               onChange={(e) =>
@@ -356,7 +410,7 @@ console.log(specifications)
             />
             <input
               type="text"
-              className="flex-1 p-2 border rounded"
+              className="flex-1 w-[45%]  p-2 border rounded"
               placeholder="Value"
               value={spec.value}
               onChange={(e) => handleSpecChange(index, "value", e.target.value)}
@@ -415,20 +469,107 @@ console.log(specifications)
         />
       )}
 
-      {visibleFields.includes("availableSizes") && (
-        <input
-          type="text"
-          name="availableSizes"
-          onChange={(e) =>
+     {visibleFields.includes("availableSizes") && (
+  <div className="border p-4 rounded w-full space-y-2">
+    <label className="font-semibold block">Available Sizes</label>
+
+    {/* Format selector */}
+    <select
+      value={formData.availableSizes.format}
+      onChange={(e) =>
+        setFormData({
+          ...formData,
+          availableSizes: {
+            format: e.target.value,
+            sizes: [], // reset sizes on format change
+          },
+        })
+      }
+      className="border px-2 py-1 rounded"
+    >
+      <option value="standard">Standard (e.g. S, M, L)</option>
+      <option value="dimensions">Dimensions(e.g. Length*Breadth*Height)</option>
+    </select>
+
+    {/* Size input field */}
+    {formData.availableSizes.format === "standard" && (
+      <input
+        type="text"
+        value={formData.availableSizes.sizes.join(", ")}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            availableSizes: {
+              ...formData.availableSizes,
+              sizes: e.target.value.split(",").map((s) => s.trim()),
+            },
+          })
+        }
+        placeholder="Enter sizes (comma separated, e.g. S, M, L)"
+        className="border p-2 rounded w-full"
+      />
+    )}
+
+    {formData.availableSizes.format === "dimensions" && (
+      <div className="space-y-2">
+        {formData.availableSizes.sizes.map((size, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <input
+              type="text"
+              value={size}
+              onChange={(e) => {
+                const updated = [...formData.availableSizes.sizes];
+                updated[index] = e.target.value;
+                setFormData({
+                  ...formData,
+                  availableSizes: {
+                    ...formData.availableSizes,
+                    sizes: updated,
+                  },
+                });
+              }}
+              placeholder="e.g. 10*5*3"
+              className="border p-2 rounded w-full"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const updated = [...formData.availableSizes.sizes];
+                updated.splice(index, 1);
+                setFormData({
+                  ...formData,
+                  availableSizes: {
+                    ...formData.availableSizes,
+                    sizes: updated,
+                  },
+                });
+              }}
+              className="text-red-600"
+            >
+              ❌
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() =>
             setFormData({
               ...formData,
-              availableSizes: e.target.value.split(",").map((s) => s.trim()),
+              availableSizes: {
+                ...formData.availableSizes,
+                sizes: [...formData.availableSizes.sizes, ""],
+              },
             })
           }
-          placeholder="Available Sizes (comma separated)"
-          className="border p-2 rounded w-full"
-        />
-      )}
+          className="text-blue-600 underline"
+        >
+          + Add Custom Size
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
 
       {[
         "category",
@@ -436,7 +577,8 @@ console.log(specifications)
         "style",
         "origin",
         "howMade",
-        "deliveryAndReturns",
+        "delivery",
+        "returns",
         "sustainability",
         "durability",
         "usage",
@@ -555,10 +697,15 @@ console.log(specifications)
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   onChange={(e) =>
-                    handleImageUpload(imgGroup.color, e.target.files[0])
+                    handleImageUpload(
+                      imgGroup.color,
+                      Array.from(e.target.files)
+                    )
                   }
                 />
+
                 <button
                   type="button"
                   onClick={() => handleRemoveColorGroup(imgGroup.color)}

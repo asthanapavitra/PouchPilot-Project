@@ -12,7 +12,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "durability",
     "usage",
@@ -28,7 +29,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "category",
     "subcategory",
   ],
@@ -39,7 +41,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "durability",
     "usage",
@@ -55,7 +58,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "category",
     "subcategory",
   ],
@@ -66,7 +70,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "durability",
     "usage",
@@ -78,7 +83,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "forOccasion",
     "giftMessageAvailable",
   ],
@@ -87,7 +93,8 @@ const categoryFieldMap = {
     "style",
     "origin",
     "howMade",
-    "deliveryAndReturns",
+    "delivery",
+    "returns",
     "sustainability",
     "usage",
     "care",
@@ -96,14 +103,10 @@ const categoryFieldMap = {
   ],
 };
 
-const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
- 
-
-  
-
-  const handleDone=()=>{
-    setActiveView("subCategoryProducts")
-  }
+const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
+  const handleDone = () => {
+    setActiveView("subCategoryProducts");
+  };
   const [formData, setFormData] = useState({
     name: product?.name || "",
     specifications: product?.specifications || "",
@@ -120,7 +123,10 @@ const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
     productDetails: product?.productDetails || [],
     howMade: product?.howMade || "",
     deliveryAndReturns: product?.deliveryAndReturns || "",
-    availableSizes: product?.availableSizes || [],
+    availableSizes: product?.availableSizes || {
+      format: "standard",
+      sizes: [],
+    },
     material: product?.material || "",
     fragranceNotes: product?.fragranceNotes || "",
     gender: product?.gender || "",
@@ -134,10 +140,28 @@ const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
   const [removedImages, setRemovedImages] = useState([]);
   const [newColor, setNewColor] = useState("");
   const visibleFields = categoryFieldMap[formData.category] || [];
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupProgress, setPopupProgress] = useState(100);
+  const showPopupMessage = (message) => {
+    setPopupMessage(message);
+    setPopupProgress(100);
+    setShowPopup(true);
+
+    let width = 100;
+    const interval = setInterval(() => {
+      width -= 1;
+      setPopupProgress(width);
+      if (width <= 0) {
+        setShowPopup(false);
+        clearInterval(interval);
+      }
+    }, 25);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (name === "tags" || name === "availableSizes") {
+    if (name === "tags") {
       setFormData({
         ...formData,
         [name]: value.split(",").map((v) => v.trim()),
@@ -178,21 +202,24 @@ const UpdateProductPanel = ({product,setProduct,setActiveView}) => {
     updatedDetails[index] = value;
     setFormData({ ...formData, productDetails: updatedDetails });
   };
-const handleSpecificationChange = (index,field, value) => {
+  const handleSpecificationChange = (index, field, value) => {
     const updatedSpecifications = [...formData.specifications];
-    updatedSpecifications [index][field] = value;
-    setFormData({ ...formData, specifications:updatedSpecifications  });
+    updatedSpecifications[index][field] = value;
+    setFormData({ ...formData, specifications: updatedSpecifications });
   };
   const addSpecification = () => {
     setFormData({
       ...formData,
-      specifications: [...formData.specifications, { subHeading: "", value: "" }],
+      specifications: [
+        ...formData.specifications,
+        { subHeading: "", value: "" },
+      ],
     });
   };
-const removeSpecification = (index) => {
-    const updatedSpecifications  = [...formData.specifications];
+  const removeSpecification = (index) => {
+    const updatedSpecifications = [...formData.specifications];
     updatedSpecifications.splice(index, 1);
-    setFormData({ ...formData, specifications: updatedSpecifications});
+    setFormData({ ...formData, specifications: updatedSpecifications });
   };
 
   const addProductDetail = () => {
@@ -267,7 +294,7 @@ const removeSpecification = (index) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = new FormData();
-
+    showPopupMessage("Updating product");
     for (let key in formData) {
       if (key === "images") continue;
       const value = formData[key];
@@ -293,9 +320,9 @@ const removeSpecification = (index) => {
     if (removedImages.length > 0) {
       form.append("removedImages", JSON.stringify(removedImages));
     }
-    for (let pair of form.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
+    // for (let pair of form.entries()) {
+    //   console.log(pair[0] + ", " + pair[1]);
+    // }
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/products/update-product/${
@@ -303,14 +330,15 @@ const removeSpecification = (index) => {
         }`,
         form,
         {
-          headers: { 
-             Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-            ,"Content-Type": "multipart/form-data" },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       if (res.status === 201) {
         setProduct(res.data.product);
-        alert("Product updated successfully");
+        showPopupMessage("Product updated successfully");
       }
     } catch (err) {
       console.error("Update error", err);
@@ -319,10 +347,29 @@ const removeSpecification = (index) => {
 
   return (
     <>
-     
-    <h2 className="text-2xl font-semibold text-center mt-5">Update Product</h2>
-   
- 
+      <h2 className="text-2xl font-semibold text-center mt-5">
+        Update Product
+      </h2>
+      {showPopup && (
+        <div
+          className="absolute top-[75px] right-[5%] w-full flex justify-center mt-2 z-50"
+          onClick={() => {
+            if (popupMessage.includes("Click here to buy item")) {
+              navigate("/my-cart");
+            }
+          }}
+        >
+          <div className="fixed top-[70px] z-999 bg-blue-100 text-black-900 px-6 py-4 rounded shadow-md text-center w-[90%] max-w-xl">
+            <div
+              className="left-0 h-1 bg-blue-500 rounded-t"
+              style={{ width: `${popupProgress}%` }}
+            />
+            <span className="block font-medium whitespace-pre-line">
+              {popupMessage}
+            </span>
+          </div>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit}
         className=" space-y-4  max-w-4xl mx-auto mb-10"
@@ -412,11 +459,115 @@ const removeSpecification = (index) => {
                 "isCustomizable",
                 "kids",
                 "isActive",
+                "availableSizes",
               ].includes(key))
           )
             return null;
+          if (key === "availableSizes") {
+            return (
+              <div className="border p-4 rounded w-full space-y-2">
+                <label className="font-semibold block">Available Sizes</label>
 
-          if (key === "tags" || key === "availableSizes") {
+                {/* Format selector */}
+                <select
+                  value={formData.availableSizes.format}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      availableSizes: {
+                        format: e.target.value,
+                        sizes: [], // reset sizes on format change
+                      },
+                    })
+                  }
+                  className="border px-2 py-1 rounded w-[60%]"
+                >
+                  <option value="standard">Standard (e.g. S, M, L)</option>
+                  <option value="dimensions">
+                    Dimensions(e.g. Length*Breadth*Height)
+                  </option>
+                </select>
+
+                {/* Size input field */}
+                {formData.availableSizes.format === "standard" && (
+                  <input
+                    type="text"
+                    value={formData.availableSizes.sizes.join(", ")}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        availableSizes: {
+                          ...formData.availableSizes,
+                          sizes: e.target.value.split(",").map((s) => s.trim()),
+                        },
+                      })
+                    }
+                    placeholder="Enter sizes (comma separated, e.g. S, M, L)"
+                    className="border p-2 rounded w-full"
+                  />
+                )}
+
+                {formData.availableSizes.format === "dimensions" && (
+                  <div className="space-y-2">
+                    {formData.availableSizes.sizes.map((size, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={size}
+                          onChange={(e) => {
+                            const updated = [...formData.availableSizes.sizes];
+                            updated[index] = e.target.value;
+                            setFormData({
+                              ...formData,
+                              availableSizes: {
+                                ...formData.availableSizes,
+                                sizes: updated,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. 10*5*3"
+                          className="border p-2 rounded w-full"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...formData.availableSizes.sizes];
+                            updated.splice(index, 1);
+                            setFormData({
+                              ...formData,
+                              availableSizes: {
+                                ...formData.availableSizes,
+                                sizes: updated,
+                              },
+                            });
+                          }}
+                          className="text-red-600"
+                        >
+                          ❌
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          availableSizes: {
+                            ...formData.availableSizes,
+                            sizes: [...formData.availableSizes.sizes, ""],
+                          },
+                        })
+                      }
+                      className="text-blue-600 underline"
+                    >
+                      + Add Custom Size
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          }
+          if (key === "tags") {
             return (
               <div
                 key={key}
@@ -509,7 +660,7 @@ const removeSpecification = (index) => {
               <div key={key}>
                 <div className="flex flex-col md:flex-row md:justify-between  md:items-center w-full">
                   <label className="block capitalize font-medium mb-1">
-                    Specifications                  
+                    Specifications
                   </label>
                   <ul className="space-y-2 w-[60%]">
                     {formData.specifications.map((specification, i) => (
@@ -518,7 +669,11 @@ const removeSpecification = (index) => {
                           type="text"
                           value={specification.subHeading}
                           onChange={(e) =>
-                            handleSpecificationChange(i, "subHeading",e.target.value, )
+                            handleSpecificationChange(
+                              i,
+                              "subHeading",
+                              e.target.value
+                            )
                           }
                           className="border px-3 py-1 rounded w-full"
                         />
@@ -526,7 +681,11 @@ const removeSpecification = (index) => {
                           type="text"
                           value={specification.value}
                           onChange={(e) =>
-                            handleSpecificationChange(i,"value", e.target.value)
+                            handleSpecificationChange(
+                              i,
+                              "value",
+                              e.target.value
+                            )
                           }
                           className="border px-3 py-1 rounded w-full"
                         />
@@ -631,21 +790,20 @@ const removeSpecification = (index) => {
           );
         })}
         <div className="flex justify-center items-center gap-4 mt-6">
-<button
-          type="submit"
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
-        >
-          Save Changes
-        </button>
-        <button
-          type="submit"
-          onClick={handleDone}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
-        >
-          Done 
-        </button>
+          <button
+            type="submit"
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+          >
+            Save Changes
+          </button>
+          <button
+            type="submit"
+            onClick={handleDone}
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+          >
+            Done
+          </button>
         </div>
-        
       </form>
     </>
   );
