@@ -10,10 +10,10 @@ module.exports.getAllProducts = async (req, res) => {
       ...product._doc,
       images: product.images.map((typecolor) => ({
         color: typecolor.color,
-        gallery: typecolor.gallery.map(
-          (img) =>
-            `data:${img.contentType};base64,${img.data.toString("base64")}`
-        ),
+        gallery: typecolor.gallery.map((img) => ({
+          src: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+          id: img._id, // ✅ This is what you were missing
+        })),
       })),
     }));
 
@@ -147,10 +147,10 @@ module.exports.getProductsByCategory = async (req, res) => {
       ...product._doc,
       images: product.images.map((typecolor) => ({
         color: typecolor.color,
-        gallery: typecolor.gallery.map(
-          (img) =>
-            `data:${img.contentType};base64,${img.data.toString("base64")}`
-        ),
+        gallery: typecolor.gallery.map((img) => ({
+          src: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+          id: img._id, // ✅ This is what you were missing
+        })),
       })),
     }));
 
@@ -179,10 +179,10 @@ module.exports.getProductsBySubCategory = async (req, res) => {
       ...product._doc,
       images: product.images.map((typecolor) => ({
         color: typecolor.color,
-        gallery: typecolor.gallery.map(
-          (img) =>
-            `data:${img.contentType};base64,${img.data.toString("base64")}`
-        ),
+        gallery: typecolor.gallery.map((img) => ({
+          src: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+          id: img._id, // ✅ This is what you were missing
+        })),
       })),
     }));
 
@@ -208,12 +208,13 @@ module.exports.getProductById = async (req, res) => {
       ...product._doc,
       images: product.images.map((typecolor) => ({
         color: typecolor.color,
-        gallery: typecolor.gallery.map(
-          (img) =>
-            `data:${img.contentType};base64,${img.data.toString("base64")}`
-        ),
+        gallery: typecolor.gallery.map((img) => ({
+          src: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+          id: img._id, // ✅ This is what you were missing
+        })),
       })),
     };
+
     return res.status(200).json({
       product: formattedProduct,
       message: "Product fetched successfully",
@@ -268,7 +269,8 @@ module.exports.updateProduct = async (req, res) => {
     }
 
     const imagesMeta = JSON.parse(req.body.imagesMeta || "[]");
- 
+    const removedImages = JSON.parse(req.body.removedImages || "[]");
+
     const files = req.files?.newImages || [];
 
     const existingProduct = await productModel.findById(id);
@@ -279,8 +281,14 @@ module.exports.updateProduct = async (req, res) => {
     const mergedImagesMap = new Map();
 
     // Step 1: Start with existing images
+    // Step 1: Start with existing images (excluding removed ones)
     existingProduct.images.forEach(({ color, gallery }) => {
-      mergedImagesMap.set(color, [...gallery]);
+      const filteredGallery = gallery.filter(
+        (img) => !removedImages.includes(String(img._id))
+      );
+      if (filteredGallery.length > 0) {
+        mergedImagesMap.set(color, filteredGallery);
+      }
     });
 
     // Step 2: Add new images from form (if any)
@@ -321,7 +329,7 @@ module.exports.updateProduct = async (req, res) => {
         tags: tags ? tags : [],
         style,
         origin,
-        productDetails: productDetails ? productDetails: [],
+        productDetails: productDetails ? productDetails : [],
         howMade,
         delivery,
         returns,
@@ -338,7 +346,7 @@ module.exports.updateProduct = async (req, res) => {
         storageInstructions,
         care,
         isActive: isActive === "true" || isActive === true,
-        images:updatedImages,
+        images: updatedImages,
         emi: emi ? emi : { emiAvailable: false, noOfMonths: [] },
       },
       { new: true }

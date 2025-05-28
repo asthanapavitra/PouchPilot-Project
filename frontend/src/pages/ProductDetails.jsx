@@ -116,7 +116,7 @@ const ProductDetails = () => {
               {gallery.map((img, idx) => (
                 <SwiperSlide key={idx}>
                   <img
-                    src={img}
+                    src={img.src}
                     alt={`Product ${idx}`}
                     className="rounded-xl object-cover w-full h-[300px] sm:h-[400px] md:h-[500px]"
                   />

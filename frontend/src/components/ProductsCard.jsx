@@ -78,7 +78,7 @@ const ProductsCard = ({ product }) => {
         <div className="relative w-full h-48 overflow-hidden rounded-xl mb-4">
         {imageSrc && (
           <img onClick={handleProductClick}
-            src={imageSrc}
+            src={imageSrc.src}
             alt="product"
             className={`w-[80%] h-50 object-center rounded-xl mb-7 mx-4 mt-2  transition-all duration-300`}
           />

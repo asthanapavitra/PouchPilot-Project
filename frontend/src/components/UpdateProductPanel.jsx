@@ -235,13 +235,16 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
     setFormData({ ...formData, productDetails: updatedDetails });
   };
   const handleRemoveImage = (color, index) => {
+    let removedId = null;
+
     setFormData((prev) => {
       const updatedImages = prev.images.map((img) => {
         if (img.color === color) {
           const updatedGallery = [...img.gallery];
           const removed = updatedGallery.splice(index, 1)[0];
-          if (removed && removed._id) {
-            setRemovedImages((prevRemoved) => [...prevRemoved, removed._id]);
+
+          if (removed && removed.id) {
+            removedId = removed.id;
           }
           return { ...img, gallery: updatedGallery };
         }
@@ -249,6 +252,11 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
       });
       return { ...prev, images: updatedImages };
     });
+
+    // Now update removedImages outside
+    if (removedId) {
+      setRemovedImages((prevRemoved) => [...prevRemoved, removedId]);
+    }
   };
 
   const handleAddColor = () => {
@@ -264,11 +272,24 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
     setNewColor("");
   };
   const handleRemoveColorGroup = (color) => {
+    let removedIds = [];
+
     setFormData((prev) => {
-      // Filter out the color group with the given color
+      const colorImages = prev.images.find((img) => img.color === color);
+      if (colorImages) {
+        removedIds = colorImages.gallery
+          .filter((file) => file.id)
+          .map((file) => file.id);
+      }
+
       const updatedImages = prev.images.filter((img) => img.color !== color);
       return { ...prev, images: updatedImages };
     });
+
+    // Update removedImages outside
+    if (removedIds.length > 0) {
+      setRemovedImages((prevRemoved) => [...prevRemoved, ...removedIds]);
+    }
   };
 
   const handleImageUpload = (color, files) => {
@@ -292,62 +313,63 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
     });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  const form = new FormData();
-  showPopupMessage("Updating product");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    showPopupMessage("Updating product");
 
-  // Append all form fields except images
-  for (let key in formData) {
-    if (key === "images") continue;
-    const value = formData[key];
-    form.append(
-      key,
-      typeof value === "object" ? JSON.stringify(value) : value
-    );
-  }
-
-  const imageMeta = [];
-  let fileIndex = 0;
-
-  formData.images.forEach((imgGroup) => {
-    const color = imgGroup.color;
-    imgGroup.gallery.forEach((file) => {
-      if (file instanceof File) {
-        form.append("newImages", file);
-        imageMeta.push({ color, index: fileIndex++, isNew: true });
-      } else {
-        
-        imageMeta.push({ color, index: fileIndex++, isNew: false });
-      }
-    });
-  });
-
-  form.append("imagesMeta", JSON.stringify(imageMeta));
-  if (removedImages.length > 0) {
-    form.append("removedImages", JSON.stringify(removedImages));
-  }
-
-  try {
-    const res = await axios.put(
-      `${import.meta.env.VITE_BASE_URL}/products/update-product/${product._id}`,
-      form,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    if (res.status === 201) {
-      setProduct(res.data.product);
-      showPopupMessage("Product updated successfully");
+    // Append all form fields except images
+    for (let key in formData) {
+      if (key === "images") continue;
+      const value = formData[key];
+      form.append(
+        key,
+        typeof value === "object" ? JSON.stringify(value) : value
+      );
     }
-  } catch (err) {
-    console.error("Update error", err);
-  }
-};
+
+    const imageMeta = [];
+    let fileIndex = 0;
+
+    formData.images.forEach((imgGroup) => {
+      const color = imgGroup.color;
+      imgGroup.gallery.forEach((file) => {
+        if (file instanceof File) {
+          form.append("newImages", file);
+          imageMeta.push({ color, index: fileIndex++, isNew: true });
+        } else {
+          imageMeta.push({ color, index: fileIndex++, isNew: false });
+        }
+      });
+    });
+
+    form.append("imagesMeta", JSON.stringify(imageMeta));
+    if (removedImages.length > 0) {
+      form.append("removedImages", JSON.stringify(removedImages));
+    }
+
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/products/update-product/${
+          product._id
+        }`,
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (res.status === 201) {
+        setProduct(res.data.product);
+        showPopupMessage("Product updated successfully");
+      }
+    } catch (err) {
+      console.error("Update error", err);
+    }
+  };
 
   return (
     <>
@@ -430,7 +452,7 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
                     src={
                       img.data
                         ? `data:${img.contentType};base64,${img.data}`
-                        : img
+                        : img.src
                     }
                     alt={`preview-${i}`}
                     className="w-24 h-24 object-cover rounded"

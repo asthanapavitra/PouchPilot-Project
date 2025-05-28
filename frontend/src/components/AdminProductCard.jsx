@@ -66,7 +66,7 @@ const handleDeleteProduct=async()=>{
       <div className="relative w-full h-48 overflow-hidden rounded-xl mb-4">
         {imageSrc && (
           <img
-            src={imageSrc}
+            src={imageSrc.src}
             alt="product"
             className="object-contain w-full h-full"
           />
