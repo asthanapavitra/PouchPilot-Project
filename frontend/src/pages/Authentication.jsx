@@ -152,8 +152,9 @@ const Authentication = () => {
         });
 
         tl.to(registerText.current, {
+          right:"20%",
           opacity: 0,
-          duration: 0.8,
+          duration: 0.3,
         });
 
         tl.to(blueRef.current, {

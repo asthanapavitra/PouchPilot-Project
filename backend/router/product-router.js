@@ -64,14 +64,7 @@ router.post(
       .trim()
       .toLowerCase()
       .custom((value) => {
-        const valid = [
-          "bags",
-          "sneakers",
-          "watches",
-          "perfumes",
-          "gifts",
-          "merchandise",
-        ];
+        const valid =["bags", "shoes", "watches", "perfumes", "gifts","hats","services","pets"];
         if (!valid.includes(value)) {
           throw new Error("Invalid product category");
         }
@@ -272,5 +265,5 @@ router.get(
   productController.getProductsBySubCategory
 );
 router.get("/get-product-by-id/:id", productController.getProductById);
-router.get("/get-Oneproduct-forEach-subcategory/:category",productController.getProductForSubCategory)
+router.get("/get-Oneproduct-forEach-subcategory/:criteria",productController.getProductByCriteria)
 module.exports = router;

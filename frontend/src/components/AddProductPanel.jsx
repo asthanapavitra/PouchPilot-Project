@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+const fields = [
+  "material",
+  "gender",
+  "availableSizes",
+  "style",
+  "origin",
+  "howMade",
+  "delivery",
+  "returns",
+  "durability",
+  "usage",
+  "care",
+
+  "subcategory",
+  "sustainability",
+];
 const categoryFieldMap = {
-  Sneakers: [
+  Shoes: [
     "material",
     "gender",
     "warranty",
@@ -11,9 +27,9 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "sustainability",
+
     "durability",
-    "category",
+
     "subcategory",
   ],
   Perfumes: [
@@ -25,7 +41,7 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "category",
+
     "subcategory",
   ],
   Bags: [
@@ -37,12 +53,12 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "sustainability",
+
     "durability",
     "usage",
     "storageInstructions",
     "care",
-    "category",
+
     "subcategory",
   ],
   Watches: [
@@ -54,10 +70,10 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "category",
+
     "subcategory",
   ],
-  Caps: [
+  Hats: [
     "material",
     "gender",
     "availableSizes",
@@ -66,11 +82,11 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "sustainability",
+
     "durability",
     "usage",
     "care",
-    "category",
+
     "subcategory",
   ],
   Gifts: [
@@ -82,25 +98,14 @@ const categoryFieldMap = {
     "forOccasion",
     "giftMessageAvailable",
   ],
-  Merchandise: [
-    "material",
-    "style",
-    "origin",
-    "howMade",
-    "delivery",
-    "returns",
-    "sustainability",
-    "usage",
-    "care",
-    "category",
-    "subcategory",
-  ],
+  Pets: ["subcategory", "howMade", "delivery", "returns"],
 };
 
 const AddProductPanel = ({
   selectedCategory,
   selectedSubCategory,
   setActiveView,
+  categories,
 }) => {
   const [newColor, setNewColor] = useState("");
 
@@ -191,7 +196,7 @@ const AddProductPanel = ({
     }));
   }, [selectedCategory, selectedSubCategory]);
 
-  const visibleFields = categoryFieldMap[selectedCategory] || [];
+  const visibleFields = categoryFieldMap[selectedCategory] || fields;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -308,7 +313,7 @@ const AddProductPanel = ({
       );
       if (res.status == 201) {
         showPopupMessage("Product added Successfully, Mr Bandar😏");
-        setActiveView("subCategoryProducts");
+        setActiveView(null);
       }
     } catch (err) {
       console.log("Caught error:", err);
@@ -350,7 +355,19 @@ const AddProductPanel = ({
           </div>
         </div>
       )}
-      <form onClick={()=>setShowPopup(false)} onSubmit={handleSubmit} className="p-6 space-y-4 max-w-4xl mx-auto">
+      <form
+        onClick={() => setShowPopup(false)}
+        onSubmit={handleSubmit}
+        className="p-6 space-y-4 max-w-4xl mx-auto"
+      >
+        <button
+          onClick={() => {
+            setActiveView(null);
+          }}
+          className="bg-black text-white px-4 py-2 rounded"
+        >
+          Back
+        </button>
         <h2 className="text-2xl font-semibold mb-4">Add New Product</h2>
 
         <div className="grid grid-cols-2 gap-4">
@@ -391,6 +408,26 @@ const AddProductPanel = ({
             className="border p-2 rounded"
           />
         </div>
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Product Description</h2>
+          {productDescription.map((desc, index) => (
+            <input
+              key={index}
+              type="text"
+              className="block w-full mb-2 p-2 border rounded"
+              value={desc}
+              onChange={(e) => handleDescriptionChange(index, e.target.value)}
+              placeholder={`Detail ${index + 1}`}
+            />
+          ))}
+          <button
+            type="button"
+            onClick={addDescriptionRow}
+            className="text-blue-600 underline"
+          >
+            + Add More
+          </button>
+        </div>
         <div className="w-full">
           <h2 className="text-lg font-semibold mb-2">Specifications</h2>
           {specifications.map((spec, index) => (
@@ -427,25 +464,35 @@ const AddProductPanel = ({
           </button>
         </div>
 
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Product Description</h2>
-          {productDescription.map((desc, index) => (
-            <input
-              key={index}
-              type="text"
-              className="block w-full mb-2 p-2 border rounded"
-              value={desc}
-              onChange={(e) => handleDescriptionChange(index, e.target.value)}
-              placeholder={`Detail ${index + 1}`}
-            />
-          ))}
-          <button
-            type="button"
-            onClick={addDescriptionRow}
-            className="text-blue-600 underline"
+        <div className=" p-4 rounded w-full space-y-2">
+          <label className="font-semibold block">Category</label>
+
+          {/* Format selector */}
+          <select
+            value={formData.availableSizes.format}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                category: e.target.value,
+              })
+            }
+            className="border px-2 py-1 rounded"
           >
-            + Add More
-          </button>
+            <option value="bags">Select Category</option>
+            {[
+              "bags",
+              "shoes",
+              "watches",
+              "perfumes",
+              "gifts",
+              "travelAndHome",
+              "hats",
+              "services",
+              "pets",
+            ].map((cat) => {
+              return <option value={cat}>{cat}</option>;
+            })}
+          </select>
         </div>
 
         {visibleFields.includes("material") && (
@@ -610,8 +657,8 @@ const AddProductPanel = ({
             className="border px-3 py-2  rounded min-w-[150px]"
           >
             <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="male">Men</option>
+            <option value="female">Women</option>
             <option value="unisex">Unisex</option>
           </select>
 

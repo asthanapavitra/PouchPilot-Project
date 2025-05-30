@@ -50,7 +50,7 @@ const productSchema = mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ["bags", "sneakers", "watches", "perfumes", "gifts", "merchandise"],
+    enum: ["bags", "shoes", "watches", "perfumes", "gifts", "hats","services","pets"],
     required: true,
   },
   subcategory: {
@@ -65,7 +65,7 @@ const productSchema = mongoose.Schema({
   howMade: String,
   delivery: String
   ,returns:String,
-
+  
   // Optional attributes based on category
   availableSizes: {
   format: {

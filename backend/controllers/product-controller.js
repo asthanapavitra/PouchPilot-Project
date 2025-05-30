@@ -162,10 +162,67 @@ module.exports.getProductsByCategory = async (req, res) => {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
 };
-module.exports.getProductForSubCategory = async (req, res) => {
+const genderKeywords = {
+  women: "Women",
+  woman: "Women",
+  her: "Women",
+  men: "Men",
+  man: "Men",
+  him: "Men",
+};
+
+const categoryKeywords = [
+  "gifts",
+  "bags",
+  "watches",
+  "perfumes",
+  "services",
+  "travel and home",
+  "shoes",
+  "hats",
+];
+
+const ignoredWords = ["for", "and", "of", "the", "a", "an", "with"];
+
+module.exports.getProductByCriteria = async (req, res) => {
   try {
-    const category = req.params.category;
-    const products = await productModel.find({ category });
+    const criteria = req.params.criteria.toLowerCase();
+    const words = criteria.split(" ");
+
+    let query = {};
+
+    // 1. Gender check
+    const genderKey = Object.keys(genderKeywords).find((word) =>
+      criteria.includes(word)
+    );
+    if (genderKey) {
+      query.gender = genderKeywords[genderKey];
+    }
+
+    // 2. Category check (supports multi-word match like "travel and home")
+    const matchedCategory = categoryKeywords.find((cat) =>
+      criteria.includes(cat)
+    );
+    if (matchedCategory) {
+      query.category = matchedCategory;
+    }
+
+    // 3. Tags: any remaining relevant words
+    const tagWords = words.filter(
+      (word) =>
+        !Object.keys(genderKeywords).includes(word) &&
+        !ignoredWords.includes(word) &&
+        !categoryKeywords.includes(word)
+    );
+
+    if (tagWords.length > 0) {
+      query.tags = { $in: tagWords };
+    }
+    console.log(query);
+    const products = await productModel.find(query);
+    console.log(products)
+
+    // 4. Filter to one product per subcategory (if needed)
     const seenSubcategories = new Set();
     const filteredProducts = [];
 
@@ -176,6 +233,7 @@ module.exports.getProductForSubCategory = async (req, res) => {
       }
     });
 
+    // 5. Format image data
     const formattedProducts = filteredProducts.map((product) => ({
       ...product._doc,
       images: product.images.map((typecolor) => ({
@@ -186,6 +244,7 @@ module.exports.getProductForSubCategory = async (req, res) => {
         })),
       })),
     }));
+console.log(formattedProducts);
     return res.status(200).json({
       products: formattedProducts,
       message: "Products fetched successfully",
@@ -194,6 +253,7 @@ module.exports.getProductForSubCategory = async (req, res) => {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
 };
+
 module.exports.getProductsBySubCategory = async (req, res) => {
   try {
     const subCategory = req.params.subCategory;

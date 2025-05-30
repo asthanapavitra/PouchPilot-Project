@@ -1,7 +1,7 @@
 import AdminDashboard from "../components/AdminDashboard";
 import AdminOrdersPage from "../components/AdminOrdersPage";
 import AdminProductsPanel from "../components/AdminProductsPanel";
-import axios from 'axios'
+import axios from "axios";
 import React, { useContext, useRef, useState } from "react";
 import {
   LayoutDashboard,
@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 
 const categories = [
   {
-    name: "Bags",
+    name: "bags",
     icon: <ShoppingBag className="mr-2" />,
     subcategories: [
       "Tote Bags",
@@ -39,7 +39,7 @@ const categories = [
     ],
   },
   {
-    name: "Watches",
+    name: "watches",
     icon: <Watch className="mr-2" />,
     subcategories: [
       "Analog",
@@ -51,7 +51,7 @@ const categories = [
     ],
   },
   {
-    name: "Sneakers",
+    name: "shoes",
     icon: <Shirt className="mr-2" />,
     subcategories: [
       "Chuck Taylor Shoes",
@@ -64,12 +64,12 @@ const categories = [
     ],
   },
   {
-    name: "Caps",
+    name: "hats",
     icon: <Tags className="mr-2" />,
     subcategories: ["Beanies", "Visor", "Baseball Caps", "Hats", "Special"],
   },
   {
-    name: "Perfumes",
+    name: "perfumes",
     icon: <Package className="mr-2" />,
     subcategories: [
       "Floral",
@@ -81,15 +81,16 @@ const categories = [
     ],
   },
   {
-    name: "Gifts",
+    name: "gifts",
     icon: <Gift className="mr-2" />,
     subcategories: ["Personalized", "For Her", "For Him"],
   },
   {
-    name: "Merchandise",
+    name: "pets",
     icon: <Package className="mr-2" />,
-    subcategories: ["Hoodies", "Stickers", "Posters"],
+    subcategories: [],
   },
+  
 ];
 
 const Admin = () => {
@@ -97,9 +98,7 @@ const Admin = () => {
 
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-  const [activeView, setActiveView] = useState(
-    selectedSubcategory ? "subCategoryProducts" : "dashboard"
-  );
+  const [activeView, setActiveView] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(
     window.innerWidth >= 1024 ? true : false
   );
@@ -107,7 +106,7 @@ const Admin = () => {
   const sidebarRef = useRef();
   const [product, setProduct] = useState(null);
   const backdropRef = useRef();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   useGSAP(() => {
     if (sidebarOpen) {
       gsap.to(sidebarRef.current, { x: 0, duration: 0.3, ease: "power2.out" });
@@ -129,24 +128,26 @@ const Admin = () => {
       });
     }
   }, [sidebarOpen]);
-  const handleLogout=async()=>{
-    try{
-      const res=await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/logout`,{
-        headers:{
-           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+  const handleLogout = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/admin/logout`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
         }
-      })
-      if(res.status===200){
-        localStorage.removeItem("adminToken"
-        );
+      );
+      if (res.status === 200) {
+        localStorage.removeItem("adminToken");
         navigate("/admin-login");
         alert("Logged out successfully");
       }
-    }catch(err){
+    } catch (err) {
       console.log(err);
       alert("An error occured while logging out, Please try again later ");
     }
-  }
+  };
   const renderMainPanel = () => {
     if (activeView === "dashboard") return <AdminDashboard />;
     if (activeView === "orders") return <AdminOrdersPage />;
@@ -156,10 +157,17 @@ const Admin = () => {
           selectedSubCategory={selectedSubcategory}
           selectedCategory={selectedCategory}
           setActiveView={setActiveView}
+          categories={categories}
         />
       );
     if (activeView === "update-product") {
-      return <UpdateProductPanel product={product} setProduct={setProduct}setActiveView={setActiveView} />;
+      return (
+        <UpdateProductPanel
+          product={product}
+          setProduct={setProduct}
+          setActiveView={setActiveView}
+        />
+      );
     }
     if (activeView == "subCategoryProducts" && selectedSubcategory) {
       return (
@@ -184,8 +192,6 @@ const Admin = () => {
       >
         <Menu />
       </button>
-
-   
 
       {/* Sidebar */}
       <aside
@@ -221,7 +227,7 @@ const Admin = () => {
               setActiveView("orders");
               setExpandedCategory(null);
               setSelectedSubcategory(null);
-               window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)
+              window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false);
             }}
             className={`flex items-center w-full px-3 py-2 rounded hover:bg-gray-200 ${
               activeView === "orders" ? "bg-gray-200" : ""
@@ -238,7 +244,6 @@ const Admin = () => {
                   setExpandedCategory(
                     expandedCategory === cat.name ? null : cat.name
                   );
-
                 }}
                 className="flex items-center w-full px-3 py-2 rounded hover:bg-gray-100"
               >
@@ -259,7 +264,9 @@ const Admin = () => {
                       onClick={() => {
                         setSelectedSubcategory(sub);
                         setActiveView("subCategoryProducts");
-                         window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)
+                        window.innerWidth < 1024 &&
+                          sidebarOpen &&
+                          setSidebarOpen(false);
                         setExpandedCategory(null);
                       }}
                       className="block text-left w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
@@ -282,7 +289,7 @@ const Admin = () => {
           </button>
         </nav>
       </aside>
-
+      
       {/* Main panel */}
       <main
         className="flex-1 overflow-y-auto pt-7  w-screen min-h-screen bg-gray-50 shadow-inner"
@@ -291,6 +298,19 @@ const Admin = () => {
         } // click outside to close
       >
         {renderMainPanel()}
+        {activeView == null && (
+        <div className=" flex justify-center ">
+
+          <button
+            onClick={() => {
+              setActiveView("add-product");
+            }}
+            className="bg-black text-white px-4 py-2 rounded"
+          >
+            + Add New Product
+          </button>
+        </div>
+      )}
       </main>
     </div>
   );
