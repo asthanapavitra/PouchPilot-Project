@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Dropdown = ({ items, position, onItemClick }) => {
   return createPortal(
     <div
-      className="absolute bg-white shadow-md rounded-md z-50 py-2 w-48 dropdown-portal"
+      className="absolute bg-white rounded-md z-50 py-2  dropdown-portal"
       style={{ top: position.top, left: position.left }}
     >
       {items.map((sub, idx) => (
@@ -38,18 +38,19 @@ const HomeCategoriesSection = ({ categories }) => {
   };
 
   const handleCategoryClick = (categoryName) => {
-    if (openCategory === categoryName) {
-      setOpenCategory(null);
-    } else {
-      const buttonRect = buttonRefs.current[categoryName]?.getBoundingClientRect();
-      if (buttonRect) {
-        setDropdownPosition({
-          top: buttonRect.bottom + window.scrollY,
-          left: buttonRect.left + window.scrollX,
-        });
-      }
-      setOpenCategory(categoryName);
-    }
+    // if (openCategory === categoryName) {
+    //   setOpenCategory(null);
+    // } else {
+    //   const buttonRect = buttonRefs.current[categoryName]?.getBoundingClientRect();
+    //   if (buttonRect) {
+    //     setDropdownPosition({
+    //       top: buttonRect.bottom + window.scrollY,
+    //       left: buttonRect.left + window.scrollX,
+    //     });
+    //   }
+    //   setOpenCategory(categoryName);
+    // }
+    navigate(`/product-category/${categoryName}` ,{state:{categories:categories}})
   };
 
   // Close dropdown on outside click, with slight delay to allow clicks to register
@@ -76,14 +77,14 @@ const HomeCategoriesSection = ({ categories }) => {
     <div
       className={`w-full px-4 py-2 flex ${
         window.innerWidth >= 768 && "justify-center"
-      } gap-4 items-center mt-6 overflow-x-auto`}
+      } gap-4 items-center mt-2 overflow-x-auto whitespace-nowrap flex-nowrap scrollbar-hide`}
     >
       {categories.map((category) => (
         <div key={category.name} className="relative">
           <button
             ref={(el) => (buttonRefs.current[category.name] = el)}
             onClick={() => handleCategoryClick(category.name)}
-            className="shadow-lg ring-1 font-medium px-5 py-2 rounded-4xl bg-white"
+            className=" ring-1 font-medium px-5 py-2 rounded-4xl bg-white"
           >
             {category.name}
           </button>

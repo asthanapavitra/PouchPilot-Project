@@ -100,7 +100,7 @@ const Navbar = (props) => {
           <SearchPanel setShowSearchPanel={setShowSearchPanel} />
         </div>
       </div>
-      <nav className={`h-[65px] fixed top-0 text-black w-screen bg-white mb-4 shadow-lg z-990`}>
+      <nav className={`h-[65px] fixed top-0 text-black w-screen bg-white  z-990`}>
         <div className="w-[95%] h-full  px-4 sm:px-6 lg:pl-8 lg:pr-2">
           <div className="flex h-full w-full justify-between items-center py-4 mx-2 relative">
             {isMobile && props.isProfilePage ? (
@@ -125,11 +125,9 @@ const Navbar = (props) => {
             {/* Logo */}
             <Link
               to="/"
-              className={`text-2xl   ${
-                props.isMobile ? "w-[57%]" : "w-[60%]"
-              } text-center`}
+              className={`text-2xl   text-center`}
             >
-              <h2 className="text-2xl absolute left-[50%] -translate-x-1/2 top-[50%]  -translate-y-1/2 text-animation text-center">
+              <h2 className="text-3xl absolute left-[50%] -translate-x-1/2 top-[50%]  -translate-y-1/2 text-animation text-center">
                 {["S", "T", "A", "R"].map((char, index) => (
                   <span key={index} className={char === " " ? "mx-1" : ""}>
                     {char}
@@ -147,9 +145,9 @@ const Navbar = (props) => {
             </Link>
 
             {/* Desktop Menu */}
-            <ul className="hidden md:flex justify-end space-x-8 text-lg w-[35%]">
+            <ul className="hidden md:flex justify-end space-x-8 text-lg ">
               <li>
-                <div className="flex items-center justify-center gap-2 support-animation">
+                {window.innerWidth>768 && <div className="flex items-center justify-center gap-2 support-animation">
                   <h2
                     className="translate-x-[180%] hover:text-blue-400 cursor-pointer"
                     onMouseEnter={() => {
@@ -163,7 +161,7 @@ const Navbar = (props) => {
                   <p className="text-sm text-black opacity-0">
                     +91-63160144208
                   </p>
-                </div>
+                </div>}
               </li>
               <li>
                 <Link to="/wishlist" className="group hover:text-red-500">

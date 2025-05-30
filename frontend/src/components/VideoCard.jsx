@@ -1,34 +1,52 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
 const VideoCard = (props) => {
-      const [isMuted, setIsMuted] = useState(true);
-      const togglePlay = () => {
-        const video = document.querySelector("video");
-        isMuted ? (video.muted = false) : (video.muted = true);
-        setIsMuted(!isMuted);
-      };
-    
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const toggleMute = () => {
+    const video = document.querySelector("video");
+    isMuted ? (video.muted = false) : (video.muted = true);
+    setIsMuted(!isMuted);
+  };
+  const togglePlay = () => {
+    const video = document.querySelector("video");
+    if (isPlaying) {
+      video.pause(); // call pause method
+    } else {
+      video.play(); // call play method
+    }
+    setIsPlaying(!isPlaying);
+  };
+
   return (
-    <div className="w-full h-[80%]  relative">
-        <video
-          className="rounded-xl w-full h-full object-cover"
-          src={props.videoSrc}
-          loop
-          autoPlay
-          muted={isMuted}
-        >
-          Your browser does not support the video tag.
-        </video>
+    <div className={`w-full ${window.innerWidth<=768?"h-[60vh]":"h-full "}  relative`}>
+      <video
+        className=" w-full h-full object-cover"
+        src={props.videoSrc}
+        loop
+        autoPlay
+        muted={isMuted}
+      >
+        Your browser does not support the video tag.
+      </video>
+      <div className="absolute bottom-8 right-15 flex  gap-4 ">
         <button onClick={togglePlay} className="">
-          {isMuted ? (
-            <i className="ri-volume-mute-line text-2xl  text-white absolute bottom-8 right-6"></i>
+          {isPlaying ? (
+            <i className="ri-pause-line text-2xl  text-white "></i>
           ) : (
-            <i class="ri-volume-down-line text-2xl text-white absolute bottom-8 right-6"></i>
+            <i class="ri-play-line text-2xl text-white "></i>
+          )}
+        </button>
+        <button onClick={toggleMute} className="">
+          {isMuted ? (
+            <i className="ri-volume-mute-line text-2xl  text-white "></i>
+          ) : (
+            <i class="ri-volume-down-line text-2xl text-white"></i>
           )}
         </button>
       </div>
-
-  )
-}
+    </div>
+  );
+};
 
 export default VideoCard;

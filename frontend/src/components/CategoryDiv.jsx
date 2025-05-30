@@ -55,14 +55,14 @@ const CategoryDiv = (props) => {
           )}
         </div>
       </div>
-      {props.isTwoDiv === "true" ? (
+      {/* {props.isTwoDiv === "true" ? (
         <TwoVideoCard
           isMobile={props.isMobile}
           videoSrc={"/videoplayback.mp4"}
         />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };

@@ -162,7 +162,38 @@ module.exports.getProductsByCategory = async (req, res) => {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
 };
+module.exports.getProductForSubCategory = async (req, res) => {
+  try {
+    const category = req.params.category;
+    const products = await productModel.find({ category });
+    const seenSubcategories = new Set();
+    const filteredProducts = [];
 
+    products.forEach((product) => {
+      if (!seenSubcategories.has(product.subcategory)) {
+        seenSubcategories.add(product.subcategory);
+        filteredProducts.push(product);
+      }
+    });
+
+    const formattedProducts = filteredProducts.map((product) => ({
+      ...product._doc,
+      images: product.images.map((typecolor) => ({
+        color: typecolor.color,
+        gallery: typecolor.gallery.map((img) => ({
+          src: `data:${img.contentType};base64,${img.data.toString("base64")}`,
+          id: img._id,
+        })),
+      })),
+    }));
+    return res.status(200).json({
+      products: formattedProducts,
+      message: "Products fetched successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ message: err.message }] });
+  }
+};
 module.exports.getProductsBySubCategory = async (req, res) => {
   try {
     const subCategory = req.params.subCategory;

@@ -272,4 +272,5 @@ router.get(
   productController.getProductsBySubCategory
 );
 router.get("/get-product-by-id/:id", productController.getProductById);
+router.get("/get-Oneproduct-forEach-subcategory/:category",productController.getProductForSubCategory)
 module.exports = router;

@@ -321,7 +321,7 @@ const Authentication = () => {
   return (
     <div className="bg-white h-screen w-screen flex justify-center items-center overflow-hidden">
       <div
-        className={` w-[90%] sm:w-[70%] lg:w-[60%] ${
+        className={` w-[90%] sm:w-[90%] lg:w-[60%] ${
           isMobile ? "h-[90%]" : "h-[70%]"
         } rounded-lg overflow-hidden relative flex items-center justify-center shadow-2xl `}
       >
@@ -335,10 +335,12 @@ const Authentication = () => {
           <div
             ref={registerForm}
             className={`${
-              isMobile ? "h-[90%] w-full mt-5" : "w-[60%] -mt-10  h-full "
-            } ${
-              window.innerWidth >= 1024 ? "absolute top-[20%] " : ""
-            } relative flex flex-col self-center  items-center justify-start z-10`}
+              isMobile ? "h-[90%] w-full mt-2" : "w-[60%] -mt-10  h-full "
+            }
+            ${
+              window.innerWidth >= 768? "absolute top-[20%] " : ""
+            } 
+            relative flex flex-col self-center  items-center justify-start z-10`}
           >
             <h1 className="font-semibold w-[90%] lg:w-[75%] text-3xl text-center mb-3">
               Registration
@@ -435,8 +437,8 @@ const Authentication = () => {
             ref={blueRef}
             className={`bg-black absolute ${
               isMobile
-                ? "bottom-[-80%] w-full h-[110%] flex-col py-4"
-                : "right-[-70%] md:right-[-70%] lg:right-[-75%] w-[110%] h-full flex-row"
+                ? "bottom-[-85%] w-full h-[110%] flex-col py-4"
+                : "right-[-70%] md:right-[-69%] lg:right-[-75%] w-[110%] h-full flex-row"
             } 
               flex pl-15 pr-10 justify-between items-center text-white ${
                 isMobile ? "rounded-[60px]" : "rounded-[90px]"

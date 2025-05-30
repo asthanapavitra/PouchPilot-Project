@@ -33,9 +33,9 @@ const categories = [
       "Tote Bags",
       "Clutch Bags",
       "Backpacks",
-      "Briefcases",
-      "Barrel Bags",
-      "Travel Bags",
+      // "Briefcases",
+      // "Barrel Bags",
+      // "Travel Bags",
     ],
   },
   {
@@ -185,7 +185,7 @@ const Admin = () => {
         <Menu />
       </button>
 
-      {/* Backdrop for mobile */}
+   
 
       {/* Sidebar */}
       <aside

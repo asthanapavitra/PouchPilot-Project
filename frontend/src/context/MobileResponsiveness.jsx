@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { createContext } from 'react';
 export const MobileResponsivenessContext = createContext();
 const MobileResponsiveness = ({children}) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 540);
+    const [isMobile, setIsMobile] = useState(window.innerWidth<=768);
      useEffect(() => {
          const handleResize = () => {
-           setIsMobile(window.innerWidth <=540);
+           setIsMobile(window.innerWidth <=768);
          };
      
          window.addEventListener("resize", handleResize);

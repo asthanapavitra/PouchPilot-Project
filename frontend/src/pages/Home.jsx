@@ -10,13 +10,11 @@ import { useContext } from "react";
 import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
 
 const Home = () => {
-  const {isMobile}=useContext(MobileResponsivenessContext)
+  const { isMobile } = useContext(MobileResponsivenessContext);
   const [logoPage, setLogoPage] = useState(() => {
     const hasVisited = sessionStorage.getItem("hasVisited");
     return !hasVisited;
   });
-
-  
 
   // Splash animation (only runs if logoPage is true)
   useGSAP(() => {
@@ -48,65 +46,104 @@ const Home = () => {
     );
   }, []);
 
-
   const categories = [
+    {
+      name: "Gifts",
+      subcategories: [
+        "Gifts For Her",
+        "Gifts For Him",
+        "Gifts For Couples",
+        "Gifts For Babies",
+        "Gifts For Pets",
+        "All Gifts",
+        "Personalisation",
+      ],
+    },
+    {
+      name: "New",
+      subcategories: ["For Women", "For Men", "For Pets", "Personalisation"],
+    },
     {
       name: "Bags",
       subcategories: [
-        "Tote Bags",
-        "Clutch Bags",
-        "Backpacks",
-        "Briefcases",
-        "Barrel Bags",
-        "Travel Bags",
+        "Women Bags",
+        "Men Bags",
+        "Women Small Leather Goods",
+        "Men Small Leather Goods",
+        "Personalisation",
       ],
     },
+    {
+      name: "Men",
+      subcategories: [
+        "Bags",
+        "Wallets and Small Leather Goods",
+        "Travel",
+        "Accessories",
+        "Fashion Jewellery",
+        "Shoes",
+        "Ready-to-Wear",
+      ],
+    },
+    {
+      name: "Women",
+      subcategories: [
+        "Handbags",
+        "Wallets and Small Leather Goods",
+        "Fashion Jewellery",
+        "Shoes",
+        "Accessories",
+        "Ready-to-Wear",
+        "Travel",
+      ],
+    },
+
     {
       name: "Watches",
+      subcategories: ["All Watches", "Watches Collections", "High Watchmaking"],
+    },
+
+    {
+      name: "Travel And Home",
       subcategories: [
-        "Analog",
-        "Hybrid",
-        "Chronograph",
-        "Smart Watches",
-        "Pocket",
-        "Fitness",
+        "Travel Bags and Rolling Luggage",
+        "Home and Art of Dining",
+        "Books and Stationery",
+        "High-Tech Objects and Accessories",
       ],
     },
     {
-      name: "Sneakers",
+      name: "Hats",
       subcategories: [
-        "Chuck Taylor Shoes",
-        "Cross Trainers",
-        "Casual Shoes",
-        "Formal Shoes",
-        "High-Tops Shoes",
-        "Limited Edition",
-        "Football Cleats",
+        "Baseball Cap",
+        "Gambler Hats",
+        "ASCOT CAP",
+        "Bowler Hat",
+        "Beret",
+        "Fedora",
+        "Personalisation",
       ],
-    },
-    {
-      name: "Caps",
-      subcategories: ["Beanies", "Visor", "Baseball Caps", "Hats", "Special"],
     },
     {
       name: "Perfumes",
       subcategories: [
-        "Floral",
-        "Oriental",
-        "Woody",
-        "Aromatic Fougère",
-        "Fresh",
-        "Luxury",
+        " Highlights",
+        "Icons",
+        "Collections",
+        "Exceptional Creations",
+        "World of Fragrances",
+        "Personalisation",
       ],
     },
     {
-      name: "Gifts",
-      subcategories: ["Personalized", "For Her", "For Him"],
+      name: "Services",
+      subcategories: ["Personalisation", "STARPHENOM Repairs"],
     },
-    {
-      name: "Merchandise",
-      subcategories: ["Hoodies", "Stickers", "Posters"],
-    },
+
+    // {
+    //   name: "Merchandise",
+    //   subcategories: ["Hoodies", "Stickers", "Posters"],
+    // },
   ];
 
   return (
@@ -126,7 +163,7 @@ const Home = () => {
                 {char}
               </span>
             ))}
-            {["P", "A", "S", "S", "I", "O","N"].map((char, index) => (
+            {["P", "A", "S", "S", "I", "O", "N"].map((char, index) => (
               <span
                 key={index}
                 className={`${char === " " ? "mx-1" : ""} font-extrabold`}
@@ -139,18 +176,12 @@ const Home = () => {
       )}
 
       {/* Search Panel */}
-      
 
       {/* Main Content */}
       {!logoPage && (
         <>
-          <Navbar
-            logoPage={logoPage}
-            isHomePage="true"
-            isMobile={isMobile}
-            
-          />
-          <div className="  w-screen pt-[65px]">
+          <Navbar logoPage={logoPage} isHomePage="true" isMobile={isMobile} />
+          <div className=" w-screen pt-[65px]">
             <div className=" relative h-full w-full flex flex-col items-center justify-center gap-4 home-page">
               <HomeCategoriesSection categories={categories} />
               <CategoryDiv
