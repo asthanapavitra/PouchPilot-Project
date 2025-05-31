@@ -329,7 +329,7 @@ const Authentication = () => {
         </span>
       </div>)}
       <div
-        className={` w-[90%] sm:w-[90%] lg:w-[60%] ${
+        className={` w-[90%] sm:w-[90%] lg:w-[80%] xl:w-[60%] ${
           isMobile ? "h-[90%]" : "h-[70%]"
         } rounded-lg overflow-hidden relative flex items-center justify-center shadow-2xl `}
       >

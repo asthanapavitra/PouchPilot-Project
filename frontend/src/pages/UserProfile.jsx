@@ -1,4 +1,4 @@
-import React, { useContext, useState,useRef } from "react";
+import React, { useContext, useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { UserDataContext } from "../context/UserContext";
 import axios from "axios";
@@ -9,13 +9,14 @@ import { useGSAP } from "@gsap/react";
 import { useNavigate } from "react-router-dom";
 import MyCart from "./MyCart";
 import { MobileResponsivenessContext } from "../context/MobileResponsiveness";
+import MyOrders from "./MyOrders";
 const UserProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const { user, setUser } = useContext(UserDataContext);
-  const {isMobile}=useContext(MobileResponsivenessContext);
-  const [showSidebar,setShowSidebar]=useState(false);
+  const { isMobile } = useContext(MobileResponsivenessContext);
+  const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
-  
+
   const [editableUser, setEditableUser] = useState({
     fullName: { ...user.fullName },
     address: [...user.address],
@@ -25,39 +26,39 @@ const UserProfilePage = () => {
   });
   // also add these
 
-const sidebarRef = useRef(null);
+  const sidebarRef = useRef(null);
 
-useGSAP(
-  () => {
-     if (!isMobile) {
-      // Skip animation on large screens
-      gsap.set(sidebarRef.current, { x: "0%", display: "block" });
-      return;
-    }
-    if (showSidebar) {
-      gsap.fromTo(
-        sidebarRef.current,
-        { x: "-100%" },
-        {
-          x: "0%",
+  useGSAP(
+    () => {
+      if (!isMobile) {
+        // Skip animation on large screens
+        gsap.set(sidebarRef.current, { x: "0%", display: "block" });
+        return;
+      }
+      if (showSidebar) {
+        gsap.fromTo(
+          sidebarRef.current,
+          { x: "-100%" },
+          {
+            x: "0%",
+            duration: 0.5,
+            ease: "power3.out",
+            display: "block",
+          }
+        );
+      } else {
+        gsap.to(sidebarRef.current, {
+          x: "-100%",
           duration: 0.5,
-          ease: "power3.out",
-          display: "block",
-        }
-      );
-    } else {
-      gsap.to(sidebarRef.current, {
-        x: "-100%",
-        duration: 0.5,
-        ease: "power3.in",
-        onComplete: () => {
-          gsap.set(sidebarRef.current, { display: "none" });
-        },
-      });
-    }
-  },
-  { dependencies: [showSidebar] }
-);
+          ease: "power3.in",
+          onComplete: () => {
+            gsap.set(sidebarRef.current, { display: "none" });
+          },
+        });
+      }
+    },
+    { dependencies: [showSidebar] }
+  );
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -129,66 +130,75 @@ useGSAP(
   return (
     <div className="w-screen min-h-screen overflow-x-hidden">
       <Navbar
-      isProfilePage={true}
-       setShowSidebar={setShowSidebar}
-       showSidebar={showSidebar}
-       
+        isProfilePage={true}
+        setShowSidebar={setShowSidebar}
+        showSidebar={showSidebar}
       />
-      <div className={`min-h-screen relative flex bg-white text-black w-screen justify-between ${isMobile?"pt-[55px]":"pt-[80px] "} gap-10`}>
+      <div
+        className={`min-h-screen relative flex bg-white text-black w-screen justify-between ${
+          isMobile ? "pt-[55px]" : "pt-[80px] "
+        } `}
+      >
         {/* Sidebar */}
-        {<div  ref={sidebarRef} className={`min-h-screen ${isMobile? "absolute": "w-[20%]" } bg-white text-black p-6 flex flex-col justify-center items-center shadow-xl`}>
-          
-          <img
-          onClick={() => {
-            setActiveTab("profile");
-            
-          }}
-            src={user.picture ? user.picture : "/default-profile-pic.png"}
-            alt="Profile"
-            className="w-24 h-24 rounded-full object-cover mb-4 ml-[50%] -translate-x-1/2 "
-          />
-          <h2
-            onClick={() => {
-              setActiveTab("profile");
-             
-            }}
-            className="text-xl font-semibold mb-6 cursor-pointer text-center"
+        {
+          <div
+            ref={sidebarRef}
+            className={`min-h-screen ${
+              isMobile ? "absolute " : "w-[20%]"
+            } bg-white text-black p-6 flex flex-col justify-center items-center shadow-xl`}
           >
-            {user.fullName.firstName}
-          </h2>
-          <nav className="flex flex-col gap-3 items-center w-full">
-            <button
-              onClick={() => {setActiveTab("orders")
-              
+            <img
+              onClick={() => {
+                setActiveTab("profile");
               }}
-              className="text-left hover:text-gray-700 cursor-pointer"
-            >
-              My Orders
-            </button>
-            <button
-              onClick={() => {setActiveTab("cart")
-                
+              src={user.picture ? user.picture : "/default-profile-pic.png"}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover mb-4 ml-[50%] -translate-x-1/2 "
+            />
+            <h2
+              onClick={() => {
+                setActiveTab("profile");
               }}
-              className="text-left hover:text-gray-700 cursor-pointer"
+              className="text-xl font-semibold mb-6 cursor-pointer text-center"
             >
-              My Cart
-            </button>
-            <button
-              onClick={handleLogout}
-              className="text-left text-red-600 hover:text-red-800 cursor-pointer"
-            >
-              Logout
-            </button>
-          </nav>
-        </div>}
+              {user.fullName.firstName}
+            </h2>
+            <nav className="flex flex-col gap-3 items-center w-full">
+              <button
+                onClick={() => {
+                  setActiveTab("orders");
+                }}
+                className="text-left hover:text-gray-700 cursor-pointer"
+              >
+                My Orders
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("cart");
+                }}
+                className="text-left hover:text-gray-700 cursor-pointer"
+              >
+                My Cart
+              </button>
+              <button
+                onClick={handleLogout}
+                className="text-left text-red-600 hover:text-red-800 cursor-pointer"
+              >
+                Logout
+              </button>
+            </nav>
+          </div>
+        }
 
         {/* Main Content */}
-        <div className="flex w-[100%] min-h-screen bg-white md:px-8 px-2"
-        onClick={()=>{
-          showSidebar && setShowSidebar(false)
-        }}>
+        <div
+          className="flex w-[100%] min-h-screen bg-white px-2"
+          onClick={() => {
+            showSidebar && setShowSidebar(false);
+          }}
+        >
           {activeTab === "profile" && (
-            <div className="w-full max-w-4xl bg-white shadow-lg  rounded-2xl px-8 mt-10 py-4 md:-mt-1">
+            <div className="w-full max-w-4xl bg-white   rounded-2xl px-8 mt-10 py-4 md:-mt-1">
               {/* Profile Header */}
               <div className="flex flex-col md:flex-row items-center gap-6 border-b pb-6">
                 <img
@@ -205,7 +215,7 @@ useGSAP(
                   <p className="text-gray-500">{user.email}</p>
                   <p className="text-gray-500">{user.phone}</p>
                   <p className="text-sm text-gray-400 mt-1">
-                    Member since {user.memberSince}
+                    Member since {user.createdAt}
                   </p>
                 </div>
               </div>
@@ -239,49 +249,34 @@ useGSAP(
               <div className="mt-8">
                 <h3 className="text-xl font-bold mb-4">Recent Orders</h3>
                 <div className="space-y-4">
-                  <div className="p-4 bg-gray-50 rounded-lg shadow-sm flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold">#12345 - Black Hoodie</p>
-                      <p className="text-sm text-gray-500">
-                        Ordered on March 3, 2025
-                      </p>
-                    </div>
-                    <button className="text-sm text-blue-500 hover:underline">
-                      View Details
-                    </button>
-                  </div>
-                  <div className="p-4 bg-gray-50 rounded-lg shadow-sm flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold">#12346 - White Sneakers</p>
-                      <p className="text-sm text-gray-500">
-                        Ordered on March 10, 2025
-                      </p>
-                    </div>
-                    <button className="text-sm text-blue-500 hover:underline">
-                      View Details
-                    </button>
-                  </div>
+                  {user.orders.length==0 && (<p className="text-sm text-gray-400">No orders yet...</p>)}
+                  {user.orders.map((order) => {
+                    return (
+                      <div className="p-4 bg-gray-50 rounded-lg shadow-sm flex justify-between items-center">
+                        <div>
+                          <p className="font-semibold">order.product.name</p>
+                          <p className="text-sm text-gray-500">
+                            order.orderDate
+                          </p>
+                        </div>
+                        <button className="text-sm text-blue-500 hover:underline">
+                          View Details
+                        </button>
+                      </div>
+                    );
+                  })}
+
+                 
                 </div>
               </div>
             </div>
           )}
 
           {activeTab === "orders" && (
-            <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl px-8 mt-10 py-6  md:-mt-1">
-              <h2 className="text-3xl font-bold mb-4">My Orders</h2>
-              <ul className="list-disc ml-5">
-                {user.orders.map((order) => (
-                  <li key={order.id}>
-                    {order.item} – {order.date} ({order.id})
-                  </li>
-                ))}
-              </ul>
-            </div>
+           <MyOrders orderPage={false}/>
           )}
 
-          {activeTab === "cart" && (
-            <MyCart cartPage="true"/>
-          )}
+          {activeTab === "cart" && <MyCart cartPage="true" />}
 
           {activeTab === "update-profile" && (
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl px-8 mt-10 py-6 md:-mt-1">

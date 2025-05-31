@@ -171,20 +171,27 @@ const AddProductPanel = ({
   const handleSpecChange = (index, field, value) => {
     const updated = [...specifications];
     updated[index][field] = value;
+    formData.specifications = updated;
     setSpecifications(updated);
   };
 
   const addSpecRow = () => {
+    formData.specifications = [
+      ...specifications,
+      { subHeading: "", value: "" },
+    ];
     setSpecifications([...specifications, { subHeading: "", value: "" }]);
   };
 
   const handleDescriptionChange = (index, value) => {
     const updated = [...productDescription];
     updated[index] = value;
+    formData.productDetails = updated;
     setProductDescription(updated);
   };
 
   const addDescriptionRow = () => {
+    formData.productDetails = [...productDescription, ""];
     setProductDescription([...productDescription, ""]);
   };
 
@@ -469,7 +476,7 @@ const AddProductPanel = ({
 
           {/* Format selector */}
           <select
-            value={formData.availableSizes.format}
+            value={formData.category}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -478,7 +485,7 @@ const AddProductPanel = ({
             }
             className="border px-2 py-1 rounded"
           >
-            <option value="bags">Select Category</option>
+            <option value="">Select Category</option>
             {[
               "bags",
               "shoes",
@@ -518,7 +525,7 @@ const AddProductPanel = ({
         )}
 
         {visibleFields.includes("availableSizes") && (
-          <div className="border p-4 rounded w-full space-y-2">
+          <div className=" p-4 rounded w-full space-y-2">
             <label className="font-semibold block">Available Sizes</label>
 
             {/* Format selector */}
@@ -539,10 +546,12 @@ const AddProductPanel = ({
               <option value="dimensions">
                 Dimensions(e.g. Length*Breadth*Height)
               </option>
+              <option value="custom">Custom</option>
             </select>
 
             {/* Size input field */}
-            {formData.availableSizes.format === "standard" && (
+            {(formData.availableSizes.format === "standard" ||
+              formData.availableSizes.format === "custom") && (
               <input
                 type="text"
                 value={formData.availableSizes.sizes.join(", ")}
@@ -555,7 +564,11 @@ const AddProductPanel = ({
                     },
                   })
                 }
-                placeholder="Enter sizes (comma separated, e.g. S, M, L)"
+                placeholder={`${
+                  formData.availableSizes.format === "standard"
+                    ? "Enter sizes (comma separated, e.g. S, M, L)"
+                    : ""
+                }`}
                 className="border p-2 rounded w-full"
               />
             )}

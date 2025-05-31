@@ -70,7 +70,7 @@ const productSchema = mongoose.Schema({
   availableSizes: {
   format: {
     type: String,
-    enum: ['standard', 'dimensions'],
+    enum: ['standard', 'dimensions',"custom"],
     required: true
   },
   sizes: {

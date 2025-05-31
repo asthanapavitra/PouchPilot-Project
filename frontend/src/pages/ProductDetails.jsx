@@ -22,7 +22,17 @@ const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState(
     product.images?.[0]?.color || ""
   );
-  
+  // Parse the delivery string (e.g., "7 days")
+  const deliveryDays = parseInt(product.delivery); // gets 7 from "7 days"
+
+  // Calculate estimated delivery date
+  const estimatedDate = new Date();
+  estimatedDate.setDate(estimatedDate.getDate() + deliveryDays);
+
+  // Format the date (e.g., "Jun 7, 2025")
+  const options = { year: "numeric", month: "short", day: "numeric" };
+  const formattedDate = estimatedDate.toLocaleDateString(undefined, options);
+
   const showPopupMessage = (message) => {
     setPopupMessage(message);
     setPopupProgress(100);
@@ -40,35 +50,18 @@ const ProductDetails = () => {
   };
 
   const handleShopNow = async () => {
-    try {
-      let response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/users/add-to-cart/${product._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        showPopupMessage("Item added to cart successfully! \n Click here to buy item");
-      }
-    } catch (err) {
-      if (err.response) {
-        if (err.response.status === 401) {
-          alert("Unauthorized access. Please log in.");
-          navigate("/authenticate");
-          return;
-        }
-        if (err.response.status === 400) {
-          const errorMessages = err.response.data.errors
-            ?.map((error) => error.message)
-            .join("\n");
-          alert(errorMessages);
-        }
-      } else {
-        console.error("Error:", err.message);
-      }
+    if (!selectedSize) {
+      alert("Please select a size before proceeding.");
+      return;
     }
+
+    navigate("/order-place", {
+      state: {
+        productId:product._id,
+        selectedColor,
+        selectedSize,
+      },
+    });
   };
 
   const getGalleryForSelectedColor = () => {
@@ -76,9 +69,9 @@ const ProductDetails = () => {
       product.images.find((img) => img.color === selectedColor)?.gallery || []
     );
   };
-
+  console.log(product);
   const gallery = getGalleryForSelectedColor();
-   return (
+  return (
     <div className="w-full min-h-screen bg-white text-black overflow-hidden relative">
       <Navbar />
       {showPopup && (
@@ -149,30 +142,30 @@ const ProductDetails = () => {
           {/* Right: Product Info */}
           <div className="w-full md:w-1/2 space-y-6">
             <h1 className="text-4xl font-bold">{product.name}</h1>
-            <p className="text-gray-700">{product.shortDescription}</p>
 
-            {product.size && product.size.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-lg font-semibold mb-2">Select Size</h3>
-                <div className="flex gap-3 flex-wrap">
-                  {product.size.map((sz, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedSize(sz)}
-                      className={`px-4 py-2 border rounded-lg transition ${
-                        selectedSize === sz
-                          ? "bg-black text-white border-black"
-                          : "bg-white text-black border-gray-300 hover:border-black"
-                      }`}
-                    >
-                      {sz}
-                    </button>
-                  ))}
+            {product.availableSizes?.sizes &&
+              product.availableSizes?.sizes.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold mb-2">Select Size</h3>
+                  <div className="flex gap-3 flex-wrap">
+                    {product.availableSizes?.sizes.map((sz, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedSize(sz)}
+                        className={`px-4 py-2 border rounded-lg transition ${
+                          selectedSize === sz
+                            ? "bg-black text-white border-black"
+                            : "bg-white text-black border-gray-300 hover:border-black"
+                        }`}
+                      >
+                        {sz}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-4 pt-2">
               <button
                 className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition"
                 onClick={handleShopNow}
@@ -196,7 +189,9 @@ const ProductDetails = () => {
 
               {product.howMade && (
                 <div>
-                  <h3 className="text-lg font-semibold">How This Product Was Made</h3>
+                  <h3 className="text-lg font-semibold">
+                    How This Product Was Made
+                  </h3>
                   <p className="mt-2 text-sm text-gray-700 whitespace-pre-line">
                     {product.howMade}
                   </p>
@@ -207,61 +202,18 @@ const ProductDetails = () => {
                 <div>
                   <h3 className="text-lg font-semibold">Delivery & Returns</h3>
                   <p className="mt-2 text-sm text-gray-700 whitespace-pre-line">
-                    {product.delivery}
+                    Delivery by {formattedDate}
                   </p>
+
                   <p className="mt-2 text-sm text-gray-700 whitespace-pre-line">
-                    {product.returns}
+                    Return upto {product.returns}
                   </p>
                 </div>
               )}
             </div>
           </div>
         </div>
-              {/* Reviews
-              <div>
-                <h3 className="text-lg font-semibold">
-                  Reviews
-                  <span className="text-yellow-500">
-                    {"★".repeat(Math.round(product.rating || 0)) +
-                      "☆".repeat(5 - Math.round(product.rating || 0))}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    ({product.reviews.length})
-                  </span>
-                </h3>
-                {product.reviews.length > 0 ? (
-                  <div className="mt-3 space-y-4">
-                    {product.reviews.map((review, index) => (
-                      <div
-                        key={index}
-                        className="border p-3 rounded-md shadow-sm"
-                      >
-                        <div className="flex items-center gap-2 text-sm text-yellow-500">
-                          {"★".repeat(Math.round(review.rating)) +
-                            "☆".repeat(5 - Math.round(review.rating))}
-                        </div>
-                        <p className="text-sm mt-1">{review.review}</p>
-                        {review.images && review.images.length > 0 && (
-                          <div className="flex gap-2 mt-2">
-                            {review.images.map((img, i) => (
-                              <img
-                                key={i}
-                                src={img}
-                                alt={`Review ${index} Image ${i}`}
-                                className="h-16 w-16 object-cover rounded"
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm text-gray-500">No reviews yet.</p>
-                )}
-              </div> */}
-          
-        
+
         {/* Complete the Look Section */}
         <div className="max-w-7xl mx-auto px-6 md:px-10 pb-20">
           <h2 className="text-2xl font-semibold mb-6">Complete the Look</h2>

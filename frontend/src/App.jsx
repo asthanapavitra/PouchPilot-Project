@@ -14,6 +14,7 @@ import PaymentPage from './pages/PaymentPage'
 
 import AdminLogin from './pages/AdminLogin'
 import AdminProtectedWrapper from './pages/AdminProtectedWrapper'
+import MyOrders from './pages/MyOrders'
 
 const App = () => {
   return (
@@ -27,9 +28,10 @@ const App = () => {
       <Route path='/my-cart' element={
         <UserProtectedWrapper><MyCart/></UserProtectedWrapper>
       }/>
-      <Route path='/purchase' element={<PaymentPage/>}/>
+      <Route path='/order-place' element={<UserProtectedWrapper><PaymentPage/></UserProtectedWrapper> }/>
       <Route path='/admin' element={<AdminProtectedWrapper><Admin/></AdminProtectedWrapper> }/>
      <Route path='/admin-login' element={<AdminLogin/>}/>
+     <Route path='my-orders' element={<UserProtectedWrapper><MyOrders/> </UserProtectedWrapper> }/>
    </Routes>
   )
 }
