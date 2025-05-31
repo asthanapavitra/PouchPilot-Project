@@ -262,3 +262,53 @@ module.exports.cancelOrder = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+module.exports.addToWishlist = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Fetch full user document
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ errors: [{ message: "User not found" }] });
+    }
+
+    if (user.wishlist.includes(id)) {
+      return res
+        .status(400)
+        .json({ errors: [{ message: "Item already in wishlist" }] });
+    }
+
+    user.wishlist.push(id);
+    await user.save();
+
+    return res.status(200).json({ message: "Item added to wishlist successfully" });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ message: err.message }] });
+  }
+};
+
+module.exports.removeFromCart = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ errors: [{ message: "User not found" }] });
+    }
+
+    const index = user.wishlist.indexOf(id);
+    if (index === -1) {
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Item not found in cart" }] });
+    }
+    user.addToWishlist.splice(index, 1);
+    await user.save();
+    return res
+      .status(200)
+      .json({ message: "Item removed from wishlist successfully" });
+  } catch (err) {
+    return res.status(500).json({ errors: [{ message: err.message }] });
+  }
+};

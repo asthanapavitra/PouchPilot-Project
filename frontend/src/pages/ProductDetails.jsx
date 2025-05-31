@@ -8,7 +8,36 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
+const ProductSpecifications = ({ specifications }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="w-full border-b border-gray-300 py-2">
+      <div
+        className="flex items-center justify-between cursor-pointer  py-2 hover:bg-gray-100"
+        onClick={() => setOpen(!open)}
+      >
+        <h2 className="text-lg font-semibold">Specifications</h2>
+        {open ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </div>
+
+      {open && (
+        <div className="px-4 py-2 space-y-3">
+          {specifications.map((spec, index) => (
+            <div key={index} className="flex justify-between  pb-2">
+              <span className="text-sm text-gray-600">{spec.subHeading}</span>
+              <span className="text-sm font-medium text-gray-900">
+                {spec.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const location = useLocation();
@@ -57,19 +86,80 @@ const ProductDetails = () => {
 
     navigate("/order-place", {
       state: {
-        productId:product._id,
+        productId: product._id,
         selectedColor,
         selectedSize,
       },
     });
   };
+  const handleAddToCart = async () => {
+    try {
+      let response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/users/add-to-cart/${product._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        showPopupMessage("Item added to cart successfully");
+      }
+    } catch (err) {
+      if (err.response) {
+        console.error("Error Response:", err.response.data); // Log full error response
+        console.error("Status:", err.response.status); // Log the status code
 
+        // Handle errors based on status codes
+        if (err.response.status === 400 || err.response.status === 401) {
+          const errorMessages = err.response.data.errors
+            ?.map((error) => error.message)
+            .join("\n");
+          console.log(errorMessages);
+          showPopupMessage(errorMessages); // Show error messages to the user
+        }
+      } else {
+        console.error("Error:", err.message); // Log network or other errors
+      }
+    }
+  };
+  const handleAddToWishList = async () => {
+    try {
+      let response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/users/add-to-wishlist/${product._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        showPopupMessage("Item added to wishilist successfully");
+      }
+    } catch (err) {
+      if (err.response) {
+        console.error("Error Response:", err.response.data); // Log full error response
+        console.error("Status:", err.response.status); // Log the status code
+
+        // Handle errors based on status codes
+        if (err.response.status === 400 || err.response.status === 401) {
+          const errorMessages = err.response.data.errors
+            ?.map((error) => error.message)
+            .join("\n");
+          console.log(errorMessages);
+          showPopupMessage(errorMessages); // Show error messages to the user
+        }
+      } else {
+        console.error("Error:", err.message); // Log network or other errors
+      }
+    }
+  };
   const getGalleryForSelectedColor = () => {
     return (
       product.images.find((img) => img.color === selectedColor)?.gallery || []
     );
   };
-  console.log(product);
+
   const gallery = getGalleryForSelectedColor();
   return (
     <div className="w-full min-h-screen bg-white text-black overflow-hidden relative">
@@ -84,10 +174,6 @@ const ProductDetails = () => {
           }}
         >
           <div className="fixed top-[70px] z-999 bg-blue-100 text-black-900 px-6 py-4 rounded shadow-md text-center w-[90%] max-w-xl">
-            <div
-              className="left-0 h-1 bg-blue-500 rounded-t"
-              style={{ width: `${popupProgress}%` }}
-            />
             <span className="block font-medium whitespace-pre-line">
               {popupMessage}
             </span>
@@ -172,8 +258,18 @@ const ProductDetails = () => {
               >
                 Shop Now
               </button>
-              <button className="border border-black text-black px-6 py-2 rounded-lg hover:bg-black hover:text-white transition">
-                <i className="ri-heart-line text-2xl"></i>
+              <button
+                onClick={handleAddToWishList}
+                className=" group border-black text-black px-6 py-2 rounded-lg hover:text-red-500 transition"
+              >
+                <i className="ri-heart-line text-2xl group-hover:hidden"></i>
+                <i className="ri-heart-fill text-2xl hidden group-hover:inline"></i>
+              </button>
+              <button
+                onClick={handleAddToCart}
+                className="border-black text-black px-6 py-2 rounded-lg hover:bg-black hover:text-white transition"
+              >
+                <i className="ri-shopping-cart-line text-2xl"></i>
               </button>
             </div>
 
@@ -186,7 +282,7 @@ const ProductDetails = () => {
                   ))}
                 </ul>
               </div>
-
+              <ProductSpecifications specifications={product.specifications} />
               {product.howMade && (
                 <div>
                   <h3 className="text-lg font-semibold">
@@ -197,7 +293,31 @@ const ProductDetails = () => {
                   </p>
                 </div>
               )}
-
+              {product.care && (
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    Care
+                  </h3>
+                  {product.care.split("\n").map((line, index) => {
+                    const trimmed = line.trim();
+                    if (
+                      trimmed.startsWith("•") ||
+                      trimmed.startsWith("-") ||
+                      trimmed.startsWith("*")
+                    ) {
+                      return (
+                        <ul key={index} className="list-disc pl-5">
+                          <li>{trimmed.slice(1).trim()}</li>
+                        </ul>
+                      );
+                    } else if (trimmed === "") {
+                      return <br key={index} />;
+                    } else {
+                      return <p key={index}>{trimmed}</p>;
+                    }
+                  })}
+                </div>
+              )}
               {product.delivery && (
                 <div>
                   <h3 className="text-lg font-semibold">Delivery & Returns</h3>

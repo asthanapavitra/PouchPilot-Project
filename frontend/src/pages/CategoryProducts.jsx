@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import ProductsCard from "../components/ProductsCard";
 import HomeCategoriesSection from "../components/HomeCategoriesSection";
 import { Menu } from "lucide-react";
+import SubCateoryWiseProducts from "../components/SubCateoryWiseProducts";
 const CategoryProducts = () => {
   const { category } = useParams();
   const location = useLocation();
@@ -69,7 +70,7 @@ const CategoryProducts = () => {
               <div key={idx} className="relative cursor-pointer">
                 <p
                   onClick={() => {
-                    setSelectedSubcategory(sub);
+                    setSelectedSubcategory(sub.name);
                     setSidebarOpen(false);
                     handleSubCategoryClick(sub);
                   }}
@@ -101,7 +102,7 @@ const CategoryProducts = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 md:grid-cols-3  gap-6 w-full">
                 {products.map((product, idx) => (
-                  <ProductsCard key={idx} product={product} />
+                 <SubCateoryWiseProducts key={idx} product={product}/>
                 ))}
               </div>
             )}

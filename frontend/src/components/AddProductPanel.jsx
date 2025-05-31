@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 const fields = [
   "material",
   "gender",
@@ -12,7 +13,7 @@ const fields = [
   "durability",
   "usage",
   "care",
-
+  "tags",
   "subcategory",
   "sustainability",
 ];
@@ -27,7 +28,7 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-
+    "tags",
     "durability",
 
     "subcategory",
@@ -41,7 +42,7 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-
+    "tags",
     "subcategory",
   ],
   Bags: [
@@ -53,7 +54,7 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-
+    "tags",
     "durability",
     "usage",
     "storageInstructions",
@@ -70,7 +71,7 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-
+    "tags",
     "subcategory",
   ],
   Hats: [
@@ -303,9 +304,9 @@ const AddProductPanel = ({
 
     // Append imageMeta as JSON
     form.append("imagesMeta", JSON.stringify(imageMeta));
-    // for (let pair of form.entries()) {
-    //   console.log(pair[0], pair[1]);
-    // }
+    for (let pair of form.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
     try {
       const res = await axios.post(
@@ -418,10 +419,10 @@ const AddProductPanel = ({
         <div>
           <h2 className="text-lg font-semibold mb-2">Product Description</h2>
           {productDescription.map((desc, index) => (
-            <input
+            <textarea
               key={index}
-              type="text"
-              className="block w-full mb-2 p-2 border rounded"
+              rows={8}
+              className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring"
               value={desc}
               onChange={(e) => handleDescriptionChange(index, e.target.value)}
               placeholder={`Detail ${index + 1}`}
@@ -442,18 +443,18 @@ const AddProductPanel = ({
               key={index}
               className="w-full flex items-center justify-between gap-2 mb-2"
             >
-              <input
-                type="text"
-                className="flex w-[45%]  p-2 border rounded"
+              <textarea
+                rows={8}
+                className="w-[45%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
                 placeholder="Subheading"
                 value={spec.subHeading}
                 onChange={(e) =>
                   handleSpecChange(index, "subHeading", e.target.value)
                 }
               />
-              <input
-                type="text"
-                className="flex-1 w-[45%]  p-2 border rounded"
+              <textarea
+                rows={8}
+                className="w-[45%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
                 placeholder="Value"
                 value={spec.value}
                 onChange={(e) =>
@@ -650,15 +651,27 @@ const AddProductPanel = ({
           "tags",
         ].map((field) =>
           visibleFields.includes(field) ? (
-            <input
-              key={field}
-              type="text"
-              name={field}
-              value={formData[field]}
-              onChange={handleChange}
-              placeholder={field.replace(/([A-Z])/g, " $1")}
-              className="border p-2 rounded w-full"
-            />
+            field === "care" || field === "howMade" ? (
+              <textarea
+                value={formData.care}
+                onChange={(e) =>
+                  setFormData({ ...formData, care: e.target.value })
+                }
+                placeholder={`Type ${field} instructions:\nPress Enter for new line\nStart bullet points with • or -`}
+                rows={8}
+                className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring"
+              />
+            ) : (
+              <input
+                key={field}
+                type="text"
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                placeholder={field.replace(/([A-Z])/g, " $1")}
+                className="border p-2 rounded w-full"
+              />
+            )
           ) : null
         )}
 

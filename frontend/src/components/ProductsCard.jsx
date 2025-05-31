@@ -118,7 +118,9 @@ const ProductsCard = ({ product }) => {
         >
           <i className="ri-shopping-cart-2-line text-3xl cursor-pointer"></i>
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 cursor-pointer  text-black transition">
+        <button onClick={()=>{
+          navigate("/order-place", {state:{productId:product._id}})
+        }} className="flex items-center gap-2 px-4 py-2 cursor-pointer  text-black transition">
           <i className="ri-flashlight-line text-3xl "></i>
           Buy Now
         </button>

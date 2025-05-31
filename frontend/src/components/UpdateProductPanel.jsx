@@ -110,7 +110,7 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
   const [formData, setFormData] = useState({
     name: product?.name || "",
     specifications: product?.specifications || "",
-
+    care: product?.care || "",
     price: product?.price || 0,
     discount: product?.discount || 0,
     stock: product?.stock || 0,
@@ -122,7 +122,8 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
     origin: product?.origin || "",
     productDetails: product?.productDetails || [],
     howMade: product?.howMade || "",
-    deliveryAndReturns: product?.deliveryAndReturns || "",
+    delivery: product?.delivery | "",
+    returns: product?.returns || "",
     availableSizes: product?.availableSizes || {
       format: "standard",
       sizes: [],
@@ -765,6 +766,7 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
               </div>
             );
           }
+
           if (key === "gender") {
             return (
               <div
@@ -798,6 +800,22 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
                   name={key}
                   checked={formData[key]}
                   onChange={handleChange}
+                />
+              </div>
+            );
+          }
+          if (key === "care") {
+            return (
+              <div key={key} className="flex items-center  justify-between gap-2">
+                <label className="capitalize font-medium">{key}</label>
+                <textarea
+                  value={formData.care}
+                  onChange={(e) =>
+                    setFormData({ ...formData, care: e.target.value })
+                  }
+                  placeholder={`Type care instructions:\nPress Enter for new line\nStart bullet points with • or -`}
+                  rows={8}
+                  className="w-[60%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
                 />
               </div>
             );

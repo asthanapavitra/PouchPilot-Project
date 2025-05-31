@@ -5,12 +5,12 @@ module.exports.isLoggedIn = async (req, res, next) => {
   try {
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
     if (token==="null" || token==undefined) {
-      return res.status(401).json({ error: "Unauthorized, please login" });
+      return res.status(401).json({errors:[{ message: "Unauthorized, please login" }]});
     }
 
     const blackListToken = await BlackListToken.findOne({ token });
     if (blackListToken) {
-      return res.status(401).json({ error: "Unauthorized, please login" });
+      return res.status(401).json({errors:[{ message: "Unauthorized, please login" }]});
     }
 
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -20,7 +20,7 @@ module.exports.isLoggedIn = async (req, res, next) => {
       .populate("wishlist");
 
     if (!user) {
-      return res.status(401).json({ error: "Unauthorized, please login" });
+      return res.status(401).json({errors:[{ message: "Unauthorized, please login" }]});
     }
 
     // Convert picture buffer to base64 string
@@ -60,6 +60,6 @@ module.exports.isLoggedIn = async (req, res, next) => {
    
     return res
       .status(500)
-      .json({ error: "Internal server error", message: err.message });
+      .json({errors:[{ message: "Internal server error " + err.message }]});
   }
 };

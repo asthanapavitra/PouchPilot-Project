@@ -50,100 +50,135 @@ const Home = () => {
     {
       name: "Gifts",
       subcategories: [
-        "Gifts For Her",
-        "Gifts For Him",
-        "Gifts For Couples",
-        "Gifts For Babies",
-        "Gifts For Pets",
-        "All Gifts",
-        "Personalisation",
+        {
+          name: "Gifts For Her",
+          productsType: [
+            "Accessories",
+            "Art of Living",
+            "Jewellery",
+            "Leather Goods",
+            "Perfumes",
+            "Shoes",
+            "Watches"
+          ],
+        },
+        { name: "Gifts For Him", productsType: [
+            "Accessories",
+            "Art of Living",
+            "Jewellery",
+            "Leather Goods",
+            "Perfumes",
+            "Shoes",
+            "Watches"
+          ],},
+        { name: "Gifts For Couples", productsType: [
+            "Accessories",
+            "Art of Living",
+            "Leather Goods",
+            "Perfumes",
+            "Shoes",
+            "Jewellery",
+          ]},
+        { name: "Gifts For Babies", productsType: [
+            "Accessories",
+            "Art of Living",
+            "Leather Goods",
+            "Ready to Wear"
+          ]},
+        { name: "All Gifts", productsType: [] },
+        { name: "Personalisation", productsType: [] },
       ],
     },
     {
       name: "New",
-      subcategories: ["For Women", "For Men", "For Pets", "Personalisation"],
+      subcategories: [
+        { name: "For Women", productsType: [] },
+        { name: "For Men", productsType: [] },
+        { name: "For Pets", productsType: [] },
+        { name: "Personalisation", productsType: [] },
+      ],
     },
     {
       name: "Bags",
       subcategories: [
-        "Women Bags",
-        "Men Bags",
-        "Women Small Leather Goods",
-        "Men Small Leather Goods",
-        "Personalisation",
+        { name: "Women Bags", productsType: [] },
+        { name: "Men Bags", productsType: [] },
+        { name: "Women Small Leather Goods", productsType: [] },
+        { name: "Men Small Leather Goods", productsType: [] },
+        { name: "Personalisation", productsType: [] },
       ],
     },
     {
       name: "Men",
       subcategories: [
-        "Bags",
-        "Wallets and Small Leather Goods",
-        "Travel",
-        "Accessories",
-        "Fashion Jewellery",
-        "Shoes",
-        "Ready-to-Wear",
+        { name: "Bags", productsType: [] },
+        { name: "Wallets and Small Leather Goods", productsType: [] },
+        { name: "Travel", productsType: [] },
+        { name: "Accessories", productsType: [] },
+        { name: "Fashion Jewellery", productsType: [] },
+        { name: "Shoes", productsType: [] },
+        { name: "Ready-to-Wear", productsType: [] },
       ],
     },
     {
       name: "Women",
       subcategories: [
-        "Handbags",
-        "Wallets and Small Leather Goods",
-        "Fashion Jewellery",
-        "Shoes",
-        "Accessories",
-        "Ready-to-Wear",
-        "Travel",
+        { name: "Handbags", productsType: [] },
+        { name: "Wallets and Small Leather Goods", productsType: [] },
+        { name: "Fashion Jewellery", productsType: [] },
+        { name: "Shoes", productsType: [] },
+        { name: "Accessories", productsType: [] },
+        { name: "Ready-to-Wear", productsType: [] },
+        { name: "Travel", productsType: [] },
       ],
     },
-
     {
       name: "Watches",
-      subcategories: ["All Watches", "Watches Collections", "High Watchmaking"],
+      subcategories: [
+        { name: "All Watches", productsType: [] },
+        { name: "Watches Collections", productsType: [] },
+        { name: "High Watchmaking", productsType: [] },
+      ],
     },
-
     {
       name: "Travel And Home",
       subcategories: [
-        "Travel Bags and Rolling Luggage",
-        "Home and Art of Dining",
-        "Books and Stationery",
-        "High-Tech Objects and Accessories",
+        { name: "Travel Bags and Rolling Luggage", productsType: [] },
+        { name: "Home and Art of Dining", productsType: [] },
+        { name: "Books and Stationery", productsType: [] },
+        { name: "High-Tech Objects and Accessories", productsType: [] },
       ],
     },
     {
       name: "Hats",
       subcategories: [
-        "Baseball Cap",
-        "Gambler Hats",
-        "ASCOT CAP",
-        "Bowler Hat",
-        "Beret",
-        "Fedora",
-        "Personalisation",
+        { name: "Baseball Cap", productsType: [] },
+        { name: "Gambler Hats", productsType: [] },
+        { name: "ASCOT CAP", productsType: [] },
+        { name: "Bowler Hat", productsType: [] },
+        { name: "Beret", productsType: [] },
+        { name: "Fedora", productsType: [] },
+        { name: "Personalisation", productsType: [] },
       ],
     },
     {
       name: "Perfumes",
       subcategories: [
-        " Highlights",
-        "Icons",
-        "Collections",
-        "Exceptional Creations",
-        "World of Fragrances",
-        "Personalisation",
+        { name: "Highlights", productsType: [] },
+        { name: "Icons", productsType: [] },
+        { name: "Collections", productsType: [] },
+        { name: "Exceptional Creations", productsType: [] },
+        { name: "World of Fragrances", productsType: [] },
+        { name: "Personalisation", productsType: [] },
       ],
     },
     {
       name: "Services",
-      subcategories: ["Personalisation", "STARPHENOM Repairs"],
+      subcategories: [
+        { name: "Personalisation", productsType: [] },
+        { name: "STARPHENOM Repairs", productsType: [] },
+      ],
     },
-
-    // {
-    //   name: "Merchandise",
-    //   subcategories: ["Hoodies", "Stickers", "Posters"],
-    // },
   ];
 
   return (
@@ -158,12 +193,12 @@ const Home = () => {
             style={{ transformOrigin: "center" }}
           />
           <h2 className="text-2xl text-animation">
-            {["S", "T", "A", "R", " "].map((char, index) => (
+            {["S", "T", "A", "R"].map((char, index) => (
               <span key={index} className={char === " " ? "mx-1" : ""}>
                 {char}
               </span>
             ))}
-            {["P", "H", "E", "N",  "O", "M"].map((char, index) => (
+            {["P", "A", "S", "S", "I", "O", "N"].map((char, index) => (
               <span
                 key={index}
                 className={`${char === " " ? "mx-1" : ""} font-extrabold`}

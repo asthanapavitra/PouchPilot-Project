@@ -18,7 +18,7 @@ const CategoryDiv = (props) => {
           {}
         );
         if (response.status === 200) {
-          if(products.length>4)
+          if(response.data.products.length>4)
             setProducts(response.data.products.slice(0, 4));
           else setProducts(response.data.products)
         }
@@ -29,7 +29,7 @@ const CategoryDiv = (props) => {
     if (products.length == 0) fetchProducts();
   }, [products]);
   return (
-    <div className="h-full w-full " key={props.index}>
+    <div className="h-full w-full mb-4 " key={props.index}>
       <div className="w-[100%] h-full">
         {/* Video Section */}
         <VideoContentCard

@@ -88,8 +88,7 @@ const Payment = () => {
 
   return (
     <div className="min-h-screen px-6 py-10 bg-white text-black">
-      <h1 className="text-3xl font-bold mb-8">Payment Page</h1>
-
+  
       <div className="flex flex-col md:flex-row gap-8">
         {/* Order Summary */}
         <div className="w-full md:w-1/2">

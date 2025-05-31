@@ -29,6 +29,7 @@ router.get('/get-profile',isLoggedIn,(req,res)=>{
 })
 router.post('/update-profile',isLoggedIn,upload.single("picture"), userController.updateProfile)
 router.get('/add-to-cart/:id',isLoggedIn,userController.addToCart);
+router.get('/add-to-wishlist/:id',isLoggedIn,userController.addToWishlist);
 router.get('/remove-from-cart/:id',isLoggedIn,userController.removeFromCart);
 router.get('/logout',isLoggedIn, userController.logoutUser);
 router.post('/order/:id',isLoggedIn,userController.orderProduct);
