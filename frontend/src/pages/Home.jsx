@@ -163,7 +163,7 @@ const Home = () => {
                 {char}
               </span>
             ))}
-            {["P", "A", "S", "S", "I", "O", "N"].map((char, index) => (
+            {["P", "H", "E", "N",  "O", "M"].map((char, index) => (
               <span
                 key={index}
                 className={`${char === " " ? "mx-1" : ""} font-extrabold`}

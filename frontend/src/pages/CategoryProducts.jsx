@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import ProductsCard from "../components/ProductsCard";
 import HomeCategoriesSection from "../components/HomeCategoriesSection";
 import { Menu } from "lucide-react";
-const SubCategoryProducts = () => {
+const CategoryProducts = () => {
   const { category } = useParams();
   const location = useLocation();
 
@@ -84,7 +84,7 @@ const SubCategoryProducts = () => {
 
         {/* Main panel */}
         <main
-          className="flex-1 overflow-y-auto pt-[70px]  w-screen min-h-screen bg-gray-50"
+          className="flex-1 overflow-y-auto pt-[70px] px-4 w-screen min-h-screen bg-gray-50"
           onClick={() =>
             window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)
           } // click outside to close
@@ -99,7 +99,7 @@ const SubCategoryProducts = () => {
                 No products found in this category.
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 mt-5 md:grid-cols-3  gap-6 w-full">
                 {products.map((product, idx) => (
                   <ProductsCard key={idx} product={product} />
                 ))}
@@ -112,4 +112,4 @@ const SubCategoryProducts = () => {
   );
 };
 
-export default SubCategoryProducts;
+export default CategoryProducts;

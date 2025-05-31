@@ -1,30 +1,38 @@
 import React, { useState } from "react";
-import axios from 'axios'
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const AdminLogin = () => {
-    const navigate=useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const handleLogin = async(e) => {
+  const handleLogin = async (e) => {
+    setIsLoggingIn(true);
     e.preventDefault();
-   try{
-    const response=await axios.post(`${import.meta.env.VITE_BASE_URL}/admin/login`,{email,password} );
-    if(response.status===200){
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/admin/login`,
+        { email, password }
+      );
+      if (response.status === 200) {
         console.log("Login successful");
-        localStorage.setItem("adminToken",response.data.token);
+        localStorage.setItem("adminToken", response.data.token);
         navigate("/admin");
+      }
+    } catch (err) {
+      console.log(err);
+      alert("An error occurred while logging in. Please try again.");
     }
-
-   }catch(err){
-    
-    console.log(err);
-    alert("An error occurred while logging in. Please try again.");
-   }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      {isLoggingIn &&(<div className="fixed top-0 left-0 w-full bg-black text-white z-50 flex items-center justify-center h-12">
+        <span className="text-lg font-medium">
+          Logging you in<span className="dot-animation ml-1">.</span>
+        </span>
+      </div>)}
       <form
         onSubmit={handleLogin}
         className="bg-white p-8 rounded shadow-md w-full max-w-sm"

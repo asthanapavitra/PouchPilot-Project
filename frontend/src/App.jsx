@@ -6,7 +6,7 @@ import Authentication from './pages/Authentication'
 import UserProtectedWrapper from './pages/UserProtectedWrapper'
 import UserProfile from './pages/UserProfile'
 import ProductDetails from './pages/ProductDetails'
-import SubCategoryProducts from './pages/SubCategoryProducts'
+import CategoryProducts from './pages/CategoryProducts'
 import AdminPanel from './pages/AdminPanel'
 import MyCart from './pages/MyCart'
 import Admin from './pages/Admin'
@@ -21,7 +21,7 @@ const App = () => {
       <Route path="/" element={<Home/>} />
       <Route path='/authenticate' element={<Authentication/>}/>
       <Route path='/product-details/:productId' element={<ProductDetails/>}/>
-      <Route path='/product-category/:category' element={<SubCategoryProducts/>}/>
+      <Route path='/product-category/:category' element={<CategoryProducts/>}/>
       <Route path='/profile' element={<UserProtectedWrapper><UserProfile/></UserProtectedWrapper>}/>
       
       <Route path='/my-cart' element={

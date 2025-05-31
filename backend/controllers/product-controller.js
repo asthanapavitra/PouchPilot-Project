@@ -163,12 +163,12 @@ module.exports.getProductsByCategory = async (req, res) => {
   }
 };
 const genderKeywords = {
-  women: "Women",
-  woman: "Women",
-  her: "Women",
-  men: "Men",
-  man: "Men",
-  him: "Men",
+  women: "women",
+  woman: "women",
+  her: "women",
+  men: "men",
+  man: "men",
+  him: "men",
 };
 
 const categoryKeywords = [
@@ -181,6 +181,16 @@ const categoryKeywords = [
   "shoes",
   "hats",
 ];
+const styleKeywords = ["casual", "formal", "sport", "luxury", "classic"];
+const originKeywords = ["italy", "france", "india", "usa", "japan"];
+const materialKeywords = [
+  "leather",
+  "cotton",
+  "wool",
+  "silk",
+  "nylon",
+  "denim",
+];
 
 const ignoredWords = ["for", "and", "of", "the", "a", "an", "with"];
 
@@ -191,7 +201,6 @@ module.exports.getProductByCriteria = async (req, res) => {
 
     let query = {};
 
-    // 1. Gender check
     const genderKey = Object.keys(genderKeywords).find((word) =>
       criteria.includes(word)
     );
@@ -199,7 +208,6 @@ module.exports.getProductByCriteria = async (req, res) => {
       query.gender = genderKeywords[genderKey];
     }
 
-    // 2. Category check (supports multi-word match like "travel and home")
     const matchedCategory = categoryKeywords.find((cat) =>
       criteria.includes(cat)
     );
@@ -207,20 +215,50 @@ module.exports.getProductByCriteria = async (req, res) => {
       query.category = matchedCategory;
     }
 
-    // 3. Tags: any remaining relevant words
-    const tagWords = words.filter(
-      (word) =>
-        !Object.keys(genderKeywords).includes(word) &&
-        !ignoredWords.includes(word) &&
-        !categoryKeywords.includes(word)
+    // Style check
+    const matchedStyle = styleKeywords.find((style) =>
+      criteria.includes(style)
     );
+    if (matchedStyle) {
+      query.style = matchedStyle;
+    }
+
+    // Origin check
+    const matchedOrigin = originKeywords.find((origin) =>
+      criteria.includes(origin)
+    );
+    if (matchedOrigin) {
+      query.origin = matchedOrigin;
+    }
+
+    // Material check
+    const matchedMaterial = materialKeywords.find((material) =>
+      criteria.includes(material)
+    );
+    if (matchedMaterial) {
+      query.material = matchedMaterial;
+    }
+
+    // 3. Tags: any remaining relevant words
+    const allMatchedWords = [
+      ...Object.keys(genderKeywords),
+      ...ignoredWords,
+      ...categoryKeywords,
+      ...styleKeywords,
+      ...originKeywords,
+      ...materialKeywords,
+    ];
+
+    const tagWords = words.filter((word) => !allMatchedWords.includes(word));
 
     if (tagWords.length > 0) {
       query.tags = { $in: tagWords };
     }
+
+    
     console.log(query);
     const products = await productModel.find(query);
-    console.log(products)
+    console.log(products);
 
     // 4. Filter to one product per subcategory (if needed)
     const seenSubcategories = new Set();
@@ -244,7 +282,7 @@ module.exports.getProductByCriteria = async (req, res) => {
         })),
       })),
     }));
-console.log(formattedProducts);
+    console.log(formattedProducts);
     return res.status(200).json({
       products: formattedProducts,
       message: "Products fetched successfully",

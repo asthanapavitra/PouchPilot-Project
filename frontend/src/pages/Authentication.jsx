@@ -4,10 +4,12 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import axios from "axios";
 import { UserDataContext } from "../context/UserContext";
+import { set } from "mongoose";
 
 
 const Authentication = () => {
   const navigate = useNavigate();
+  const[isLoggingIn,setIsLoggingIn]=useState(false)
 
   const blueRef = useRef(null);
   const loginRef = useRef(null);
@@ -274,6 +276,7 @@ const Authentication = () => {
   };
 
   const handleLoginForm = async (e) => {
+    setIsLoggingIn(true);
     e.preventDefault();
     const userData = {
       identifier: loginIdentifier,
@@ -321,6 +324,11 @@ const Authentication = () => {
   };
   return (
     <div className="bg-white h-screen w-screen flex justify-center items-center overflow-hidden">
+       {isLoggingIn &&(<div className="fixed top-0 left-0 w-full bg-black text-white z-50 flex items-center justify-center h-12">
+        <span className="text-lg font-medium">
+        Logging you in<span className="dot-animation ml-1">.</span>
+        </span>
+      </div>)}
       <div
         className={` w-[90%] sm:w-[90%] lg:w-[60%] ${
           isMobile ? "h-[90%]" : "h-[70%]"

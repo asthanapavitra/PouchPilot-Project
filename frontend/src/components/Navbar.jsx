@@ -127,13 +127,13 @@ const Navbar = (props) => {
               to="/"
               className={`text-2xl   text-center`}
             >
-              <h2 className="text-3xl absolute left-[50%] -translate-x-1/2 top-[50%]  -translate-y-1/2 text-animation text-center">
+              <h2 className="text-2xl absolute left-[50%] -translate-x-1/2 top-[50%]  -translate-y-1/2 text-animation text-center">
                 {["S", "T", "A", "R"].map((char, index) => (
                   <span key={index} className={char === " " ? "mx-1" : ""}>
                     {char}
                   </span>
                 ))}
-                {["P", "A", "S", "S", "I", "O", "N"].map((char, index) => (
+                {["P", "H", "E", "N",  "O", "M"].map((char, index) => (
                   <span
                     key={index}
                     className={`${char === " " ? "mx-1" : ""} font-extrabold`}
@@ -147,7 +147,7 @@ const Navbar = (props) => {
             {/* Desktop Menu */}
             <ul className="hidden md:flex justify-end space-x-8 text-lg ">
               <li>
-                {window.innerWidth>768 && <div className="flex items-center justify-center gap-2 support-animation">
+                {window.innerWidth>1024 && <div className="flex items-center justify-center gap-2 support-animation">
                   <h2
                     className="translate-x-[180%] hover:text-blue-400 cursor-pointer"
                     onMouseEnter={() => {
