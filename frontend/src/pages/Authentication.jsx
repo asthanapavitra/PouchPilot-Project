@@ -4,7 +4,6 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import axios from "axios";
 import { UserDataContext } from "../context/UserContext";
-import { set } from "mongoose";
 
 
 const Authentication = () => {
