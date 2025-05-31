@@ -657,8 +657,8 @@ const AddProductPanel = ({
             className="border px-3 py-2  rounded min-w-[150px]"
           >
             <option value="">Select Gender</option>
-            <option value="male">Men</option>
-            <option value="female">Women</option>
+            <option value="men">Men</option>
+            <option value="women">Women</option>
             <option value="unisex">Unisex</option>
           </select>
 
