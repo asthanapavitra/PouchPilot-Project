@@ -11,8 +11,8 @@ const CategoryProducts = () => {
   const location = useLocation();
 
   const categories = location.state.categories;
-  const subcategories = categories.find((cat) => cat.name == category);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const subcategories = categories.find((cat) => cat.name == category).subcategories;
+  const [selectedSubcategory, setSelectedSubcategory] = useState(subcategories[0].name);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const sidebarRef = useRef();
   const [products, setProducts] = useState(null);
@@ -66,7 +66,7 @@ const CategoryProducts = () => {
             <h2 className="text-lg font-bold">{category}</h2>
           </div>
           <nav className="space-y-2 ">
-            {subcategories.subcategories.map((sub, idx) => (
+            {subcategories.map((sub, idx) => (
               <div key={idx} className="relative cursor-pointer">
                 <p
                   onClick={() => {
@@ -76,7 +76,7 @@ const CategoryProducts = () => {
                   }}
                   className="flex items-center w-full px-3 py-2 rounded hover:bg-gray-100"
                 >
-                  {sub}
+                  {sub.name}
                 </p>
               </div>
             ))}

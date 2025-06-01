@@ -138,8 +138,8 @@ const MyOrders = ({ orderPage }) => {
                     <div className="flex-grow">
                       <h3
                         onClick={() =>
-                          navigate(`/product-details/${product._id}`, {
-                            state: { productId: product._id },
+                          navigate(`/product-details/${product}`, {
+                            state: { productId: product },
                           })
                         }
                         className="text-lg font-semibold cursor-pointer"
