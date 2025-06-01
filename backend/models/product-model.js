@@ -17,17 +17,17 @@ const productSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
-  specifications:[
+  specifications: [
     {
-      subHeading:String,
-      value:String
-    }
+      subHeading: String,
+      value: String,
+    },
   ],
   emi: {
-    emiAvailable:{
-      type:Boolean,
-      default:false
-    }, 
+    emiAvailable: {
+      type: Boolean,
+      default: false,
+    },
     noOfMonths: [
       {
         type: Number,
@@ -48,14 +48,9 @@ const productSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  category: {
-    type: String,
-    enum: ["bags", "shoes", "watches", "perfumes", "gifts", "hats","services","pets"],
-    required: true,
-  },
-  subcategory: {
-    type: String,
-  },
+  category: String,
+  subcategory: String,
+  productType: String,
   tags: [String],
 
   // Frontend-specific fields
@@ -63,22 +58,21 @@ const productSchema = mongoose.Schema({
   origin: String,
   productDetails: [String],
   howMade: String,
-  delivery: String
-  ,returns:String,
-  
+  delivery: String,
+  returns: String,
+
   // Optional attributes based on category
   availableSizes: {
-  format: {
-    type: String,
-    enum: ['standard', 'dimensions',"custom"],
-    required: true
+    format: {
+      type: String,
+      enum: ["standard", "dimensions", "custom"],
+      required: true,
+    },
+    sizes: {
+      type: [String],
+      required: true,
+    },
   },
-  sizes: {
-    type: [String],
-    required: true
-  }
-}
-,
   material: String,
   fragranceNotes: String,
   gender: String,
@@ -99,6 +93,8 @@ const productSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  forOccasion: String,
+  giftMessageAvailable: String,
   createdAt: {
     type: Date,
     default: Date.now,

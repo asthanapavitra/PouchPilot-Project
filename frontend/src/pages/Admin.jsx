@@ -27,82 +27,389 @@ import { useNavigate } from "react-router-dom";
 
 const categories = [
   {
-    name: "bags",
-    icon: <ShoppingBag className="mr-2" />,
+    name: "Gifts",
     subcategories: [
-      "Tote Bags",
-      "Clutch Bags",
-      "Backpacks",
-      // "Briefcases",
-      // "Barrel Bags",
-      // "Travel Bags",
+      {
+        name: "Gifts For Her",
+        productsType: [
+          "Accessories",
+          "Art of Living",
+          {
+            name: "Jewellery",
+            subTypes: [
+              "Necklaces and Pendants",
+              "Bracelets",
+              "Earrings",
+              "Rings",
+              "Monogram and Leather Bracelets",
+              "Brooches",
+            ],
+          },
+          "Leather Goods",
+          "Perfumes",
+          "Shoes",
+          "Watches",
+        ],
+      },
+      {
+        name: "Gifts For Him",
+        productsType: [
+          "Accessories",
+          "Art of Living",
+          {
+            name: "Jewellery",
+            subTypes: [
+              "All Fashion Jewellery",
+              "Silver Fashion Jewellery",
+              "Necklaces and Pendants",
+              "Bracelets",
+              "Rings",
+              "Monogram and Leather Bracelets",
+              "Brooches",
+            ],
+          },
+          "Leather Goods",
+          "Perfumes",
+          "Shoes",
+          "Watches",
+        ],
+      },
+      {
+        name: "Gifts For Couples",
+        productsType: [
+          "Accessories",
+          "Art of Living",
+          "Leather Goods",
+          "Perfumes",
+          "Shoes",
+          "Ready-to-Wear",
+          {
+            name: "Jewellery",
+            subTypes: [
+              "All Fashion Jewellery",
+              "Silver Fashion Jewellery",
+              "Necklaces and Pendants",
+              "Bracelets",
+              "Rings",
+              "Monogram and Leather Bracelets",
+              "Brooches",
+            ],
+          },
+        ],
+      },
+      {
+        name: "Gifts For Babies",
+        productsType: [],
+      },
+      { name: "All Gifts", productsType: [] },
+      { name: "Personalisation" },
+    ],
+  },
+
+  {
+    name: "Bags",
+    subcategories: [
+      {
+        name: "Women Bags",
+        productsType: [
+          "Crossbody bags",
+          "Shoulder bags ",
+          "Tote bags",
+          "Mini bags",
+          "Hobo bags",
+          "Bucket bags",
+          "Backpacks",
+          "Top Handlers ",
+          "Shoulder Straps",
+        ],
+      },
+      {
+        name: "Men Bags",
+        productsType: [
+          "Crossbody bags",
+          "Backpacks",
+          "Bumbags",
+          "Tote bags",
+          "Mini bags",
+          "Backpacks",
+        ],
+      },
+      {
+        name: "Women Small Leather Goods",
+        productsType: [
+          ,
+          "Wallets on Chain and Micro Bags",
+
+          "Compact Wallets",
+          "Long Wallets",
+          "Card Holders",
+          "Passport Covers",
+        ],
+      },
+      {
+        name: "Men Small Leather Goods",
+        productsType: [
+          "Compact Wallets",
+          "Card Holders",
+          "Long Wallets",
+          "Mini Bags",
+          "Passport Covers",
+          "Pouches",
+        ],
+      },
+      { name: "Personalisation" },
     ],
   },
   {
-    name: "watches",
-    icon: <Watch className="mr-2" />,
+    name: "Men",
     subcategories: [
-      "Analog",
-      "Hybrid",
-      "Chronograph",
-      "Smart Watches",
-      "Pocket",
-      "Fitness",
+      {
+        name: "Bags",
+        productsType: [
+          "STARPHENOM Icons",
+          "All Handbags",
+          "Crossbody bags",
+          "Backpacks",
+          "Bumbags",
+          "Tote bags",
+          "Mini bags",
+          "Backpacks",
+        ],
+      },
+      {
+        name: "Wallets and Small Leather Goods",
+        productsType: [
+          "Compact Wallets",
+          "Card Holders",
+          "Long Wallets",
+          "Mini Bags",
+          "Passport Covers",
+          "Pouches",
+        ],
+      },
+      {
+        name: "Travel",
+        productsType: ["Rolling Luggage", "Travel Bags", "Travel Accessories"],
+      },
+      { name: "Accessories", productsType: [] },
+      {
+        name: "Fashion Jewellery",
+        productsType: [
+          "All Fashion Jewellery",
+          "Silver Fashion Jewellery",
+          "Necklaces and Pendants",
+          "Bracelets",
+          "Rings",
+          "Monogram and Leather Bracelets",
+          "Brooches",
+        ],
+      },
+      {
+        name: "Shoes",
+        productsType: [
+          "All Shoes",
+          "Sneakers",
+          "Loafers and Moccasins",
+          "Sandals",
+          "Lace-ups and Buckles shoes",
+          "Boots",
+        ],
+      },
+      { name: "Ready-to-Wear", productsType: [] },
+      { name: "Watches", productsType: [] },
     ],
   },
   {
-    name: "shoes",
-    icon: <Shirt className="mr-2" />,
+    name: "Women",
     subcategories: [
-      "Chuck Taylor Shoes",
-      "Cross Trainers",
-      "Casual Shoes",
-      "Formal Shoes",
-      "High-Tops Shoes",
-      "Limited Edition",
-      "Football Cleats",
+      {
+        name: "Handbags",
+        productsType: [
+          "STARPHENOM Icons",
+          "All Handbags",
+          "Crossbody bags",
+          "Shoulder bags ",
+          "Tote bags",
+          "Mini bags",
+          "Hobo bags",
+          "Bucket bags",
+          "Backpacks",
+          "Top Handlers ",
+          "Shoulder Straps",
+        ],
+      },
+      {
+        name: "Wallets and Small Leather Goods",
+        productsType: [
+          "All Wallets and Small Leather Goods",
+          "Wallets on Chain and Micro Bags",
+          "STARPHENOM Essentials",
+          "Compact and Long Wallets",
+          "Card Holders and Key Holders",
+          "Newness",
+        ],
+      },
+      {
+        name: "Fashion Jewellery",
+        productsType: [
+          "Necklaces and Pendants",
+          "Bracelets",
+          "Earrings",
+          "Rings",
+          "Monogram and Leather Bracelets",
+          "Brooches",
+        ],
+      },
+      {
+        name: "Shoes",
+        productsType: [
+          "All Shoes",
+          "Sneakers",
+          "Boots and Ankle Boots",
+          "Loafers and Ballerinas",
+          "Platform Shoes",
+          "Mules and Slides",
+          "Sandals and Espadrilles",
+          "Pumps",
+        ],
+      },
+      { name: "Accessories", productsType: [] },
+      { name: "Ready-to-Wear", productsType: [] },
+      {
+        name: "Travel",
+        productsType: ["Rolling Luggage", "Travel Bags", "Travel Accessories"],
+      },
+      { name: "Watches", productsType: [] },
     ],
   },
   {
-    name: "hats",
-    icon: <Tags className="mr-2" />,
-    subcategories: ["Beanies", "Visor", "Baseball Caps", "Hats", "Special"],
-  },
-  {
-    name: "perfumes",
-    icon: <Package className="mr-2" />,
+    name: "Watches",
     subcategories: [
-      "Floral",
-      "Oriental",
-      "Woody",
-      "Aromatic Fougère",
-      "Fresh",
-      "Luxury",
+      { name: "All Watches", productsType: [] },
+      {
+        name: "Watches Collections",
+        productsType: [
+          "Escale",
+          "Tambour",
+          "Tambour Convergence",
+          "Tambour Taiko",
+          "Original Tambour",
+          "Objects of Time",
+        ],
+      },
+      {
+        name: "High Watchmaking",
+        productsType: [
+          "Automata",
+          " Poinçon De Genève",
+          "Minute Repeater",
+          " Spin Time",
+          "Artistic Crafts",
+          "Objects of Time",
+          " Pocket Watches",
+        ],
+      },
+      { name: "Personalisation" },
     ],
   },
   {
-    name: "gifts",
-    icon: <Gift className="mr-2" />,
-    subcategories: ["Personalized", "For Her", "For Him"],
+    name: "Travel And Home",
+    subcategories: [
+      {
+        name: "Travel Bags and Rolling Luggage",
+        productsType: [
+          "Rolling Luggage",
+          "Travel Bags",
+          "Travel Accessories",
+          "Personalisation",
+        ],
+      },
+      {
+        name: "Home and Art of Dining",
+        productsType: [
+          "Furniture",
+          "Decoration",
+          "Art of Dining",
+          "Home Textile",
+        ],
+      },
+      {
+        name: "Books and Stationery",
+        productsType: [
+          "All Books and Stationery",
+          "Hardcover Books",
+          "City Guides",
+          "Travel Books",
+          "Fashion Eye Books",
+          "Office and Writing",
+        ],
+      },
+      {
+        name: "High-Tech Objects and Accessories",
+        productsType: [
+          "Audio and Connected Watches Accessories",
+          "Smartphone Accessories",
+        ],
+      },
+    ],
   },
   {
-    name: "pets",
-    icon: <Package className="mr-2" />,
-    subcategories: [],
+    name: "Hats",
+    subcategories: [
+      { name: "Baseball Cap", productsType: [] },
+      { name: "Gambler Hats", productsType: [] },
+      { name: "ASCOT CAP", productsType: [] },
+      { name: "Bowler Hat", productsType: [] },
+      { name: "Beret", productsType: [] },
+      { name: "Fedora", productsType: [] },
+      { name: "Personalisation" },
+    ],
   },
-  
+  {
+    name: "Perfumes",
+    subcategories: [
+      { name: "Highlights", productsType: [] },
+      { name: "Icons", productsType: ["Spell On You", " Imagination"] },
+      {
+        name: "Collections",
+        productsType: [
+          "All Perfumes",
+          "Feminine Perfumes",
+          "Masculine Perfumes",
+          "Cologne Perfumes",
+          "Oriental Perfumes",
+          "Les Extraits Collection",
+          "Pure Perfumes: the Fine Art of Layering",
+          "Travel",
+        ],
+      },
+      { name: "Exceptional Creations", productsType: [] },
+      { name: "World of Fragrances", productsType: [] },
+      { name: "Personalisation" },
+    ],
+  },
+  {
+    name: "Services",
+    subcategories: [
+      { name: "Personalisation" },
+      { name: "STARPHENOM Repairs", productsType: [] },
+    ],
+  },
 ];
 
 const Admin = () => {
   const { isMobile } = useContext(MobileResponsivenessContext);
-
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [selectedProductType, setSelectedProductType] = useState("");
   const [expandedCategory, setExpandedCategory] = useState(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [expandedSubcategory, setExpandedSubcategory] = useState(null);
+
   const [activeView, setActiveView] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(
     window.innerWidth >= 1024 ? true : false
   );
-  const [selectedCategory, setSelectedCategory] = useState(null);
+
   const sidebarRef = useRef();
   const [product, setProduct] = useState(null);
   const backdropRef = useRef();
@@ -168,13 +475,16 @@ const Admin = () => {
           setActiveView={setActiveView}
         />
       );
+    
     }
-    if (activeView == "subCategoryProducts" && selectedSubcategory) {
+    if (activeView == "subCategoryProducts" && selectedSubcategory&& selectedProductType ) {
       return (
         <AdminProductsPanel
           setActiveView={setActiveView}
           selectedSubcategory={selectedSubcategory}
           setExpandedCategory={setExpandedCategory}
+          selectedCategory={selectedCategory}
+          selectedProductType={selectedProductType}
           product={product}
           setProduct={setProduct}
         />
@@ -249,30 +559,84 @@ const Admin = () => {
               >
                 {cat.icon} {cat.name}
               </button>
+
+              {/* Subcategory Dropdown */}
               {expandedCategory === cat.name && (
                 <div
                   className={`absolute ${
-                    isMobile ? "left-32 w-50" : "left-64 w-72"
-                  } top-0 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-2 bg-white shadow-xl rounded-lg p-4 z-50  border border-gray-200`}
+                    isMobile ? "left-32 w-60" : "left-64 w-72"
+                  } top-0 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-2 bg-white shadow-xl rounded-lg p-4 z-50 border border-gray-200`}
                 >
                   <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-1">
                     {cat.name}
                   </h3>
+
                   {cat.subcategories.map((sub) => (
-                    <button
-                      key={sub}
-                      onClick={() => {
-                        setSelectedSubcategory(sub);
-                        setActiveView("subCategoryProducts");
-                        window.innerWidth < 1024 &&
-                          sidebarOpen &&
-                          setSidebarOpen(false);
-                        setExpandedCategory(null);
-                      }}
-                      className="block text-left w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
-                    >
-                      {sub}
-                    </button>
+                    <div key={sub.name} className="mb-2">
+                      <button
+                        onClick={() => {
+                          setSelectedSubcategory(sub.name);
+                          setExpandedSubcategory(
+                            expandedSubcategory === sub.name ? null : sub.name
+                          );
+                        }}
+                        className="block text-left w-full px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 rounded font-semibold"
+                      >
+                        {sub.name}
+                      </button>
+
+                      {/* Level 3 Product Types */}
+                      {expandedSubcategory === sub.name && (
+                        <div className="ml-4 mt-1">
+                          {sub.productsType.map((type) => {
+                            // If it has subTypes => Level 4
+                            if (type.subTypes) {
+                              return (
+                                <div key={type.name} className="mb-1">
+                                  <div className="text-gray-700 text-sm font-medium">
+                                    {type.name}
+                                  </div>
+                                  <div className="ml-3">
+                                    {type.subTypes.map((subType, i) => (
+                                      <button
+                                        key={i}
+                                        onClick={() => {
+                                          setSelectedProductType(
+                                            `${type.name} > ${subType}`
+                                          );
+                                          setActiveView("subCategoryProducts");
+                                          setExpandedCategory(null);
+                                          window.innerWidth<=768 &&sidebarOpen && setSidebarOpen(false);
+                                        }}
+                                        className="block text-left w-full px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+                                      >
+                                        {subType}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            // Else, simple product type
+                            return (
+                              <button
+                                key={type.name}
+                                onClick={() => {
+                                  setSelectedProductType(type.name);
+                                  setActiveView("subCategoryProducts");
+                                  setExpandedCategory(null);
+                                  sidebarOpen && setSidebarOpen(false);
+                                }}
+                                className="block text-left w-full px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                              >
+                                {type.name}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               )}
@@ -289,7 +653,7 @@ const Admin = () => {
           </button>
         </nav>
       </aside>
-      
+
       {/* Main panel */}
       <main
         className="flex-1 overflow-y-auto pt-7  w-screen min-h-screen bg-gray-50 shadow-inner"
@@ -299,18 +663,17 @@ const Admin = () => {
       >
         {renderMainPanel()}
         {activeView == null && (
-        <div className=" flex justify-center ">
-
-          <button
-            onClick={() => {
-              setActiveView("add-product");
-            }}
-            className="bg-black text-white px-4 py-2 rounded"
-          >
-            + Add New Product
-          </button>
-        </div>
-      )}
+          <div className=" flex justify-center ">
+            <button
+              onClick={() => {
+                setActiveView("add-product");
+              }}
+              className="bg-black text-white px-4 py-2 rounded"
+            >
+              + Add New Product
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );

@@ -46,362 +46,378 @@ const Home = () => {
     );
   }, []);
 
-  const categories = [
-    {
-      name: "Gifts",
-      subcategories: [
-        {
-          name: "Gifts For Her",
-          productsType: [
-            "Accessories",
-            "Art of Living",
-            "Jewellery",
-            "Leather Goods",
-            "Perfumes",
-            "Shoes",
-            "Watches",
-          ],
-        },
-        {
-          name: "Gifts For Him",
-          productsType: [
-            "Accessories",
-            "Art of Living",
-            "Jewellery",
-            "Leather Goods",
-            "Perfumes",
-            "Shoes",
-            "Watches",
-          ],
-        },
-        {
-          name: "Gifts For Couples",
-          productsType: [
-            "Accessories",
-            "Art of Living",
-            "Leather Goods",
-            "Perfumes",
-            "Shoes",
-            "Jewellery",
-          ],
-        },
-        {
-          name: "Gifts For Babies",
-          productsType: [
-            "Accessories",
-            "Art of Living",
-            "Leather Goods",
-            "Ready to Wear",
-          ],
-        },
-        { name: "All Gifts", productsType: [] },
-        { name: "Personalisation" },
-      ],
-    },
-    {
-      name: "New",
-      subcategories: [
-        {
-          name: "For Women",
-          productsType: [
-            "Accessories",
-            "Art of Living",
-            "Jewellery",
-            "Leather Goods",
-            "Perfumes",
-            "Shoes",
-            "Watches",
-          ],
-        },
-        {
-          name: "For Men",
-          productsType: [
-            "Accessories",
-            "Art of Living",
-            "Jewellery",
-            "Leather Goods",
-            "Perfumes",
-            "Shoes",
-            "Watches",
-          ],
-        },
+ const categories = [
+  {
+    name: "Gifts",
+    subcategories: [
+      {
+        name: "Gifts For Her",
+        productsType: [
+          "Accessories",
+          "Art of Living",
+          {
+            name: "Jewellery",
+            subTypes: [
+              "Necklaces and Pendants",
+              "Bracelets",
+              "Earrings",
+              "Rings",
+              "Monogram and Leather Bracelets",
+              "Brooches",
+            ],
+          },
+          "Leather Goods",
+          "Perfumes",
+          "Shoes",
+          "Watches",
+        ],
+      },
+      {
+        name: "Gifts For Him",
+        productsType: [
+          "Accessories",
+          "Art of Living",
+          {
+            name: "Jewellery",
+            subTypes: [
+              "All Fashion Jewellery",
+              "Silver Fashion Jewellery",
+              "Necklaces and Pendants",
+              "Bracelets",
+              "Rings",
+              "Monogram and Leather Bracelets",
+              "Brooches",
+            ],
+          },
+          "Leather Goods",
+          "Perfumes",
+          "Shoes",
+          "Watches",
+        ],
+      },
+      {
+        name: "Gifts For Couples",
+        productsType: [
+          "Accessories",
+          "Art of Living",
+          "Leather Goods",
+          "Perfumes",
+          "Shoes",
+          "Ready-to-Wear",
+          {
+            name: "Jewellery",
+            subTypes: [
+              "All Fashion Jewellery",
+              "Silver Fashion Jewellery",
+              "Necklaces and Pendants",
+              "Bracelets",
+              "Rings",
+              "Monogram and Leather Bracelets",
+              "Brooches",
+            ],
+          },
+        ],
+      },
+      {
+        name: "Gifts For Babies",
+        productsType: [],
+      },
+      { name: "All Gifts", productsType: [] },
+      { name: "Personalisation" },
+    ],
+  },
 
-        { name: "Personalisation" },
-      ],
-    },
-    {
-      name: "Bags",
-      subcategories: [
-        {
-          name: "Women Bags",
-          productsType: [
-            "STARPHENOM Icons",
-            "All Handbags",
-            "Crossbody bags",
-            "Shoulder bags ",
-            "Tote bags",
-            "Mini bags",
-            "Hobo bags",
-            "Bucket bags",
-            "Backpacks",
-            "Top Handlers ",
-            "Shoulder Straps",
-          ],
-        },
-        {
-          name: "Men Bags",
-          productsType: [
-            "STARPHENOM Icons",
-            "All Handbags",
-            "Crossbody bags",
-            "Backpacks",
-            "Bumbags",
-            "Tote bags",
-            "Mini bags",
-            "Backpacks",
-          ],
-        },
-        {
-          name: "Women Small Leather Goods",
-          productsType: [
-            "All Wallets and Small Leather Goods",
-            "Wallets on Chain and Micro Bags",
-            "STARPHENOM Essentials",
-            "Compact and Long Wallets",
-            "Card Holders and Key Holders",
-            "Newness",
-          ],
-        },
-        {
-          name: "Men Small Leather Goods",
-          productsType: [
-            "Compact Wallets",
-            "Card Holders",
-            "Long Wallets",
-            "Mini Bags",
-            "Passport Covers",
-            "Pouches",
-          ],
-        },
-        { name: "Personalisation" },
-      ],
-    },
-    {
-      name: "Men",
-      subcategories: [
-        {
-          name: "Bags",
-          productsType: [
-            "STARPHENOM Icons",
-            "All Handbags",
-            "Crossbody bags",
-            "Backpacks",
-            "Bumbags",
-            "Tote bags",
-            "Mini bags",
-            "Backpacks",
-          ],
-        },
-        {
-          name: "Wallets and Small Leather Goods",
-          productsType: [
-            "Compact Wallets",
-            "Card Holders",
-            "Long Wallets",
-            "Mini Bags",
-            "Passport Covers",
-            "Pouches",
-          ],
-        },
-        {
-          name: "Travel",
-          productsType: [
-            "Rolling Luggage",
-            "Travel Bags",
-            "Travel Accessories",
-          ],
-        },
-        { name: "Accessories", productsType: [] },
-        {
-          name: "Fashion Jewellery",
-          productsType: [
-            "Bracelets",
-            "Rings",
-            "Monogram and Leather Bracelets",
-            "Brooches",
-          ],
-        },
-        {
-          name: "Shoes",
-          productsType: [
-            "All Shoes",
-            "Sneakers",
-            "Loafers and Moccasins",
-            "Sandals",
-            "Lace-ups and Buckles shoes",
-            "Boots",
-          ],
-        },
-        { name: "Ready-to-Wear", productsType: [] },
-        { name: "Watches", productsType: [] },
-      ],
-    },
-    {
-      name: "Women",
-      subcategories: [
-        {
-          name: "Handbags",
-          productsType: [
-            "STARPHENOM Icons",
-            "All Handbags",
-            "Crossbody bags",
-            "Shoulder bags ",
-            "Tote bags",
-            "Mini bags",
-            "Hobo bags",
-            "Bucket bags",
-            "Backpacks",
-            "Top Handlers ",
-            "Shoulder Straps",
-          ],
-        },
-        {
-          name: "Wallets and Small Leather Goods",
-          productsType: [
-            "All Wallets and Small Leather Goods",
-            "Wallets on Chain and Micro Bags",
-            "STARPHENOM Essentials",
-            "Compact and Long Wallets",
-            "Card Holders and Key Holders",
-            "Newness",
-          ],
-        },
-        {
-          name: "Fashion Jewellery",
-          productsType: [
-            "Necklaces and Pendants",
-            "Bracelets",
-            "Earrings",
-            "Rings",
-            "Monogram and Leather Bracelets",
-            "Brooches",
-          ],
-        },
-        {
-          name: "Shoes",
-          productsType: [
-            "All Shoes",
-            "Sneakers",
-            "Boots and Ankle Boots",
-            "Loafers and Ballerinas",
-            "Platform Shoes",
-            "Mules and Slides",
-            "Sandals and Espadrilles",
-            "Pumps",
-          ],
-        },
-        { name: "Accessories", productsType: [] },
-        { name: "Ready-to-Wear", productsType: [] },
-        {
-          name: "Travel",
-          productsType: [
-            "Rolling Luggage",
-            "Travel Bags",
-            "Travel Accessories",
-          ],
-        },
-        { name: "Watches", productsType: [] },
-      ],
-    },
-    {
-      name: "Watches",
-      subcategories: [
-        { name: "All Watches", productsType: [] },
-        {
-          name: "Watches Collections",
-          productsType: [
-            "Escale",
-            "Tambour",
-            "Tambour Convergence",
-            "Tambour Taiko",
-            "Original Tambour",
-            "Objects of Time",
-          ],
-        },
-        { name: "Personalisation" },
-      ],
-    },
-    {
-      name: "Travel And Home",
-      subcategories: [
-        {
-          name: "Travel Bags and Rolling Luggage",
-          productsType: [
-            "Rolling Luggage",
-            "Travel Bags",
-            "Travel Accessories",
-          ],
-        },
-        {
-          name: "Home and Art of Dining",
-          productsType: [
-            "Furniture",
-            "Decoration",
-            "Art of Dining",
-            "Home Textile",
-          ],
-        },
-        {
-          name: "Books and Stationery",
-          productsType: [
-            "All Books and Stationery",
-            "Hardcover Books",
-            "City Guides",
-            "Travel Books",
-            "Fashion Eye Books",
-            "Office and Writing",
-          ],
-        },
-        {
-          name: "High-Tech Objects and Accessories",
-          productsType: [
-            "Audio and Connected Watches Accessories",
-            "Smartphone Accessories",
-          ],
-        },
-      ],
-    },
-    {
-      name: "Hats",
-      subcategories: [
-        { name: "Baseball Cap", productsType: [] },
-        { name: "Gambler Hats", productsType: [] },
-        { name: "ASCOT CAP", productsType: [] },
-        { name: "Bowler Hat", productsType: [] },
-        { name: "Beret", productsType: [] },
-        { name: "Fedora", productsType: [] },
-        { name: "Personalisation" },
-      ],
-    },
-    {
-      name: "Perfumes",
-      subcategories: [
-        { name: "Highlights", productsType: [] },
-        { name: "Icons", productsType: [] },
-        { name: "Collections", productsType: [] },
-        { name: "Exceptional Creations", productsType: [] },
-        { name: "World of Fragrances", productsType: [] },
-        { name: "Personalisation" },
-      ],
-    },
-    {
-      name: "Services",
-      subcategories: [
-        { name: "Personalisation" },
-        { name: "STARPHENOM Repairs", productsType: [] },
-      ],
-    },
-  ];
+  {
+    name: "Bags",
+    subcategories: [
+      {
+        name: "Women Bags",
+        productsType: [
+          "Crossbody bags",
+          "Shoulder bags ",
+          "Tote bags",
+          "Mini bags",
+          "Hobo bags",
+          "Bucket bags",
+          "Backpacks",
+          "Top Handlers ",
+          "Shoulder Straps",
+        ],
+      },
+      {
+        name: "Men Bags",
+        productsType: [
+          "Crossbody bags",
+          "Backpacks",
+          "Bumbags",
+          "Tote bags",
+          "Mini bags",
+          "Backpacks",
+        ],
+      },
+      {
+        name: "Women Small Leather Goods",
+        productsType: [
+          ,
+          "Wallets on Chain and Micro Bags",
+
+          "Compact Wallets",
+          "Long Wallets",
+          "Card Holders",
+          "Passport Covers",
+        ],
+      },
+      {
+        name: "Men Small Leather Goods",
+        productsType: [
+          "Compact Wallets",
+          "Card Holders",
+          "Long Wallets",
+          "Mini Bags",
+          "Passport Covers",
+          "Pouches",
+        ],
+      },
+      { name: "Personalisation" },
+    ],
+  },
+  {
+    name: "Men",
+    subcategories: [
+      {
+        name: "Bags",
+        productsType: [
+          "STARPHENOM Icons",
+          "All Handbags",
+          "Crossbody bags",
+          "Backpacks",
+          "Bumbags",
+          "Tote bags",
+          "Mini bags",
+          "Backpacks",
+        ],
+      },
+      {
+        name: "Wallets and Small Leather Goods",
+        productsType: [
+          "Compact Wallets",
+          "Card Holders",
+          "Long Wallets",
+          "Mini Bags",
+          "Passport Covers",
+          "Pouches",
+        ],
+      },
+      {
+        name: "Travel",
+        productsType: ["Rolling Luggage", "Travel Bags", "Travel Accessories"],
+      },
+      { name: "Accessories", productsType: [] },
+      {
+        name: "Fashion Jewellery",
+        productsType: [
+          "All Fashion Jewellery",
+          "Silver Fashion Jewellery",
+          "Necklaces and Pendants",
+          "Bracelets",
+          "Rings",
+          "Monogram and Leather Bracelets",
+          "Brooches",
+        ],
+      },
+      {
+        name: "Shoes",
+        productsType: [
+          "All Shoes",
+          "Sneakers",
+          "Loafers and Moccasins",
+          "Sandals",
+          "Lace-ups and Buckles shoes",
+          "Boots",
+        ],
+      },
+      { name: "Ready-to-Wear", productsType: [] },
+      { name: "Watches", productsType: [] },
+    ],
+  },
+  {
+    name: "Women",
+    subcategories: [
+      {
+        name: "Handbags",
+        productsType: [
+          "STARPHENOM Icons",
+          "All Handbags",
+          "Crossbody bags",
+          "Shoulder bags ",
+          "Tote bags",
+          "Mini bags",
+          "Hobo bags",
+          "Bucket bags",
+          "Backpacks",
+          "Top Handlers ",
+          "Shoulder Straps",
+        ],
+      },
+      {
+        name: "Wallets and Small Leather Goods",
+        productsType: [
+          "All Wallets and Small Leather Goods",
+          "Wallets on Chain and Micro Bags",
+          "STARPHENOM Essentials",
+          "Compact and Long Wallets",
+          "Card Holders and Key Holders",
+          "Newness",
+        ],
+      },
+      {
+        name: "Fashion Jewellery",
+        productsType: [
+          "Necklaces and Pendants",
+          "Bracelets",
+          "Earrings",
+          "Rings",
+          "Monogram and Leather Bracelets",
+          "Brooches",
+        ],
+      },
+      {
+        name: "Shoes",
+        productsType: [
+          "All Shoes",
+          "Sneakers",
+          "Boots and Ankle Boots",
+          "Loafers and Ballerinas",
+          "Platform Shoes",
+          "Mules and Slides",
+          "Sandals and Espadrilles",
+          "Pumps",
+        ],
+      },
+      { name: "Accessories", productsType: [] },
+      { name: "Ready-to-Wear", productsType: [] },
+      {
+        name: "Travel",
+        productsType: ["Rolling Luggage", "Travel Bags", "Travel Accessories"],
+      },
+      { name: "Watches", productsType: [] },
+    ],
+  },
+  {
+    name: "Watches",
+    subcategories: [
+      { name: "All Watches", productsType: [] },
+      {
+        name: "Watches Collections",
+        productsType: [
+          "Escale",
+          "Tambour",
+          "Tambour Convergence",
+          "Tambour Taiko",
+          "Original Tambour",
+          "Objects of Time",
+        ],
+      },
+      {
+        name: "High Watchmaking",
+        productsType: [
+          "Automata",
+          " Poinçon De Genève",
+          "Minute Repeater",
+          " Spin Time",
+          "Artistic Crafts",
+          "Objects of Time",
+          " Pocket Watches",
+        ],
+      },
+      { name: "Personalisation" },
+    ],
+  },
+  {
+    name: "Travel And Home",
+    subcategories: [
+      {
+        name: "Travel Bags and Rolling Luggage",
+        productsType: [
+          "Rolling Luggage",
+          "Travel Bags",
+          "Travel Accessories",
+          "Personalisation",
+        ],
+      },
+      {
+        name: "Home and Art of Dining",
+        productsType: [
+          "Furniture",
+          "Decoration",
+          "Art of Dining",
+          "Home Textile",
+        ],
+      },
+      {
+        name: "Books and Stationery",
+        productsType: [
+          "All Books and Stationery",
+          "Hardcover Books",
+          "City Guides",
+          "Travel Books",
+          "Fashion Eye Books",
+          "Office and Writing",
+        ],
+      },
+      {
+        name: "High-Tech Objects and Accessories",
+        productsType: [
+          "Audio and Connected Watches Accessories",
+          "Smartphone Accessories",
+        ],
+      },
+    ],
+  },
+  {
+    name: "Hats",
+    subcategories: [
+      { name: "Baseball Cap", productsType: [] },
+      { name: "Gambler Hats", productsType: [] },
+      { name: "ASCOT CAP", productsType: [] },
+      { name: "Bowler Hat", productsType: [] },
+      { name: "Beret", productsType: [] },
+      { name: "Fedora", productsType: [] },
+      { name: "Personalisation" },
+    ],
+  },
+  {
+    name: "Perfumes",
+    subcategories: [
+      { name: "Highlights", productsType: [] },
+      { name: "Icons", productsType: ["Spell On You", " Imagination"] },
+      {
+        name: "Collections",
+        productsType: [
+          "All Perfumes",
+          "Feminine Perfumes",
+          "Masculine Perfumes",
+          "Cologne Perfumes",
+          "Oriental Perfumes",
+          "Les Extraits Collection",
+          "Pure Perfumes: the Fine Art of Layering",
+          "Travel",
+        ],
+      },
+      { name: "Exceptional Creations", productsType: [] },
+      { name: "World of Fragrances", productsType: [] },
+      { name: "Personalisation" },
+    ],
+  },
+  {
+    name: "Services",
+    subcategories: [
+      { name: "Personalisation" },
+      { name: "STARPHENOM Repairs", productsType: [] },
+    ],
+  },
+];
+
 
   return (
     <div className="min-h-screen w-screen relative overflow-x-hidden overflow-y-auto">

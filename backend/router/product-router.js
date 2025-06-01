@@ -261,8 +261,8 @@ router.delete(
   productController.deleteProduct
 );
 router.get(
-  "/get-products-by-subcategory/:subCategory",
-  productController.getProductsBySubCategory
+  "/get-products-by-subcategory-productType/:category/:subCategory/:productType",
+  productController.getProductsBySubCategoryAndProductType
 );
 router.get("/get-product-by-id/:id", productController.getProductById);
 router.get("/get-Oneproduct-forEach-subcategory/:criteria",productController.getProductByCriteria)

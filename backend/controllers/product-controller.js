@@ -42,6 +42,7 @@ module.exports.createProduct = async (req, res) => {
       stock,
       category,
       subcategory,
+      productType,
       tags,
       style,
       origin,
@@ -64,7 +65,15 @@ module.exports.createProduct = async (req, res) => {
       isActive,
     } = req.body;
 
-    if (!name || !price || !stock || !category || !subcategory || !gender) {
+    if (
+      !name ||
+      !price ||
+      !stock ||
+      !category ||
+      !subcategory ||
+      !gender ||
+      !productType
+    ) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -96,6 +105,7 @@ module.exports.createProduct = async (req, res) => {
       stock: Number(stock),
       category,
       subcategory,
+      productType,
       tags: tags ? tags : [],
 
       style,
@@ -255,7 +265,6 @@ module.exports.getProductByCriteria = async (req, res) => {
       query.tags = { $in: tagWords };
     }
 
-    
     console.log(query);
     const products = await productModel.find(query);
     console.log(products);
@@ -292,11 +301,17 @@ module.exports.getProductByCriteria = async (req, res) => {
   }
 };
 
-module.exports.getProductsBySubCategory = async (req, res) => {
+module.exports.getProductsBySubCategoryAndProductType = async (req, res) => {
   try {
-    const subCategory = req.params.subCategory;
+    const { category, subCategory, productType } = req.params;
 
-    const products = await productModel.find({ subcategory: subCategory });
+    // Construct a query object dynamically
+    const query = {
+      category: new RegExp(`^${category}$`, "i"),
+      subcategory: new RegExp(`^${subCategory}$`, "i"),
+      productType: new RegExp(`^${productType}$`, "i"),
+    };
+    const products = await productModel.find(query);
     if (products.length === 0) {
       return res
         .status(404)

@@ -4,6 +4,8 @@ import axios from "axios";
 import AdminProductCard from "./AdminProductCard";
 const AdminProductsPanel = ({
   selectedSubcategory,
+  selectedCategory,
+  selectedProductType,
   setExpandedCategory,
   setActiveView,
   setProduct,
@@ -17,8 +19,7 @@ const AdminProductsPanel = ({
         let response = await axios.get(
           `${
             import.meta.env.VITE_BASE_URL
-          }/products/get-products-by-subcategory/${selectedSubcategory}`,
-          {}
+          }/products/get-products-by-subcategory-productType/${selectedCategory}/${selectedSubcategory}/${selectedProductType}`
         );
 
         if (response.status === 200) {

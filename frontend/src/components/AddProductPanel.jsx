@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 
 const fields = [
@@ -14,7 +14,7 @@ const fields = [
   "usage",
   "care",
   "tags",
-  "subcategory",
+
   "sustainability",
 ];
 const categoryFieldMap = {
@@ -30,8 +30,6 @@ const categoryFieldMap = {
     "returns",
     "tags",
     "durability",
-
-    "subcategory",
   ],
   Perfumes: [
     "fragranceNotes",
@@ -43,7 +41,6 @@ const categoryFieldMap = {
     "delivery",
     "returns",
     "tags",
-    "subcategory",
   ],
   Bags: [
     "material",
@@ -59,8 +56,6 @@ const categoryFieldMap = {
     "usage",
     "storageInstructions",
     "care",
-
-    "subcategory",
   ],
   Watches: [
     "material",
@@ -72,7 +67,6 @@ const categoryFieldMap = {
     "delivery",
     "returns",
     "tags",
-    "subcategory",
   ],
   Hats: [
     "material",
@@ -87,8 +81,6 @@ const categoryFieldMap = {
     "durability",
     "usage",
     "care",
-
-    "subcategory",
   ],
   Gifts: [
     "style",
@@ -99,7 +91,6 @@ const categoryFieldMap = {
     "forOccasion",
     "giftMessageAvailable",
   ],
-  Pets: ["subcategory", "howMade", "delivery", "returns"],
 };
 
 const AddProductPanel = ({
@@ -116,8 +107,9 @@ const AddProductPanel = ({
     price: "Price",
     discount: "Discount",
     stock: "Stock",
-    category: selectedCategory || "",
-    subcategory: selectedSubCategory || "",
+    categoryLevel1: selectedCategory || "",
+    subcategory: "",
+    productType: "",
     tags: [],
     emi: {
       emiAvailable: false,
@@ -158,6 +150,29 @@ const AddProductPanel = ({
   const [productDescription, setProductDescription] = useState([""]);
   const [popupMessage, setPopupMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const [categoryLevel1, setCategoryLevel1] = useState(selectedCategory || "");
+  const [categoryLevel2, setCategoryLevel2] = useState("");
+  const [categoryLevel3, setCategoryLevel3] = useState("");
+  // Get subcategories based on selected top-level category
+  const subCategoriesLevel2 = useMemo(() => {
+    return (
+      categories.find((cat) => cat.name === categoryLevel1)?.subcategories || []
+    );
+  }, [categoryLevel1, categories]);
+  const subCategoriesLevel3 = useMemo(() => {
+    const selectedSub = subCategoriesLevel2.find(
+      (sub) => sub.name === categoryLevel2
+    );
+    if (!selectedSub || !Array.isArray(selectedSub.productsType)) return [];
+
+    return selectedSub.productsType
+      .map((item) => {
+        if (typeof item === "string") return { name: item }; // simple type
+        if (typeof item === "object" && item.name && item.subTypes) return item;
+        return null;
+      })
+      .filter(Boolean);
+  }, [categoryLevel1, categoryLevel2, subCategoriesLevel2]);
 
   const showPopupMessage = (message) => {
     setPopupMessage(message);
@@ -304,9 +319,9 @@ const AddProductPanel = ({
 
     // Append imageMeta as JSON
     form.append("imagesMeta", JSON.stringify(imageMeta));
-    for (let pair of form.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // for (let pair of form.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
 
     try {
       const res = await axios.post(
@@ -377,7 +392,6 @@ const AddProductPanel = ({
           Back
         </button>
         <h2 className="text-2xl font-semibold mb-4">Add New Product</h2>
-
         <div className="grid grid-cols-2 gap-4">
           <input
             type="text"
@@ -471,38 +485,88 @@ const AddProductPanel = ({
             + Add More
           </button>
         </div>
-
         <div className=" p-4 rounded w-full space-y-2">
-          <label className="font-semibold block">Category</label>
-
-          {/* Format selector */}
+          <label className="block font-semibold mb-1">Main Category</label>
           <select
-            value={formData.category}
-            onChange={(e) =>
+            value={categoryLevel1}
+            onChange={(e) => {
               setFormData({
                 ...formData,
                 category: e.target.value,
-              })
-            }
-            className="border px-2 py-1 rounded"
+              });
+              setCategoryLevel1(e.target.value);
+              setCategoryLevel2("");
+              setCategoryLevel3("");
+            }}
+            className="border px-3 py-2 rounded w-full"
           >
-            <option value="">Select Category</option>
-            {[
-              "bags",
-              "shoes",
-              "watches",
-              "perfumes",
-              "gifts",
-              "travelAndHome",
-              "hats",
-              "services",
-              "pets",
-            ].map((cat) => {
-              return <option value={cat}>{cat}</option>;
-            })}
+            <option value="">Select Main Category</option>
+            {categories.map((cat, idx) => (
+              <option key={idx} value={cat.name}>
+                {cat.name}
+              </option>
+            ))}
           </select>
         </div>
+        {subCategoriesLevel2.length > 0 && (
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Subcategory</label>
+            <select
+              value={categoryLevel2}
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
 
+                  subcategory: e.target.value,
+                });
+                setCategoryLevel2(e.target.value);
+                setCategoryLevel3("");
+              }}
+              className="border px-3 py-2 rounded w-full"
+            >
+              <option value="">Select Subcategory</option>
+              {subCategoriesLevel2.map((sub, idx) => (
+                <option key={idx} value={sub.name}>
+                  {sub.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {/* Level 3 Product Types Dropdown (if any) */}
+        {subCategoriesLevel3.length > 0 && (
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Product Type</label>
+            <select
+              value={categoryLevel3}
+              onChange={(e) => {
+                setFormData({
+                  ...formData,
+                  productType: e.target.value,
+                });
+                setCategoryLevel3(e.target.value);
+              }}
+              className="border px-3 py-2 rounded w-full"
+            >
+              <option value="">Select Product Type</option>
+              {subCategoriesLevel3.map((type, idx) =>
+                type.subTypes ? (
+                  <optgroup key={idx} label={type.name}>
+                    {type.subTypes.map((subType, i) => (
+                      <option key={i} value={`${type.name} > ${subType}`}>
+                        {subType}
+                      </option>
+                    ))}
+                  </optgroup>
+                ) : (
+                  <option key={idx} value={type.name}>
+                    {type.name}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+        )}
         {visibleFields.includes("material") && (
           <input
             type="text"
@@ -513,7 +577,6 @@ const AddProductPanel = ({
             className="border p-2 rounded w-full"
           />
         )}
-
         {visibleFields.includes("fragranceNotes") && (
           <input
             type="text"
@@ -524,7 +587,6 @@ const AddProductPanel = ({
             className="border p-2 rounded w-full"
           />
         )}
-
         {visibleFields.includes("availableSizes") && (
           <div className=" p-4 rounded w-full space-y-2">
             <label className="font-semibold block">Available Sizes</label>
@@ -633,7 +695,6 @@ const AddProductPanel = ({
             )}
           </div>
         )}
-
         {[
           "category",
           "subcategory",
@@ -674,7 +735,6 @@ const AddProductPanel = ({
             )
           ) : null
         )}
-
         <div className="flex flex-wrap gap-4 items-center">
           <select
             name="gender"
@@ -717,7 +777,6 @@ const AddProductPanel = ({
             />
           )}
         </div>
-
         {/* EMI */}
         <div className="flex items-center">
           <input
@@ -749,7 +808,6 @@ const AddProductPanel = ({
             }
           />
         )}
-
         {/* Customizable */}
         <div className="flex items-center">
           <input
@@ -761,7 +819,6 @@ const AddProductPanel = ({
           />
           <label>Customizable</label>
         </div>
-
         <div>
           <h3 className="text-lg font-semibold mb-2">Images by Color</h3>
           {formData.images.map((imgGroup, idx) => (
@@ -837,7 +894,6 @@ const AddProductPanel = ({
           </div>
           {/* Add another color block */}
         </div>
-
         <button
           type="submit"
           className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 w-full mt-4"
