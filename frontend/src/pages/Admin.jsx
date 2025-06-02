@@ -495,7 +495,7 @@ const Admin = () => {
   };
 
   return (
-    <div className="flex h-screen p-2 bg-gray-100 relative overflow-hidden">
+    <div className="flex h-screen p-2 bg-gray-100 relative ">
       <button
         className="absolute top-2 left-2 p-2 bg-white rounded-md shadow lg:hidden z-50"
         onClick={() => setSidebarOpen(true)}
