@@ -9,7 +9,7 @@ const HomeCategoriesSection = ({ categories }) => {
   const buttonRefs = useRef({});
 
   const handleCategoryClick = (categoryName) => {
-    navigate(`/product-category/${categoryName}`, {
+    navigate(`/category-products/${categoryName}`, {
       state: { categories: categories },
     });
   };

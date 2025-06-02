@@ -19,7 +19,7 @@ const VideoCard = (props) => {
   };
 
   return (
-    <div className={`w-full ${window.innerWidth<=768?"h-[60vh]":"h-full "}  relative`}>
+    <div className={`w-full ${window.innerWidth<=768?"h-[60vh]":"h-full "}  `}>
       <video
         className=" w-full h-full object-cover"
         src={props.videoSrc}
@@ -29,19 +29,19 @@ const VideoCard = (props) => {
       >
         Your browser does not support the video tag.
       </video>
-      <div className="absolute bottom-8 right-15 flex  gap-4 ">
+      <div className="flex  gap-4 ">
         <button onClick={togglePlay} className="">
           {isPlaying ? (
-            <i className="ri-pause-line text-2xl  text-white "></i>
+            <i className="ri-pause-line text-2xl absolute bottom-4 left-15  text-white "></i>
           ) : (
-            <i class="ri-play-line text-2xl text-white "></i>
+            <i class="ri-play-line text-2xl absolute bottom-4 left-15  text-white "></i>
           )}
         </button>
         <button onClick={toggleMute} className="">
           {isMuted ? (
-            <i className="ri-volume-mute-line text-2xl  text-white "></i>
+            <i className="ri-volume-mute-line text-2xl absolute bottom-4 right-15  text-white "></i>
           ) : (
-            <i class="ri-volume-down-line text-2xl text-white"></i>
+            <i class="ri-volume-down-line text-2xl absolute bottom-4 right-15  text-white"></i>
           )}
         </button>
       </div>

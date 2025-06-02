@@ -5,6 +5,7 @@ import TwoVideoCard from "./TwoVideoCard";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
+import CategoryCard from "./CategoryCard";
 const CategoryDiv = (props) => {
   const [products, setProducts] = useState([]);
 
@@ -18,9 +19,9 @@ const CategoryDiv = (props) => {
           {}
         );
         if (response.status === 200) {
-          if(response.data.products.length>4)
-            setProducts(response.data.products.slice(0, 4));
-          else setProducts(response.data.products)
+          if (response.data.products.length > 8)
+            setProducts(response.data.products.slice(0, 8));
+          else setProducts(response.data.products);
         }
       } catch (err) {
         console.log(err);
@@ -34,35 +35,19 @@ const CategoryDiv = (props) => {
         {/* Video Section */}
         <VideoContentCard
           align={props.index % 2 == 0 ? "left" : "right"}
-          videoSrc={"/videoplayback.mp4"}
+          videoSrc={props.videoSrc}
           isMobile={props.isMobile}
-          highlight={{
-            heading: "Discover the Latest Trends",
-            description:
-              "Explore our exclusive collection of fashion and lifestyle products.",
-          }}
+          highlight={props.highlight}
+          category={props.category}
         />
-
-        <div className="grid grid-cols-1 mx-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-[90%] px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 ">
-          {products.length > 0 ? (
-            products.map((product, index) => {
-              return <ProductsCard product={product} key={index} />;
-            })
-          ) : (
-            <p className="text-gray-500 col-span-full text-center">
-              Loading products...
-            </p>
-          )}
+        <h1 className="text-center mt-4 text-xl mb-4">Explore a Selections of the <span className="font-bold">STARPHENOM'</span> s Creations</h1> 
+        <div className="grid grid-cols-2 mx-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 row-gap-8 w-[90%] px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 ">
+          
+          {props.categoriesAfterFirstVideo && props.categoriesAfterFirstVideo.map((cat, ind) => {
+            return <CategoryCard category={cat} key={ind} />;
+          })}
         </div>
       </div>
-      {/* {props.isTwoDiv === "true" ? (
-        <TwoVideoCard
-          isMobile={props.isMobile}
-          videoSrc={"/videoplayback.mp4"}
-        />
-      ) : (
-        ""
-      )} */}
     </div>
   );
 };

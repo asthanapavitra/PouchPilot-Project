@@ -495,7 +495,7 @@ const Admin = () => {
   };
 
   return (
-    <div className="flex h-screen p-2 bg-gray-100 relative ">
+    <div className="flex h-screen p-2 relative ">
       <button
         className="absolute top-2 left-2 p-2 bg-white rounded-md shadow lg:hidden z-50"
         onClick={() => setSidebarOpen(true)}
@@ -587,10 +587,11 @@ const Admin = () => {
 
                       {/* Level 3 Product Types */}
                       {expandedSubcategory === sub.name && (
-                        <div className="ml-4 mt-1">
+                        <div className="ml-4">
                           {sub.productsType.map((type) => {
                             // If it has subTypes => Level 4
                             if (type.subTypes) {
+                              console.log("Subtypes");
                               return (
                                 <div key={type.name} className="mb-1">
                                   <div className="text-gray-700 text-sm font-medium">
@@ -621,16 +622,16 @@ const Admin = () => {
                             // Else, simple product type
                             return (
                               <button
-                                key={type.name}
+                                key={type}
                                 onClick={() => {
-                                  setSelectedProductType(type.name);
+                                  setSelectedProductType(type);
                                   setActiveView("subCategoryProducts");
                                   setExpandedCategory(null);
-                                  sidebarOpen && setSidebarOpen(false);
+                                  window.innerWidth<=768 &&sidebarOpen && setSidebarOpen(false);
                                 }}
-                                className="block text-left w-full px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                                className="block text-left w-full  py-1 text-sm text-gray-700 font-medium hover:bg-gray-100 rounded"
                               >
-                                {type.name}
+                                {type}
                               </button>
                             );
                           })}
