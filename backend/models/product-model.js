@@ -17,12 +17,7 @@ const productSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
-  specifications: [
-    {
-      subHeading: String,
-      value: String,
-    },
-  ],
+  specifications: [String],
   emi: {
     emiAvailable: {
       type: Boolean,

@@ -13,7 +13,6 @@ const fields = [
   "durability",
 
   "care",
-
 ];
 
 const AddProductPanel = ({
@@ -67,9 +66,7 @@ const AddProductPanel = ({
     images: [],
   });
 
-  const [specifications, setSpecifications] = useState([
-    { subHeading: "", value: "" },
-  ]);
+  const [specifications, setSpecifications] = useState([""]);
   const [productDescription, setProductDescription] = useState([""]);
   const [popupMessage, setPopupMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
@@ -107,19 +104,16 @@ const AddProductPanel = ({
     }, 10000); // 10 seconds = 10,000 milliseconds
   };
 
-  const handleSpecChange = (index, field, value) => {
+  const handleSpecChange = (index, value) => {
     const updated = [...specifications];
-    updated[index][field] = value;
+    updated[index] = value;
     formData.specifications = updated;
     setSpecifications(updated);
   };
 
   const addSpecRow = () => {
-    formData.specifications = [
-      ...specifications,
-      { subHeading: "", value: "" },
-    ];
-    setSpecifications([...specifications, { subHeading: "", value: "" }]);
+    formData.specifications = [...specifications, ""];
+    setSpecifications([...specifications, ""]);
   };
 
   const handleDescriptionChange = (index, value) => {
@@ -461,20 +455,10 @@ const AddProductPanel = ({
               className="w-full flex items-center justify-between gap-2 mb-2"
             >
               <input
-                className="w-[45%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
-                placeholder="Subheading"
-                value={spec.subHeading}
-                onChange={(e) =>
-                  handleSpecChange(index, "subHeading", e.target.value)
-                }
-              />
-              <input
-                className="w-[45%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
+                className="w-[100%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
                 placeholder="Value"
-                value={spec.value}
-                onChange={(e) =>
-                  handleSpecChange(index, "value", e.target.value)
-                }
+                value={spec}
+                onChange={(e) => handleSpecChange(index, e.target.value)}
               />
             </div>
           ))}
@@ -670,7 +654,7 @@ const AddProductPanel = ({
             name="gender"
             value={formData.gender}
             onChange={handleChange}
-            className="border px-3 py-2  rounded min-w-[150px]"
+            className="border px-3 py-2  rounded min-w-[150px] bg-black text-white"
           >
             <option value="">Select Gender</option>
             <option value="men">Men</option>
