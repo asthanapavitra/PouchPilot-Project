@@ -454,7 +454,9 @@ const AddProductPanel = ({
               key={index}
               className="w-full flex items-center justify-between gap-2 mb-2"
             >
-              <input
+              <textarea
+                rows={8}
+                key={index}
                 className="w-[100%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
                 placeholder="Value"
                 value={spec}
