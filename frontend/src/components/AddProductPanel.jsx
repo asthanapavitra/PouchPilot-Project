@@ -509,7 +509,7 @@ const AddProductPanel = ({
                   },
                 })
               }
-              className="border px-2 py-1 rounded"
+              className="border px-2 py-1 rounded bg-black text-white"
             >
               <option value="standard">Standard (e.g. S, M, L)</option>
               <option value="dimensions">
