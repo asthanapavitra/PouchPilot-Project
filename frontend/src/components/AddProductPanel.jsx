@@ -11,11 +11,9 @@ const fields = [
   "delivery",
   "returns",
   "durability",
-  "usage",
+
   "care",
   "tags",
-
-  "sustainability",
 ];
 const categoryFieldMap = {
   Shoes: [
@@ -53,7 +51,7 @@ const categoryFieldMap = {
     "returns",
     "tags",
     "durability",
-    "usage",
+
     "storageInstructions",
     "care",
   ],
@@ -79,7 +77,7 @@ const categoryFieldMap = {
     "returns",
 
     "durability",
-    "usage",
+
     "care",
   ],
   Gifts: [
@@ -381,7 +379,7 @@ const AddProductPanel = ({
       <form
         onClick={() => setShowPopup(false)}
         onSubmit={handleSubmit}
-        className="p-6 space-y-4 max-w-4xl mx-auto"
+        className="p-6 lg:pl-10 space-y-4 max-w-4xl mx-auto"
       >
         <button
           onClick={() => {
