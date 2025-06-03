@@ -20,7 +20,6 @@ function parseJsonFields(req, res, next) {
       typeof req.body[field] === "string" &&
       req.body[field].trim() !== ""
     ) {
-      
       try {
         req.body[field] = JSON.parse(req.body[field]);
       } catch (err) {
@@ -28,7 +27,6 @@ function parseJsonFields(req, res, next) {
           error: `Invalid JSON in field "${field}": ${err.message}`,
         });
       }
-     
     }
   }
 
@@ -63,8 +61,7 @@ router.post(
     body("category")
       .optional()
       .isString()
-      .withMessage("Category must be a string")
-      ,
+      .withMessage("Category must be a string"),
     body("subcategory")
       .optional()
       .isString()
@@ -76,7 +73,6 @@ router.post(
       .withMessage("availableSizes must be an object"),
 
    
-    body("tags").optional().isArray().withMessage("Tags must be an array"),
 
     body("productDetails")
       .optional()
@@ -186,16 +182,12 @@ router.put(
       .isObject()
       .withMessage("availableSizes must be an object"),
 
-   
-
     body("availableSizes.sizes")
       .optional()
       .isArray()
       .withMessage("availableSizes.sizes must be an array")
       .custom((arr) => arr.every((s) => typeof s === "string"))
       .withMessage("Each size must be a string"),
-
-    body("tags").optional().isArray().withMessage("Tags must be an array"),
 
     body("productDetails")
       .optional()
@@ -260,5 +252,8 @@ router.get(
   productController.getProductsBySubCategoryAndProductType
 );
 router.get("/get-product-by-id/:id", productController.getProductById);
-router.get("/get-Oneproduct-forEach-subcategory/:criteria",productController.getProductByCriteria)
+router.get(
+  "/get-Oneproduct-forType/:criteria",
+  productController.getProductByCriteria
+);
 module.exports = router;

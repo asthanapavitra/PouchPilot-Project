@@ -9,7 +9,8 @@ const UserProtectedWrapper = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     if (!token) {
-      navigate("/authenticate");
+      navigate("/authenticate", { replace: true });
+
     }
     else{
        
@@ -31,7 +32,8 @@ const UserProtectedWrapper = ({ children }) => {
       .catch(err=>{
         console.log(err);
         localStorage.removeItem("token");
-        navigate('/authenticate');
+        navigate("/authenticate", { replace: true });
+
       })
       
     }

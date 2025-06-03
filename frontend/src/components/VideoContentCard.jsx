@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 const VideoContentCard = (props) => {
   const navigate=useNavigate();
 const handleVideoClick=()=>{
-  navigate(`/category-products${props.category}`)
+  navigate(`/category-products/${props.category}`,{state:{categories:props.categories}})
 }
   return (
-    <div onClick={handleVideoClick} className={`flex flex-col relative md:flex-row ${props.align=="right"?"md:flex-row-reverse":""}
+    <div  className={`flex flex-col relative md:flex-row ${props.align=="right"?"md:flex-row-reverse":""}
      items-center gap-6 justify-evenly pb-4 bg-white h-full  w-[100%] `}>
       {/* Left: Video */}
       <div className="w-[100%] ">
-      <VideoCard videoSrc={props.videoSrc}/>
+      <VideoCard handleVideoClick={handleVideoClick} videoSrc={props.videoSrc}/>
       </div>
      
       {/* Right: Text Content */}

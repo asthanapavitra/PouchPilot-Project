@@ -13,7 +13,7 @@ const fields = [
   "durability",
 
   "care",
-  "tags",
+
 ];
 
 const AddProductPanel = ({
@@ -214,12 +214,10 @@ const AddProductPanel = ({
     e.preventDefault();
     showPopupMessage("Adding product,please wait for few seconds 😏");
     const form = new FormData();
-    
-    formData.tags=formData.tags!="" && formData.tags.split(",")
-    console.log(formData.tags)
+
     // Append non-image fields
     for (let key in formData) {
-      console.log(key + " " +formData[key])
+      console.log(key + " " + formData[key]);
       if (key === "images") continue; // skip for now
       const value = formData[key];
       form.append(
@@ -245,7 +243,6 @@ const AddProductPanel = ({
 
     // Append imageMeta as JSON
     form.append("imagesMeta", JSON.stringify(imageMeta));
-    
 
     try {
       const res = await axios.post(
@@ -645,7 +642,8 @@ const AddProductPanel = ({
                 rows={8}
                 className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring"
               />
-            ) :field === "howMade" ? <textarea
+            ) : field === "howMade" ? (
+              <textarea
                 value={formData.howMade}
                 onChange={(e) =>
                   setFormData({ ...formData, howMade: e.target.value })
@@ -653,7 +651,8 @@ const AddProductPanel = ({
                 placeholder={`Type ${field} instructions:\nPress Enter for new line\nStart bullet points with • or -`}
                 rows={8}
                 className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring"
-              /> :(
+              />
+            ) : (
               <input
                 key={field}
                 type="text"
@@ -818,7 +817,7 @@ const AddProductPanel = ({
               type="button"
               value={newColor}
               onClick={handleAddColor}
-              className="bg-black text-white px-3 py-1 rounded"
+              className="bg-white text-black px-3 py-1 rounded"
             >
               Add Color
             </button>
@@ -827,7 +826,7 @@ const AddProductPanel = ({
         </div>
         <button
           type="submit"
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 w-full mt-4"
+          className="bg-white text-black px-4 py-2 rounded hover:bg-gray-800 w-full mt-4"
         >
           Add Product
         </button>

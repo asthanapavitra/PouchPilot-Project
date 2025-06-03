@@ -80,7 +80,6 @@ module.exports.createProduct = async (req, res) => {
     // Parse and group image files
     const imagesMeta = JSON.parse(req.body.imagesMeta || "[]");
     const files = req.files.images || [];
-
     const images = [];
 
     imagesMeta.forEach(({ color, index }) => {
@@ -172,115 +171,40 @@ module.exports.getProductsByCategory = async (req, res) => {
     return res.status(500).json({ errors: [{ message: err.message }] });
   }
 };
-const genderKeywords = {
-  women: "women",
-  woman: "women",
-  her: "women",
-  men: "men",
-  man: "men",
-  him: "men",
-};
-
-const categoryKeywords = [
-  "gifts",
-  "bags",
-  "watches",
-  "perfumes",
-  "services",
-  "travel and home",
-  "shoes",
-  "hats",
-];
-const styleKeywords = ["casual", "formal", "sport", "luxury", "classic"];
-const originKeywords = ["italy", "france", "india", "usa", "japan"];
-const materialKeywords = [
-  "leather",
-  "cotton",
-  "wool",
-  "silk",
-  "nylon",
-  "denim",
-];
-
-const ignoredWords = ["for", "and", "of", "the", "a", "an", "with"];
 
 module.exports.getProductByCriteria = async (req, res) => {
   try {
-    const criteria = req.params.criteria.toLowerCase();
-    const words = criteria.split(" ");
+    const criteria = req.query.criteria || req.params.criteria; // Adjust as per route setup
 
-    let query = {};
+    if (!criteria) {
+      return res
+        .status(400)
+        .json({ errors: [{ message: "Criteria is required" }] });
+    }
 
-    const genderKey = Object.keys(genderKeywords).find((word) =>
-      criteria.includes(word)
+    // Fetch all products from DB
+    const products = await productModel.find(); // Adjust if you're filtering earlier
+
+    // 1. Filter products that match any of the fields
+    const matchedProducts = products.filter(
+      (product) =>
+        product.category === criteria ||
+        product.subcategory === criteria ||
+        product.productType === criteria
     );
-    if (genderKey) {
-      query.gender = genderKeywords[genderKey];
-    }
 
-    const matchedCategory = categoryKeywords.find((cat) =>
-      criteria.includes(cat)
-    );
-    if (matchedCategory) {
-      query.category = matchedCategory;
-    }
-
-    // Style check
-    const matchedStyle = styleKeywords.find((style) =>
-      criteria.includes(style)
-    );
-    if (matchedStyle) {
-      query.style = matchedStyle;
-    }
-
-    // Origin check
-    const matchedOrigin = originKeywords.find((origin) =>
-      criteria.includes(origin)
-    );
-    if (matchedOrigin) {
-      query.origin = matchedOrigin;
-    }
-
-    // Material check
-    const matchedMaterial = materialKeywords.find((material) =>
-      criteria.includes(material)
-    );
-    if (matchedMaterial) {
-      query.material = matchedMaterial;
-    }
-
-    // 3. Tags: any remaining relevant words
-    const allMatchedWords = [
-      ...Object.keys(genderKeywords),
-      ...ignoredWords,
-      ...categoryKeywords,
-      ...styleKeywords,
-      ...originKeywords,
-      ...materialKeywords,
-    ];
-
-    const tagWords = words.filter((word) => !allMatchedWords.includes(word));
-
-    if (tagWords.length > 0) {
-      query.tags = { $in: tagWords };
-    }
-
-    console.log(query);
-    const products = await productModel.find(query);
-    console.log(products);
-
-    // 4. Filter to one product per subcategory (if needed)
-    const seenSubcategories = new Set();
+    // 2. Pick one product per productType
+    const seenProductTypes = new Set();
     const filteredProducts = [];
 
-    products.forEach((product) => {
-      if (!seenSubcategories.has(product.subcategory)) {
-        seenSubcategories.add(product.subcategory);
+    matchedProducts.forEach((product) => {
+      if (!seenProductTypes.has(product.productType)) {
+        seenProductTypes.add(product.productType);
         filteredProducts.push(product);
       }
     });
 
-    // 5. Format image data
+    // 3. Format image data
     const formattedProducts = filteredProducts.map((product) => ({
       ...product._doc,
       images: product.images.map((typecolor) => ({
@@ -291,7 +215,7 @@ module.exports.getProductByCriteria = async (req, res) => {
         })),
       })),
     }));
-    console.log(formattedProducts);
+
     return res.status(200).json({
       products: formattedProducts,
       message: "Products fetched successfully",

@@ -496,9 +496,9 @@ const Admin = () => {
   };
 
   return (
-    <div className="flex h-screen p-2 relative ">
+    <div className="flex min-h-screen p-2 relative bg-black text-white ">
       <button
-        className="absolute top-2 left-2 p-2 bg-white rounded-md shadow lg:hidden z-50"
+        className="absolute top-2 left-2 p-2 bg-black text-white rounded-md shadow lg:hidden z-50"
         onClick={() => setSidebarOpen(true)}
       >
         <Menu />
@@ -507,11 +507,11 @@ const Admin = () => {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed lg:static top-0 left-0 z-40 h-full w-64 p-4 bg-white transform transition-transform duration-300 ease-in-out
+        className={`fixed lg:static top-0 left-0 z-40 h-full w-64 p-4 bg-black text-white  transform transition-transform duration-300 ease-in-out
     ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
     lg:translate-x-0 lg:block`}
       >
-        <div className="text-center mb-6">
+        <div className="text-center mb-6 ">
           <img
             src="https://i.pravatar.cc/80"
             alt="Admin"
@@ -519,7 +519,7 @@ const Admin = () => {
           />
           <h2 className="text-lg font-bold">Hey Admin</h2>
         </div>
-        <nav className="space-y-2 ">
+        <nav className="space-y-2 bg-black text-white w-full ">
           <button
             onClick={() => {
               setActiveView("dashboard");
@@ -527,11 +527,9 @@ const Admin = () => {
               setSelectedSubcategory(null);
               window.innerWidth < 1024 && sidebarOpen &&setSidebarOpen(false);
             }}
-            className={`flex items-center w-full px-3 py-2 rounded hover:bg-gray-200 ${
-              activeView === "dashboard" ? "bg-gray-200" : ""
-            }`}
+            className={`flex items-center w-full px-3 py-2 rounded hover:bg-gray-800`}
           >
-            <BarChart3 className="mr-2" /> Dashboard
+            <BarChart3 className="mr-2 text-white" /> Dashboard
           </button>
           <button
             onClick={() => {
@@ -540,15 +538,13 @@ const Admin = () => {
               setSelectedSubcategory(null);
               window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false);
             }}
-            className={`flex items-center w-full px-3 py-2 rounded hover:bg-gray-200 ${
-              activeView === "orders" ? "bg-gray-200" : ""
-            }`}
+            className={`flex items-center w-full px-3 py-2 rounded hover:bg-gray-800 bg-black text-white`}
           >
-            <Clock3 className="mr-2" /> Orders
+            <Clock3 className="mr-2 text-white" /> Orders
           </button>
 
           {categories.map((cat) => (
-            <div key={cat.name} className="relative">
+            <div key={cat.name} className="">
               <button
                 onClick={() => {
                   setSelectedCategory(cat.name);
@@ -556,7 +552,7 @@ const Admin = () => {
                     expandedCategory === cat.name ? null : cat.name
                   );
                 }}
-                className="flex items-center w-full px-3 py-2 rounded hover:bg-gray-100"
+                className="flex items-center w-full px-3 py-2 rounded hover:bg-gray-800"
               >
                 {cat.icon} {cat.name}
               </button>
@@ -566,9 +562,9 @@ const Admin = () => {
                 <div
                   className={`absolute ${
                     isMobile ? "left-32 w-60" : "left-64 w-72"
-                  } top-0 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-2 bg-white shadow-xl rounded-lg p-4 z-50 border border-gray-200`}
+                  } top-0 transform transition-all duration-300 ease-out scale-100 opacity-100 translate-y-2 bg-black text-white  shadow-xl rounded-lg p-4 z-50 border border-gray-700`}
                 >
-                  <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-1">
+                  <h3 className="text-md font-semibold mb-3 text-gray-200 border-b pb-1">
                     {cat.name}
                   </h3>
 
@@ -581,7 +577,7 @@ const Admin = () => {
                             expandedSubcategory === sub.name ? null : sub.name
                           );
                         }}
-                        className="block text-left w-full px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 rounded font-semibold"
+                        className="block text-left w-full px-3 py-2 text-sm text-gray-200 hover:bg-gray-800 rounded font-semibold"
                       >
                         {sub.name}
                       </button>
@@ -595,7 +591,7 @@ const Admin = () => {
                               console.log("Subtypes");
                               return (
                                 <div key={type.name} className="mb-1">
-                                  <div className="text-gray-700 text-sm font-medium">
+                                  <div className="text-gray-200 hover:bg-gray-800 text-sm font-medium">
                                     {type.name}
                                   </div>
                                   <div className="ml-3">
@@ -610,7 +606,7 @@ const Admin = () => {
                                           setExpandedCategory(null);
                                           window.innerWidth<=768 &&sidebarOpen && setSidebarOpen(false);
                                         }}
-                                        className="block text-left w-full px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+                                        className="block text-left w-full px-2 py-1 text-smtext-gray-200 hover:bg-gray-800 rounded"
                                       >
                                         {subType}
                                       </button>
@@ -630,7 +626,7 @@ const Admin = () => {
                                   setExpandedCategory(null);
                                   window.innerWidth<=768 &&sidebarOpen && setSidebarOpen(false);
                                 }}
-                                className="block text-left w-full  py-1 text-sm text-gray-700 font-medium hover:bg-gray-100 rounded"
+                                className="block text-left w-full  py-1 text-sm text-gray-200 hover:bg-gray-800 font-medium hover:bg-gray-100 rounded"
                               >
                                 {type}
                               </button>
@@ -649,7 +645,7 @@ const Admin = () => {
             onClick={() => {
               handleLogout();
             }}
-            className="flex items-center w-full px-3 py-2 mt-4  rounded text-red-600 hover:bg-red-100"
+            className="flex items-center w-full px-3 py-2 mt-4  rounded text-red-600 hover:bg-red-900"
           >
             <LogOut className="mr-2" /> Logout
           </button>
@@ -659,7 +655,7 @@ const Admin = () => {
       {/* Main panel */}
       <main
     
-        className="flex-1 overflow-y-auto pt-7  w-screen min-h-screen bg-gray-50 shadow-inner"
+        className="flex-1 overflow-y-auto pt-7  w-screen min-h-screen bg-black text-white shadow-inner"
         onClick={() =>
           {setExpandedSubcategory(null);
             setExpandedCategory(null)
@@ -673,7 +669,7 @@ const Admin = () => {
               onClick={() => {
                 setActiveView("add-product");
               }}
-              className="bg-black text-white px-4 py-2 rounded"
+              className="bg-white text-black px-4 py-2 rounded"
             >
               + Add New Product
             </button>

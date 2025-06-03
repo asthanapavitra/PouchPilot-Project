@@ -292,7 +292,7 @@ const Authentication = () => {
         const data = response.data;
         localStorage.setItem("token", data.token);
         setUser(data.user);
-       window.history.back();
+        window.history.back();
         
       }
     } catch (err) {

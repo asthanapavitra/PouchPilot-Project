@@ -39,12 +39,13 @@ const CategoryDiv = (props) => {
           isMobile={props.isMobile}
           highlight={props.highlight}
           category={props.category}
+          categories={props.categories}
         />
-        <h1 className="text-center mt-4 text-xl mb-4">Explore a Selections of the <span className="font-bold">STARPHENOM'</span> s Creations</h1> 
+        <h1 className="text-center mt-4 text-md md:text-xl mb-4">Explore a Selections of the <span className="font-bold">STARPHENOM'</span> s Creations</h1> 
         <div className="grid grid-cols-2 mx-auto sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 row-gap-8 w-[90%] px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 ">
           
           {props.categoriesAfterFirstVideo && props.categoriesAfterFirstVideo.map((cat, ind) => {
-            return <CategoryCard category={cat} key={ind} />;
+            return <CategoryCard category={cat} key={ind} categories={props.categories}/>;
           })}
         </div>
       </div>

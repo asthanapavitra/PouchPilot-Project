@@ -19,12 +19,20 @@ const VideoCard = (props) => {
   };
 
   return (
-    <div className={`w-full ${window.innerWidth<=768?"h-[60vh]":"h-full "}  `}>
+    <div
+      className={`w-full ${
+        window.innerWidth <= 768 ? "h-[60vh]" : "h-full "
+      }  `}
+    >
       <video
+        onClick={() => {
+          props.handleVideoClick();
+        }}
         className=" w-full h-full object-cover"
         src={props.videoSrc}
         loop
         autoPlay
+        categories={props.categories}
         muted={isMuted}
       >
         Your browser does not support the video tag.
