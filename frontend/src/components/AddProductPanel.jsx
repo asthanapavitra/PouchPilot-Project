@@ -539,8 +539,7 @@ const AddProductPanel = ({
               key={index}
               className="w-full flex items-center justify-between gap-2 mb-2"
             >
-              <textarea
-                rows={8}
+              <input
                 className="w-[45%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
                 placeholder="Subheading"
                 value={spec.subHeading}
@@ -548,8 +547,7 @@ const AddProductPanel = ({
                   handleSpecChange(index, "subHeading", e.target.value)
                 }
               />
-              <textarea
-                rows={8}
+              <input
                 className="w-[45%] border rounded-lg p-3 text-sm focus:outline-none focus:ring"
                 placeholder="Value"
                 value={spec.value}
@@ -567,7 +565,7 @@ const AddProductPanel = ({
             + Add More
           </button>
         </div>
-        
+
         {visibleFields.includes("material") && (
           <input
             type="text"

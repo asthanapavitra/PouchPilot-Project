@@ -487,6 +487,7 @@ const Admin = () => {
           selectedProductType={selectedProductType}
           product={product}
           setProduct={setProduct}
+
         />
       );
     }
@@ -524,7 +525,7 @@ const Admin = () => {
               setActiveView("dashboard");
               setExpandedCategory(null);
               setSelectedSubcategory(null);
-              setSidebarOpen(false);
+              window.innerWidth < 1024 && sidebarOpen &&setSidebarOpen(false);
             }}
             className={`flex items-center w-full px-3 py-2 rounded hover:bg-gray-200 ${
               activeView === "dashboard" ? "bg-gray-200" : ""
@@ -657,9 +658,12 @@ const Admin = () => {
 
       {/* Main panel */}
       <main
+    
         className="flex-1 overflow-y-auto pt-7  w-screen min-h-screen bg-gray-50 shadow-inner"
         onClick={() =>
-          window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)
+          {setExpandedSubcategory(null);
+            setExpandedCategory(null)
+            window.innerWidth < 1024 && sidebarOpen && setSidebarOpen(false)}
         } // click outside to close
       >
         {renderMainPanel()}

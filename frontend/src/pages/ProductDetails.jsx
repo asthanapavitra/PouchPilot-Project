@@ -25,14 +25,16 @@ const ProductSpecifications = ({ specifications }) => {
 
       {open && (
         <div className="px-4 py-2 space-y-3">
-          {specifications.map((spec, index) => (
-            <div key={index} className="flex justify-between  pb-2">
-              <span className="text-sm text-gray-600">{spec.subHeading}</span>
-              <span className="text-sm font-medium text-gray-900">
-                {spec.value}
-              </span>
-            </div>
-          ))}
+          {specifications.map((spec, index) =>
+            spec.subHeading !== "" && spec.value !== "" ? (
+              <div key={index} className="flex justify-between pb-2">
+                <span className="text-sm text-gray-600">{spec.subHeading}</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {spec.value}
+                </span>
+              </div>
+            ) : null
+          )}
         </div>
       )}
     </div>
@@ -276,11 +278,17 @@ const ProductDetails = () => {
             <div className="mt-6 space-y-4">
               <div>
                 <h3 className="text-lg font-semibold">Product Details</h3>
-                <ul className="mt-2 text-sm text-gray-700 list-disc list-inside">
-                  {product.productDetails.map((detail, index) => (
-                    <li key={index}>{detail}</li>
-                  ))}
-                </ul>
+                {product.productDetails.length == 1 ? (
+                  <p className="mt-2 text-sm text-gray-700">
+                    {product.productDetails[0]}
+                  </p>
+                ) : (
+                  <ul className="mt-2 text-sm text-gray-700 list-disc list-inside">
+                    {product.productDetails.map((detail, index) => (
+                      <li key={index}>{detail}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <ProductSpecifications specifications={product.specifications} />
               {product.howMade && (
@@ -295,9 +303,7 @@ const ProductDetails = () => {
               )}
               {product.care && (
                 <div>
-                  <h3 className="text-lg font-semibold">
-                    Care
-                  </h3>
+                  <h3 className="text-lg font-semibold">Care</h3>
                   {product.care.split("\n").map((line, index) => {
                     const trimmed = line.trim();
                     if (
