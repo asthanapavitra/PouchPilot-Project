@@ -108,7 +108,7 @@ const AddProductPanel = ({
     categoryLevel1: selectedCategory || "",
     subcategory: "",
     productType: "",
-    tags: [],
+    tags: "",
     emi: {
       emiAvailable: false,
       noOfMonths: [],
@@ -289,7 +289,9 @@ const AddProductPanel = ({
     e.preventDefault();
     showPopupMessage("Adding product,please wait for few seconds 😏");
     const form = new FormData();
-
+    
+    formData.tags=formData.tags.split(",")
+    console.log(formData.tags)
     // Append non-image fields
     for (let key in formData) {
       console.log(key + " " +formData[key])
