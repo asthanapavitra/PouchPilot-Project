@@ -709,17 +709,25 @@ const AddProductPanel = ({
           "tags",
         ].map((field) =>
           visibleFields.includes(field) ? (
-            field === "care" || field === "howMade" ? (
+            field === "care" ? (
               <textarea
                 value={formData.care}
                 onChange={(e) =>
-                  setFormData({ ...formData, field: e.target.value })
+                  setFormData({ ...formData, care: e.target.value })
                 }
                 placeholder={`Type ${field} instructions:\nPress Enter for new line\nStart bullet points with • or -`}
                 rows={8}
                 className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring"
               />
-            ) : (
+            ) :field === "howMade" ? <textarea
+                value={formData.howMade}
+                onChange={(e) =>
+                  setFormData({ ...formData, howMade: e.target.value })
+                }
+                placeholder={`Type ${field} instructions:\nPress Enter for new line\nStart bullet points with • or -`}
+                rows={8}
+                className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring"
+              /> :(
               <input
                 key={field}
                 type="text"
