@@ -317,8 +317,8 @@ const AddProductPanel = ({
 
     // Append imageMeta as JSON
     form.append("imagesMeta", JSON.stringify(imageMeta));
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
+    for (let pair of formData) {
+      console.log(pair, formData[pair]);
     }
 
     try {
