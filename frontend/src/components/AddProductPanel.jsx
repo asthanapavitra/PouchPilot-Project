@@ -15,81 +15,6 @@ const fields = [
   "care",
   "tags",
 ];
-const categoryFieldMap = {
-  Shoes: [
-    "material",
-    "gender",
-    "warranty",
-    "availableSizes",
-    "style",
-    "origin",
-    "howMade",
-    "delivery",
-    "returns",
-    "tags",
-    "durability",
-  ],
-  Perfumes: [
-    "fragranceNotes",
-    "gender",
-    "warranty",
-    "style",
-    "origin",
-    "howMade",
-    "delivery",
-    "returns",
-    "tags",
-  ],
-  Bags: [
-    "material",
-    "gender",
-    "availableSizes",
-    "style",
-    "origin",
-    "howMade",
-    "delivery",
-    "returns",
-    "tags",
-    "durability",
-
-    "storageInstructions",
-    "care",
-  ],
-  Watches: [
-    "material",
-    "warranty",
-    "gender",
-    "style",
-    "origin",
-    "howMade",
-    "delivery",
-    "returns",
-    "tags",
-  ],
-  Hats: [
-    "material",
-    "gender",
-    "availableSizes",
-    "style",
-    "origin",
-    "howMade",
-    "delivery",
-    "returns",
-
-    "durability",
-
-    "care",
-  ],
-  Gifts: [
-    "style",
-    "origin",
-    "howMade",
-    "delivery",
-    "returns",
-    "forOccasion",
-    "giftMessageAvailable",
-  ],
-};
 
 const AddProductPanel = ({
   selectedCategory,
@@ -217,7 +142,7 @@ const AddProductPanel = ({
     }));
   }, [selectedCategory, selectedSubCategory]);
 
-  const visibleFields = categoryFieldMap[selectedCategory] || fields;
+  const visibleFields = fields;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
