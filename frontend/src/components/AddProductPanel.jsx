@@ -379,7 +379,7 @@ const AddProductPanel = ({
       <form
         onClick={() => setShowPopup(false)}
         onSubmit={handleSubmit}
-        className="p-6 lg:pl-10 space-y-4 max-w-4xl mx-auto"
+        className="p-6 lg:pl-10 space-y-4 max-w-full mx-auto"
       >
         <button
           onClick={() => {
@@ -585,7 +585,7 @@ const AddProductPanel = ({
           />
         )}
         {visibleFields.includes("availableSizes") && (
-          <div className=" p-4 rounded w-full space-y-2">
+          <div className="rounded w-full space-y-2">
             <label className="font-semibold block">Available Sizes</label>
 
             {/* Format selector */}

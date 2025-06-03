@@ -2,7 +2,20 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
+const fields = [
+  "material",
+  "gender",
+  "availableSizes",
+  "style",
+  "origin",
+  "howMade",
+  "delivery",
+  "returns",
+  "durability",
 
+  "care",
+  "tags",
+];
 const categoryFieldMap = {
   Sneakers: [
     "material",
@@ -14,9 +27,9 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "sustainability",
+
     "durability",
-    "usage",
+
     "storageInstructions",
     "care",
     "category",
@@ -43,9 +56,9 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "sustainability",
+
     "durability",
-    "usage",
+
     "storageInstructions",
     "care",
     "category",
@@ -72,9 +85,9 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "sustainability",
+
     "durability",
-    "usage",
+
     "care",
     "category",
     "subcategory",
@@ -95,8 +108,7 @@ const categoryFieldMap = {
     "howMade",
     "delivery",
     "returns",
-    "sustainability",
-    "usage",
+
     "care",
     "category",
     "subcategory",
@@ -140,7 +152,7 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
 
   const [removedImages, setRemovedImages] = useState([]);
   const [newColor, setNewColor] = useState("");
-  const visibleFields = categoryFieldMap[formData.category] || [];
+  const visibleFields =  fields;
   const [popupMessage, setPopupMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupProgress, setPopupProgress] = useState(100);
@@ -806,7 +818,10 @@ const UpdateProductPanel = ({ product, setProduct, setActiveView }) => {
           }
           if (key === "care") {
             return (
-              <div key={key} className="flex items-center  justify-between gap-2">
+              <div
+                key={key}
+                className="flex items-center  justify-between gap-2"
+              >
                 <label className="capitalize font-medium">{key}</label>
                 <textarea
                   value={formData.care}
