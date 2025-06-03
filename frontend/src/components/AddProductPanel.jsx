@@ -326,7 +326,7 @@ const AddProductPanel = ({
               setCategoryLevel2("");
               setCategoryLevel3("");
             }}
-            className="border px-3 py-2 rounded w-full"
+            className="border px-3 py-2 rounded w-full bg-black text-white"
           >
             <option value="">Select Main Category</option>
             {categories.map((cat, idx) => (
@@ -350,7 +350,7 @@ const AddProductPanel = ({
                 setCategoryLevel2(e.target.value);
                 setCategoryLevel3("");
               }}
-              className="border px-3 py-2 rounded w-full"
+              className="border px-3 py-2 rounded w-full bg-black text-white"
             >
               <option value="">Select Subcategory</option>
               {subCategoriesLevel2.map((sub, idx) => (
@@ -374,7 +374,7 @@ const AddProductPanel = ({
                 });
                 setCategoryLevel3(e.target.value);
               }}
-              className="border px-3 py-2 rounded w-full"
+              className="border px-3 py-2 rounded w-full bg-black text-white"
             >
               <option value="">Select Product Type</option>
               {subCategoriesLevel3.map((type, idx) =>
