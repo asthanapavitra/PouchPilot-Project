@@ -61,15 +61,10 @@ router.post(
       .withMessage("Stock must be a non-negative integer"),
 
     body("category")
-      .trim()
-      .toLowerCase()
-      .custom((value) => {
-        const valid =["bags", "shoes", "watches", "perfumes", "gifts","hats","services","pets"];
-        if (!valid.includes(value)) {
-          throw new Error("Invalid product category");
-        }
-        return true;
-      }),
+      .optional()
+      .isString()
+      .withMessage("Category must be a string")
+      ,
     body("subcategory")
       .optional()
       .isString()
