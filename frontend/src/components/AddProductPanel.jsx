@@ -290,7 +290,7 @@ const AddProductPanel = ({
     showPopupMessage("Adding product,please wait for few seconds 😏");
     const form = new FormData();
     
-    formData.tags=formData.tags.split(",")
+    formData.tags=formData.tags!="" && formData.tags.split(",")
     console.log(formData.tags)
     // Append non-image fields
     for (let key in formData) {
