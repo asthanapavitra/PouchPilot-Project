@@ -292,6 +292,7 @@ const AddProductPanel = ({
 
     // Append non-image fields
     for (let key in formData) {
+      console.log(key + " " +formData[key])
       if (key === "images") continue; // skip for now
       const value = formData[key];
       form.append(
@@ -317,9 +318,7 @@ const AddProductPanel = ({
 
     // Append imageMeta as JSON
     form.append("imagesMeta", JSON.stringify(imageMeta));
-    for (let pair of formData) {
-      console.log(pair, formData[pair]);
-    }
+    
 
     try {
       const res = await axios.post(
