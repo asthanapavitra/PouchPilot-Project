@@ -715,7 +715,7 @@ const AddProductPanel = ({
               <textarea
                 value={formData.care}
                 onChange={(e) =>
-                  setFormData({ ...formData, care: e.target.value })
+                  setFormData({ ...formData, field: e.target.value })
                 }
                 placeholder={`Type ${field} instructions:\nPress Enter for new line\nStart bullet points with • or -`}
                 rows={8}
